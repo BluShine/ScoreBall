@@ -95,6 +95,10 @@ public class Networking : MonoBehaviour {
 
     public void SendMove(Vector3 move)
     {
+        if (!connected)
+        {
+            return;
+        }
         byte error;
         int bufferSize = 1024;
         //format the message into a byte array
