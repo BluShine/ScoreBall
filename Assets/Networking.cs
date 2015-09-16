@@ -20,9 +20,12 @@ public class Networking : MonoBehaviour {
 
     bool connected = false;
 
+    public Vector3 playerPos;
+
 	// Use this for initialization
 	void Start () {
         NetworkTransport.Init();
+        player = FindObjectOfType<Player>().transform;
 	}
 
     public void setIP(string newIP)
@@ -54,11 +57,6 @@ public class Networking : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (connected && Input.GetButtonDown("Submit"))
-        {
-            SendPacket("pressed submit!");
-        }
-
         //recieve network events;
         int rSocketID;
         int rConnectionID;
@@ -87,14 +85,15 @@ public class Networking : MonoBehaviour {
             case NetworkEventType.DataEvent:
                 Stream rStream = new MemoryStream(rBuffer);
                 BinaryFormatter formatter = new BinaryFormatter();
-                string rMessage = formatter.Deserialize(rStream) as string;
-                outputText.text = rSocketID + ": " + rMessage;
+                float[] rMove = formatter.Deserialize(rStream) as float[];
+                player.transform.position = new Vector3(rMove[0], rMove[1], rMove[2]);
+                outputText.text = "moved: " + player.transform.position;
                 Debug.Log(outputText.text);
                 break;
         }
 	}
 
-    public void SendPacket(string message)
+    public void SendMove(Vector3 move)
     {
         byte error;
         int bufferSize = 1024;
@@ -102,7 +101,11 @@ public class Networking : MonoBehaviour {
         byte[] bBuffer = new byte[bufferSize];
         Stream bStream = new MemoryStream(bBuffer);
         BinaryFormatter formatter = new BinaryFormatter();
-        formatter.Serialize(bStream, message);
+        float[] moveArr = new float[3];
+        moveArr[0] = move.x;
+        moveArr[1] = move.y;
+        moveArr[2] = move.z;
+        formatter.Serialize(bStream, moveArr);
 
         NetworkTransport.Send(socketID, connectionID, reliableChannelID,
             bBuffer, bufferSize, out error);
