@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -22,10 +22,14 @@ public class Networking : MonoBehaviour {
 
     public Vector3 playerPos;
 
+    public GameObject opponentPrefab;
+    Dictionary<int, GameObject> opponents;
+
 	// Use this for initialization
 	void Start () {
         NetworkTransport.Init();
         player = FindObjectOfType<Player>().transform;
+        opponents = new Dictionary<int, GameObject>();
 	}
 
     public void setIP(string newIP)
@@ -76,19 +80,24 @@ public class Networking : MonoBehaviour {
                 outputText.text = "connection! socket: " + rSocketID + 
                     " ID: " + rConnectionID + " channel: " + rChannelID;
                 Debug.Log(outputText.text);
+                //insert a player
+                GameObject opp = GameObject.Instantiate(opponentPrefab);
+                opponents.Add(rConnectionID, opp);
                 break;
             case NetworkEventType.DisconnectEvent:
                 outputText.text = "disconnection! socket: " + rSocketID +
                     " ID: " + rConnectionID + " channel: " + rChannelID;
                 Debug.Log(outputText.text);
+                GameObject.Destroy(opponents[rConnectionID]);
+                opponents.Remove(rConnectionID);
                 break;
             case NetworkEventType.DataEvent:
                 Stream rStream = new MemoryStream(rBuffer);
                 BinaryFormatter formatter = new BinaryFormatter();
                 float[] rMove = formatter.Deserialize(rStream) as float[];
-                player.transform.position = new Vector3(rMove[0], rMove[1], rMove[2]);
                 outputText.text = "moved: " + player.transform.position;
                 Debug.Log(outputText.text);
+                opponents[rConnectionID].transform.position = new Vector3(rMove[0], rMove[1], rMove[2]);
                 break;
         }
 	}

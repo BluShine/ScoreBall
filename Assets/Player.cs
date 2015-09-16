@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-    static float moveVel = 200;
+    static float moveVel = 5;
 
     Rigidbody body;
     Networking net;
