@@ -6,6 +6,11 @@ public class TeamPlayer : MonoBehaviour {
     //physics
     public float moveSpeed = 500; //movement speed in pixels/sec
     public float strafeSpeed = 500; //"strafing" speed in pixels/sec
+	public float dashSpeed = 1000; //dashing speed in pixels/sec (not additive with move/strafe)
+	public float dashDuration = .7f; //duration of dash in seconds
+	float dashTimer = 0;
+	public float dashCooldownDuration = 2; //cooldown time between dashes in seconds
+	float dashCooldownTimer = 0;
     public float turnSpeed = 720; //rotation speed in pixels/sec
     [Range(0.01f, 0.99f)]
     public float strafeThreashold = .6f; //input threashold for strafing only. 
@@ -14,12 +19,14 @@ public class TeamPlayer : MonoBehaviour {
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
-    public bool butterFingers = false; //if true, player will drop the ball if we run face-first into a wall
+    public bool butterFingers = false; //if true, player will drop the ball if we run	face-first into a wall
+	public bool dashWhileCarrying = false;
 
     //input
     public string xAxis = "Horizontal";
     public string yAxis = "Vertical";
     public string shootButton = "Fire";
+	public string dashButton = "Fire";
 
     Rigidbody body;
 
@@ -34,59 +41,81 @@ public class TeamPlayer : MonoBehaviour {
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
-        //MOVEMENT--------------------------------------------------------------------
-        //get input vector from joystick/keys
-        Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
-        if (input.magnitude > 1)
-        {
-            input.Normalize();
-        }
-        float inputMag = input.magnitude;
-        //rotate towards joystick
-        if (inputMag != 0)
-        {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation,
-                Quaternion.Euler(0, 90 -Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
-                Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
-        }
-        //movement
-        Vector3 movingVel = new Vector3(0, body.velocity.y, 0);
-        //strafing
-        if (inputMag > turnThreashold)
-        {
-            movingVel += Mathf.Min(1, inputMag / strafeThreashold) * strafeSpeed * new Vector3(input.x, 0, input.y);
-        }
-        //running
-        if (inputMag > strafeThreashold)
-        {
-            Vector3 playerRot = transform.forward;
-            movingVel += inputMag * moveSpeed * new Vector3(playerRot.x, 0, playerRot.z);
-        }
-        //rotate our velocity if we're sliding along a wall.
-        Ray fRay = new Ray(transform.position, transform.forward);
-        RaycastHit fRHit;
-        //spherecast further if we're carrying a ball
-        float sDist = .5f;
-        if (carriedBall != null)
-        {
-            sDist += carriedBall.carryRadius + ballHoldDistance;
-        }
-        //Debug.DrawLine(transform.position, transform.position + transform.forward * sDist);
-        //spherecast forwards
-        if (Physics.SphereCast(fRay, .4f, out fRHit, sDist, BALLMASK))
-        {
-            Vector3 tDir = Vector3.Cross(fRHit.normal, transform.up);
-            if (Vector3.Dot(tDir, movingVel) > .5f)
-            {
-                movingVel = movingVel.magnitude * tDir;
-            }
-            else if (Vector3.Dot(-tDir, movingVel) > .5f)
-            {
-                movingVel = movingVel.magnitude * -tDir;
-            }
-        }
-        //Debug.DrawLine(transform.position, transform.position + body.velocity);
-        body.velocity = movingVel;
+       
+		//DASHING---------------------------------------------------------------------
+		
+		//MOVEMENT--------------------------------------------------------------------
+		//increment dash timers
+		dashTimer -= Time.deltaTime;
+		dashTimer = Mathf.Max(0, dashTime);
+		dashCooldownTimer -= Time.deltaTime;
+		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
+		//dash input
+		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
+			(dashWhileCarrying || carriedBall == null)) {
+			dashTimer = dashDuration;
+			dashCooldownTimer = dashCooldownDuration;
+		}
+		bool dashing = dashing > 0;
+		//normal movement if we aren't dashing.
+		if(dashing) {
+			//get input vector from joystick/keys
+			Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
+			if (input.magnitude > 1)
+			{
+				input.Normalize();
+			}
+			float inputMag = input.magnitude;
+			//rotate towards joystick
+			if (inputMag != 0)
+			{
+				transform.rotation = Quaternion.RotateTowards(transform.rotation,
+					Quaternion.Euler(0, 90 -Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
+					Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
+			}
+			//movement
+			Vector3 movingVel = new Vector3(0, body.velocity.y, 0);
+			//strafing
+			if (inputMag > turnThreashold)
+			{
+				movingVel += Mathf.Min(1, inputMag / strafeThreashold) * strafeSpeed * new Vector3(input.x, 0, input.y);
+			}
+			//running
+			if (inputMag > strafeThreashold)
+			{
+				Vector3 playerRot = transform.forward;
+				movingVel += inputMag * moveSpeed * new Vector3(playerRot.x, 0, playerRot.z);
+			}
+			//rotate our velocity if we're sliding along a wall.
+			Ray fRay = new Ray(transform.position, transform.forward);
+			RaycastHit fRHit;
+			//spherecast further if we're carrying a ball
+			float sDist = .5f;
+			if (carriedBall != null)
+			{
+				sDist += carriedBall.carryRadius + ballHoldDistance;
+			}
+			//Debug.DrawLine(transform.position, transform.position + transform.forward * sDist);
+			//spherecast forwards
+			if (Physics.SphereCast(fRay, .4f, out fRHit, sDist, BALLMASK))
+			{
+				Vector3 tDir = Vector3.Cross(fRHit.normal, transform.up);
+				if (Vector3.Dot(tDir, movingVel) > .5f)
+				{
+					movingVel = movingVel.magnitude * tDir;
+				}
+				else if (Vector3.Dot(-tDir, movingVel) > .5f)
+				{
+					movingVel = movingVel.magnitude * -tDir;
+				}
+			}
+			//Debug.DrawLine(transform.position, transform.position + body.velocity);
+			body.velocity = movingVel;
+		}
+		else {
+			//dash movement
+			body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
+		}
 
         //BALL HANDLING---------------------------------------------------------
         if (carriedBall != null)
@@ -101,6 +130,8 @@ public class TeamPlayer : MonoBehaviour {
             {
                 //stop
                 body.velocity = Vector3.zero;
+				//stop dash
+				dashTimer = 0;
                 //calculate the distance to move away from the wall
                 Debug.Log(Vector3.Dot(transform.forward, ballForwardCast.normal));
                 transform.position += ballForwardCast.normal * 
