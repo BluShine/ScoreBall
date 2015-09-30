@@ -41,14 +41,12 @@ public class TeamPlayer : MonoBehaviour {
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
-       
-		//DASHING---------------------------------------------------------------------
-		
+        	
 		//MOVEMENT--------------------------------------------------------------------
 		//increment dash timers
-		dashTimer -= Time.deltaTime;
-		dashTimer = Mathf.Max(0, dashTime);
-		dashCooldownTimer -= Time.deltaTime;
+		dashTimer -= Time.fixedDeltaTime;
+		dashTimer = Mathf.Max(0, dashTimer);
+		dashCooldownTimer -= Time.fixedDeltaTime;
 		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
 		//dash input
 		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
@@ -56,9 +54,9 @@ public class TeamPlayer : MonoBehaviour {
 			dashTimer = dashDuration;
 			dashCooldownTimer = dashCooldownDuration;
 		}
-		bool dashing = dashing > 0;
+        bool dashing = dashTimer > 0;
 		//normal movement if we aren't dashing.
-		if(dashing) {
+		if(!dashing) {
 			//get input vector from joystick/keys
 			Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
 			if (input.magnitude > 1)
@@ -168,6 +166,7 @@ public class TeamPlayer : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
+		//handle collision with balls
         Ball collidedBall = collision.gameObject.GetComponent<Ball>();
         if (collidedBall != null)
         {
@@ -176,6 +175,8 @@ public class TeamPlayer : MonoBehaviour {
                 carriedBall = collidedBall;
             }
         }
+		//handle collision with players
+		
     }
 
     public void removeBall(Ball rBall)
