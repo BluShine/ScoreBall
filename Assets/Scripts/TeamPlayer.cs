@@ -21,6 +21,8 @@ public class TeamPlayer : MonoBehaviour {
     public float ballShootPower = 1000;
     public bool butterFingers = false; //if true, player will drop the ball if we run	face-first into a wall
 	public bool dashWhileCarrying = false;
+    public bool dashStopByWall = true;
+    public bool dashStopByPlayer = true;
 
     //input
     public string xAxis = "Horizontal";
@@ -111,8 +113,19 @@ public class TeamPlayer : MonoBehaviour {
 			body.velocity = movingVel;
 		}
 		else {
-			//dash movement
-			body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
+            //check if ball will hit wall and stop dash.
+            if (carriedBall != null)
+            {
+                Ray fRay = new Ray(transform.position, transform.forward);
+                float sDist = carriedBall.carryRadius + ballHoldDistance + 0.5f;
+                if (Physics.SphereCast(fRay, .4f, sDist, BALLMASK))
+                {
+                    dashTimer = 0;
+                }
+            }
+
+            //dash movement
+            body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
 		}
 
         //BALL HANDLING---------------------------------------------------------
@@ -164,9 +177,21 @@ public class TeamPlayer : MonoBehaviour {
         }
 	}
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionStay(Collision collision)
     {
-		//handle collision with balls
+        if (checkBallCollision(collision))
+        {
+            //should probably send a message about this to the rules manager
+        }
+        else if (checkPlayerCollision(collision))
+        {
+            //also send the rules manager a message about this
+        }
+    }
+
+    bool checkBallCollision(Collision collision)
+    {
+        //check if the collision is a ball
         Ball collidedBall = collision.gameObject.GetComponent<Ball>();
         if (collidedBall != null)
         {
@@ -174,9 +199,52 @@ public class TeamPlayer : MonoBehaviour {
             {
                 carriedBall = collidedBall;
             }
+            return true;
         }
-		//handle collision with players
-		
+        return false;
+    }
+
+    bool checkPlayerCollision(Collision collision)
+    {
+        //check if the collision is a player
+        TeamPlayer collidedPlayer = collision.gameObject.GetComponent<TeamPlayer>();
+        if (collidedPlayer != null)
+        {
+            if (dashTimer > 0 && collidedPlayer.carriedBall != null)
+            {
+                //Debug.Log("tackled ball carrier!");
+                Ball stolenBall = collidedPlayer.carriedBall;
+                if (collidedPlayer.carriedBall.grabBall(this))
+                {
+                    //Debug.Log("got ball!");
+                    carriedBall = stolenBall;
+                }
+            }
+            if (dashStopByPlayer)
+            {
+                dashTimer = 0;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (checkBallCollision(collision)) {
+            //should probably send a message about this to the rules manager
+        }
+        else if (checkPlayerCollision(collision)) {
+            //also send the rules manager a message about this
+        }
+        //handle collision with walls and objects
+        else
+        {
+            if (dashTimer > 0 && dashStopByWall)
+            {
+                dashTimer = 0;
+            }
+        }
     }
 
     public void removeBall(Ball rBall)

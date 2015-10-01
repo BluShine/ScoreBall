@@ -158,17 +158,19 @@ MonoBehaviour:
   turnSpeed: 720
   strafeThreashold: .00999999978
   turnThreashold: .00999999978
-  ballHoldDistance: 1.29999995
+  ballHoldDistance: 1.10000002
   ballShootPower: 20
   butterFingers: 1
   dashWhileCarrying: 0
+  dashStopByWall: 1
+  dashStopByPlayer: 1
   xAxis: Horizontal1
   yAxis: Vertical1
   shootButton: Fire1
   dashButton: Fire1
   BALLMASK:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 1
 --- !u!135 &13542746
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -239,7 +241,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: ballHoldDistance
-      value: 1.29999995
+      value: 1.10000002
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Layer
@@ -247,7 +249,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: BALLMASK.m_Bits
-      value: 257
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Radius
