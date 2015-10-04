@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GameRuleTypes;
 
 public class TeamPlayer : MonoBehaviour {
 
@@ -32,11 +33,14 @@ public class TeamPlayer : MonoBehaviour {
 
     Ball carriedBall;
 
-    public LayerMask BALLMASK; 
+    public LayerMask BALLMASK;
+
+	GameRules gameRules;
 
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
+		gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
 	}
 	
 	// FixedUpdate is called at a fixed rate
@@ -160,6 +164,7 @@ public class TeamPlayer : MonoBehaviour {
             else if (Input.GetButtonDown(shootButton))
             {
                 carriedBall.shoot(transform.forward * ballShootPower);
+				gameRules.SendEvent(GameRuleEvent.BallShot);
             }
         }
 	}

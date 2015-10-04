@@ -1520,6 +1520,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8aae53fa151a6c4ab0910fe508d325b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
+  uiCanvas: {fileID: 1348254258}
 --- !u!4 &2084299616
 Transform:
   m_ObjectHideFlags: 0

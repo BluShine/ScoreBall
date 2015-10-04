@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GameRuleTypes;
 
 public class Ball : MonoBehaviour {
 
@@ -14,9 +15,12 @@ public class Ball : MonoBehaviour {
     TeamPlayer previousPlayer;
     bool isHeld = false;
 
+	GameRules gameRules;
+
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
+		gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
 	}
 	
 	// FixedUpdate is called at a fixed rate

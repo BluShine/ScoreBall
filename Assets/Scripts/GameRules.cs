@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using GameRuleTypes;
+
+namespace GameRuleTypes {
+	public enum GameRuleEvent {
+		BallShot
+	}
+}
 
 public class GameRules : MonoBehaviour {
-	GameRule rule = new GameRule();
-	public GameObject condition;
+	List<GameRule> rulesList = new List<GameRule>();
+	public GameObject ruleDisplayPrefab;
+	public GameObject uiCanvas;
 
 	// Use this for initialization
 	void Start () {
@@ -17,11 +26,25 @@ public class GameRules : MonoBehaviour {
 //	}
 
 	public void GenerateNewRule() {
-		Transform t = condition.transform;
-		rule.condition = new GameRuleComparisonCondition();
-		t.GetChild(0).gameObject.GetComponent<Text>().text = rule.condition.ToString();
-		rule.action = new GameRuleAction();
+//temporary, for now there is only one rule at a time
+while (rulesList.Count > 0) {
+Destroy(rulesList[0].ruleDisplay);
+rulesList.RemoveAt(0);
+}
+		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
+		display.transform.SetParent(uiCanvas.transform);
+		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
+		GameRule rule = new GameRule(new GameRuleComparisonCondition(), new GameRuleAction(), display);
+		rulesList.Add(rule);
+		Transform t = display.transform;
+		GameRuleCondition condition = rule.condition;
+		t.GetChild(0).gameObject.GetComponent<Text>().text = condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = rule.action.ToString();
+		t.GetChild(2).gameObject.GetComponent<Text>().text = condition.conditionHappened().ToString();
+	}
+
+	public void SendEvent(GameRuleEvent gre) {
+
 	}
 }
 
@@ -29,7 +52,11 @@ public class GameRules : MonoBehaviour {
 public class GameRule {
 	public GameRuleCondition condition = null;
 	public GameRuleAction action = null;
-	public GameRule() {
+	public GameObject ruleDisplay;
+	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject r) {
+		condition = c;
+		action = a;
+		ruleDisplay = r;
 	}
 }
 
@@ -54,13 +81,11 @@ public class GameRuleComparisonCondition : GameRuleCondition {
 		return compare(leftGRV, rightGRV);
 	}
 	public override string ToString() {
-		return "If " + leftGRV.ToString() + compareString + rightGRV.ToString()
-			+ " (" + conditionHappened() + ")";
+		return "If " + leftGRV.ToString() + compareString + rightGRV.ToString();
 	}
 
 	////////////////Boolean comparisons between two values////////////////
 	public static bool lessThan(GameRuleValue left, GameRuleValue right) {
-		Debug.Log(left.intValue() + ", " + right.intValue());
 		return left.intValue() < right.intValue();
 	}
 }
