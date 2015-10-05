@@ -7,7 +7,8 @@ using GameRuleTypes;
 
 namespace GameRuleTypes {
 	public enum GameRuleEvent {
-		BallShot
+		BallShot,
+		BallGrabbed
 	}
 }
 

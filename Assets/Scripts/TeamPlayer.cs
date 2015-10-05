@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using GameRuleTypes;
+using UnityEngine.UI;
 
 public class TeamPlayer : MonoBehaviour {
 
@@ -31,7 +32,10 @@ public class TeamPlayer : MonoBehaviour {
 
     Rigidbody body;
 
+	//game state
     Ball carriedBall;
+	public int score = 0;
+	public GameObject scoreDisplay;
 
     public LayerMask BALLMASK;
 
@@ -167,6 +171,8 @@ public class TeamPlayer : MonoBehaviour {
 				gameRules.SendEvent(GameRuleEvent.BallShot);
             }
         }
+		score += 1;
+		scoreDisplay.GetComponent<Text>().text = score.ToString();
 	}
 
     void OnCollisionEnter(Collision collision)
@@ -177,6 +183,7 @@ public class TeamPlayer : MonoBehaviour {
         {
             if (collidedBall.grabBall(this))
             {
+				gameRules.SendEvent(GameRuleEvent.BallGrabbed);
                 carriedBall = collidedBall;
             }
         }
