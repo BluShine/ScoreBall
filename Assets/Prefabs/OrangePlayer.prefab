@@ -101,7 +101,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -158,6 +158,9 @@ MonoBehaviour:
   turnSpeed: 720
   strafeThreashold: .00999999978
   turnThreashold: .00999999978
+  tackleDuration: 2.35640001
+  tacklePower: 15
+  tackleLaunchPower: 10
   ballHoldDistance: 1.10000002
   ballShootPower: 20
   butterFingers: 1
@@ -171,6 +174,7 @@ MonoBehaviour:
   BALLMASK:
     serializedVersion: 2
     m_Bits: 1
+  spawnPosition: {x: 0, y: 0, z: 0}
 --- !u!135 &13535206
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -270,6 +274,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: dashCooldownDuration
       value: 1.324
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_AngularDrag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: tacklePower
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: tackleDuration
+      value: 2.35640001
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: tackleLaunchPower
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

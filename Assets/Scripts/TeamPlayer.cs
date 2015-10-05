@@ -16,6 +16,11 @@ public class TeamPlayer : MonoBehaviour {
     public float strafeThreashold = .6f; //input threashold for strafing only. 
     [Range(0.01f, 0.99f)]
     public float turnThreashold = .3f; //input threashold for turning only.
+    float stunnedTimer = 0;
+    public float tackleDuration = 1f; //how long you stun opponents when you tackle them
+    public float tacklePower = 10f; //forward velocity of people you tackle
+    public float tackleLaunchPower = 3f; //upwards velocity of people you tackle
+    static float TACKLESPINNINESS = 100; //how fast you spin when you're tackled
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
@@ -34,22 +39,38 @@ public class TeamPlayer : MonoBehaviour {
 
     Ball carriedBall;
 
-    public LayerMask BALLMASK; 
+    public LayerMask BALLMASK;
+
+    public Vector3 spawnPosition;
 
 	// Use this for initialization
 	void Start () {
+        spawnPosition = transform.position;
         body = GetComponent<Rigidbody>();
 	}
+
+    public void Respawn()
+    {
+        transform.position = spawnPosition;
+    }
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
+        
         	
 		//MOVEMENT--------------------------------------------------------------------
-		//increment dash timers
+		//increment timers
 		dashTimer -= Time.fixedDeltaTime;
 		dashTimer = Mathf.Max(0, dashTimer);
 		dashCooldownTimer -= Time.fixedDeltaTime;
 		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
+        stunnedTimer -= Time.fixedDeltaTime;
+        stunnedTimer = Mathf.Max(0, stunnedTimer);
+        bool stunned = stunnedTimer > 0;
+        if(!stunned)
+        {
+            body.constraints = RigidbodyConstraints.FreezeRotation;
+        }
 		//dash input
 		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
 			(dashWhileCarrying || carriedBall == null)) {
@@ -58,7 +79,27 @@ public class TeamPlayer : MonoBehaviour {
 		}
         bool dashing = dashTimer > 0;
 		//normal movement if we aren't dashing.
-		if(!dashing) {
+        if (stunned)
+        {
+            
+        }
+        else if (dashing)
+        {
+            //check if ball will hit wall and stop dash.
+            if (carriedBall != null)
+            {
+                Ray fRay = new Ray(transform.position, transform.forward);
+                float sDist = carriedBall.carryRadius + ballHoldDistance + 0.5f;
+                if (Physics.SphereCast(fRay, .4f, sDist, BALLMASK))
+                {
+                    dashTimer = 0;
+                }
+            }
+
+            //dash movement
+            body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
+        }
+        else {
 			//get input vector from joystick/keys
 			Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
 			if (input.magnitude > 1)
@@ -112,21 +153,6 @@ public class TeamPlayer : MonoBehaviour {
 			//Debug.DrawLine(transform.position, transform.position + body.velocity);
 			body.velocity = movingVel;
 		}
-		else {
-            //check if ball will hit wall and stop dash.
-            if (carriedBall != null)
-            {
-                Ray fRay = new Ray(transform.position, transform.forward);
-                float sDist = carriedBall.carryRadius + ballHoldDistance + 0.5f;
-                if (Physics.SphereCast(fRay, .4f, sDist, BALLMASK))
-                {
-                    dashTimer = 0;
-                }
-            }
-
-            //dash movement
-            body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
-		}
 
         //BALL HANDLING---------------------------------------------------------
         if (carriedBall != null)
@@ -173,6 +199,10 @@ public class TeamPlayer : MonoBehaviour {
             else if (Input.GetButtonDown(shootButton))
             {
                 carriedBall.shoot(transform.forward * ballShootPower);
+                if(shootButton == dashButton)
+                {
+                    dashCooldownTimer = dashCooldownDuration;
+                }
             }
         }
 	}
@@ -187,6 +217,15 @@ public class TeamPlayer : MonoBehaviour {
         {
             //also send the rules manager a message about this
         }
+    }
+
+    void tackle(Vector3 launch, float duration)
+    {
+        body.constraints = RigidbodyConstraints.None;
+        body.velocity = launch;
+        body.angularVelocity = new Vector3(Random.value, Random.value, Random.value).normalized * 
+            TACKLESPINNINESS;
+        stunnedTimer = duration;
     }
 
     bool checkBallCollision(Collision collision)
@@ -204,37 +243,14 @@ public class TeamPlayer : MonoBehaviour {
         return false;
     }
 
-    bool checkPlayerCollision(Collision collision)
-    {
-        //check if the collision is a player
-        TeamPlayer collidedPlayer = collision.gameObject.GetComponent<TeamPlayer>();
-        if (collidedPlayer != null)
-        {
-            if (dashTimer > 0 && collidedPlayer.carriedBall != null)
-            {
-                //Debug.Log("tackled ball carrier!");
-                Ball stolenBall = collidedPlayer.carriedBall;
-                if (collidedPlayer.carriedBall.grabBall(this))
-                {
-                    //Debug.Log("got ball!");
-                    carriedBall = stolenBall;
-                }
-            }
-            if (dashStopByPlayer)
-            {
-                dashTimer = 0;
-            }
-            return true;
-        }
-        return false;
-    }
-
     void OnCollisionEnter(Collision collision)
     {
-        if (checkBallCollision(collision)) {
+        if (checkBallCollision(collision))
+        {
             //should probably send a message about this to the rules manager
         }
-        else if (checkPlayerCollision(collision)) {
+        else if (checkPlayerCollision(collision))
+        {
             //also send the rules manager a message about this
         }
         //handle collision with walls and objects
@@ -245,6 +261,37 @@ public class TeamPlayer : MonoBehaviour {
                 dashTimer = 0;
             }
         }
+    }
+
+    bool checkPlayerCollision(Collision collision)
+    {
+        //check if the collision is a player
+        TeamPlayer collidedPlayer = collision.gameObject.GetComponent<TeamPlayer>();
+        if (collidedPlayer != null)
+        {
+            if (dashTimer > 0)
+            {
+                //steal the ball
+                if (collidedPlayer.carriedBall != null)
+                {
+                    Ball stolenBall = collidedPlayer.carriedBall;
+                    if (collidedPlayer.carriedBall.grabBall(this))
+                    {
+                        carriedBall = stolenBall;
+                    }
+                }
+                //tackle them
+                Vector3 tackleVector = transform.forward * tacklePower +
+                    Vector3.up * tackleLaunchPower;
+                collidedPlayer.tackle(tackleVector, tackleDuration);
+            }
+            if (dashStopByPlayer)
+            {
+                dashTimer = 0;
+            }
+            return true;
+        }
+        return false;
     }
 
     public void removeBall(Ball rBall)
