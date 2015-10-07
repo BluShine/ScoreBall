@@ -3,15 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using GameRuleTypes;
 
-namespace GameRuleTypes {
-	public enum GameRuleEvent {
-		BallShot,
-		BallGrabbed
+////////////////Game events////////////////
+public enum GameRuleEventType {
+	BallShot,
+	BallGrabbed
+}
+
+public class GameRuleEvent {
+	public TeamPlayer instigator;
+	public GameRuleEventType eventType;
+	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp) {
+		eventType = gret;
+		instigator = tp;
 	}
 }
 
+////////////////Master rules handler object////////////////
 public class GameRules : MonoBehaviour {
 	List<GameRule> rulesList = new List<GameRule>();
 	public GameObject ruleDisplayPrefab;
@@ -35,7 +43,10 @@ rulesList.RemoveAt(0);
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
-		GameRule rule = new GameRule(new GameRuleComparisonCondition(), new GameRuleAction(), display);
+		GameRule rule = new GameRule(
+			new GameRuleEventHappenedCondition(GameRuleEventType.BallShot, "player shoots the ball"),
+			new GameRuleAction(delegate(TeamPlayer tp) {tp.score += 1;}, "player gains a point"),
+			display);
 		rulesList.Add(rule);
 		Transform t = display.transform;
 		GameRuleCondition condition = rule.condition;
@@ -45,7 +56,9 @@ rulesList.RemoveAt(0);
 	}
 
 	public void SendEvent(GameRuleEvent gre) {
-
+		foreach (GameRule rule in rulesList) {
+			rule.SendEvent(gre);
+		}
 	}
 }
 
@@ -59,13 +72,18 @@ public class GameRule {
 		action = a;
 		ruleDisplay = r;
 	}
+	public void SendEvent(GameRuleEvent gre) {
+		if (condition.conditionHappened(gre))
+			action.takeAction(gre.instigator);
+	}
 }
 
-////////////////Conditions that trigger rules////////////////
 public abstract class GameRuleCondition {
-	abstract public bool conditionHappened();
+	public virtual bool conditionHappened() {return false;}
+	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
 }
 
+////////////////Conditions that trigger actions when checked////////////////
 public delegate bool GRVComparison(GameRuleValue left, GameRuleValue right);
 public class GameRuleComparisonCondition : GameRuleCondition {
 	public GRVComparison compare;
@@ -93,8 +111,6 @@ public class GameRuleComparisonCondition : GameRuleCondition {
 
 ////////////////Values for use of comparing////////////////
 public abstract class GameRuleValue {
-	public GameRuleValue() {
-	}
 	public virtual int intValue() {return 0;}
 }
 
@@ -107,11 +123,32 @@ public class GameRuleIntConstantValue : GameRuleValue {
 	public override string ToString() {return val.ToString();}
 }
 
-////////////////Rule consequences////////////////
-public class GameRuleAction {
-	public GameRuleAction() {
+////////////////Events that trigger actions when the events happen////////////////
+public class GameRuleEventHappenedCondition : GameRuleCondition {
+	public GameRuleEventType eventType;
+	public string conditionString;
+	public GameRuleEventHappenedCondition(GameRuleEventType gret, string s) {
+		eventType = gret;
+		conditionString = s;
+	}
+	public override bool conditionHappened(GameRuleEvent gre) {
+		return gre.eventType == eventType;
 	}
 	public override string ToString() {
-		return "Then hello";
+		return "If " + conditionString;
+	}
+}
+
+////////////////Rule consequences////////////////
+public delegate void GameRuleActionAction(TeamPlayer tp);
+public class GameRuleAction {
+	public GameRuleActionAction takeAction;
+	public string actionString;
+	public GameRuleAction(GameRuleActionAction graa, string s) {
+		takeAction = graa;
+		actionString = s;
+	}
+	public override string ToString() {
+		return "Then " + actionString;
 	}
 }

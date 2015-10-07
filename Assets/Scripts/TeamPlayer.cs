@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GameRuleTypes;
 using UnityEngine.UI;
 
 public class TeamPlayer : MonoBehaviour {
@@ -168,10 +167,9 @@ public class TeamPlayer : MonoBehaviour {
             else if (Input.GetButtonDown(shootButton))
             {
                 carriedBall.shoot(transform.forward * ballShootPower);
-				gameRules.SendEvent(GameRuleEvent.BallShot);
+				gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallShot, this));
             }
         }
-		score += 1;
 		scoreDisplay.GetComponent<Text>().text = score.ToString();
 	}
 
@@ -183,7 +181,7 @@ public class TeamPlayer : MonoBehaviour {
         {
             if (collidedBall.grabBall(this))
             {
-				gameRules.SendEvent(GameRuleEvent.BallGrabbed);
+				gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallGrabbed, this));
                 carriedBall = collidedBall;
             }
         }

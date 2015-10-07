@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GameRuleTypes;
 
 public class Ball : MonoBehaviour {
 
