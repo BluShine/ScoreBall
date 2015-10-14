@@ -41,11 +41,12 @@ public class TeamPlayer : MonoBehaviour {
 	//game state
     Ball carriedBall;
 	public int score = 0;
-	public GameObject scoreDisplay;
     Vector3 spawnPosition;
     public LayerMask BALLMASK;
 
 	GameRules gameRules;
+
+    public byte team;
 
 	// Use this for initialization
 	void Start () {
@@ -211,7 +212,6 @@ public class TeamPlayer : MonoBehaviour {
                 }
             }
         }
-		scoreDisplay.GetComponent<Text>().text = score.ToString();
 	}
 
     void OnCollisionStay(Collision collision)

@@ -26,6 +26,7 @@ public class GameRuleEvent {
     public Ball ball;
     public Ball secondaryBall;
     public Collider collider; //this can be triggers or objects
+
 	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
         Ball bl = null, Ball bl2 = null, Collider col = null) {
 		eventType = gret;
@@ -43,14 +44,31 @@ public class GameRules : MonoBehaviour {
 	public GameObject ruleDisplayPrefab;
 	public GameObject uiCanvas;
 
-	// Use this for initialization
-	void Start () {
+    public List<Text> teamTexts;
+
+    // Use this for initialization
+    void Start () {
+
 	}
 
 	// Update is called once per frame
 //	void Update () {
 //	
 //	}
+
+    public void updateScore()
+    {
+        TeamPlayer[] players = FindObjectsOfType<TeamPlayer>();
+        int[] totalscores = new int[byte.MaxValue];
+        foreach(TeamPlayer p in players)
+        {
+            totalscores[p.team] += p.score;
+        }
+        for(int i = 0; i < teamTexts.Count; i++)
+        {
+            teamTexts[i].text = "score: " + totalscores[i];
+        }
+    }
 
 	public void GenerateNewRule() {
 //temporary, for now there is only one rule at a time
