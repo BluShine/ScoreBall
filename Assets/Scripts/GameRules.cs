@@ -6,16 +6,29 @@ using UnityEngine.UI;
 
 ////////////////Game events////////////////
 public enum GameRuleEventType {
-	BallShot,
-	BallGrabbed
+	PlayerShootBall,
+	PlayerGrabBall,
+    PlayerTacklePlayer,
+    PlayerHitObject,
+    PlayerHitTrigger,
+    BallHitObject,
+    BallHitTrigger,
+    BallHitBall
 }
 
 public class GameRuleEvent {
 	public TeamPlayer instigator;
 	public GameRuleEventType eventType;
-	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp) {
+    public Ball ball;
+    public Ball secondaryBall;
+    public Collider collider; //this can be triggers or objects
+	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, 
+        Ball bl = null, Ball bl2 = null, Collider col = null) {
 		eventType = gret;
 		instigator = tp;
+        ball = bl;
+        secondaryBall = bl2;
+        collider = col;
 	}
 }
 
@@ -44,7 +57,7 @@ rulesList.RemoveAt(0);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
 		GameRule rule = new GameRule(
-			new GameRuleEventHappenedCondition(GameRuleEventType.BallShot, "player shoots the ball"),
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "player shoots the ball"),
 			new GameRuleAction(delegate(TeamPlayer tp) {tp.score += 1;}, "player gains a point"),
 			display);
 		rulesList.Add(rule);

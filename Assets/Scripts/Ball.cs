@@ -41,7 +41,6 @@ public class Ball : MonoBehaviour {
     {
         if (takeTimer == 0)
         {
-            Debug.Log("Grabbed!");
             if (currentPlayer != null)
             {
                 currentPlayer.removeBall(this);
@@ -52,7 +51,6 @@ public class Ball : MonoBehaviour {
             isHeld = true;
             return true;
         }
-        Debug.Log("Grab failed");
         return false;
     }
 

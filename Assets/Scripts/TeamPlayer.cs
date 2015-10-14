@@ -204,7 +204,7 @@ public class TeamPlayer : MonoBehaviour {
             else if (Input.GetButtonDown(shootButton))
             {
                 carriedBall.shoot(transform.forward * ballShootPower);
-				gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallShot, this));
+				gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp:this));
                 if(shootButton == dashButton)
                 {
                     dashCooldownTimer = dashCooldownDuration;
