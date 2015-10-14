@@ -42,7 +42,7 @@ public class TeamPlayer : MonoBehaviour {
     Ball carriedBall;
 	public int score = 0;
 	public GameObject scoreDisplay;
-
+    Vector3 spawnPosition;
     public LayerMask BALLMASK;
 
 	GameRules gameRules;
