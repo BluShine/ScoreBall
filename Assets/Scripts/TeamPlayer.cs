@@ -165,8 +165,15 @@ public class TeamPlayer : MonoBehaviour {
 					movingVel = movingVel.magnitude * -tDir;
 				}
 			}
-			//Debug.DrawLine(transform.position, transform.position + body.velocity);
-			body.velocity = movingVel;
+            //Debug.DrawLine(transform.position, transform.position + body.velocity);
+            if (carriedBall != null && carriedBall.ultimate)
+            {
+                body.velocity = new Vector3(0, body.velocity.y, 0);
+            }
+            else
+            {
+                body.velocity = movingVel;
+            }
 		}
 
         //BALL HANDLING---------------------------------------------------------
@@ -250,11 +257,20 @@ public class TeamPlayer : MonoBehaviour {
         Ball collidedBall = collision.gameObject.GetComponent<Ball>();
         if (collidedBall != null)
         {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTouchBall, tp: this, bl: collidedBall));
             if (collidedBall.grabBall(this))
             {
                 carriedBall = collidedBall;
+                if(carriedBall.ultimate)
+                {
+                    body.velocity = Vector3.zero;
+                }
+                if(!dashWhileCarrying)
+                {
+                    dashTimer = 0;
+                }
             }
-            else
+            else if (collidedBall.stuns)
             {
                 //we didn't dodge the ball!
                 gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));

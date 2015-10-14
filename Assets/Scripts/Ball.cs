@@ -17,6 +17,7 @@ public class Ball : MonoBehaviour {
     TeamPlayer previousPlayer;
     bool isHeld = false;
     public Vector3 spawnPoint;
+    public bool stuns = true;
 	GameRules gameRules;
 
 	// Use this for initialization
@@ -85,7 +86,7 @@ public class Ball : MonoBehaviour {
     //try to grab the ball. Returns true if you got it.
     public bool grabBall(TeamPlayer player)
     {
-        if (takeTimer == 0)
+        if (holdable && takeTimer == 0)
         {
             if (currentPlayer != null)
             {

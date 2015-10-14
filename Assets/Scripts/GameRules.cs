@@ -14,6 +14,7 @@ public enum GameRuleEventType {
     PlayerHitTrigger,
     PlayerStealBall,
     PlayerHitInTheFaceByBall,
+    PlayerTouchBall,
     BallHitObject,
     BallHitTrigger,
     BallHitBall
