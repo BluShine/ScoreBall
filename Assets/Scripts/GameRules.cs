@@ -46,16 +46,6 @@ public class GameRules : MonoBehaviour {
 
     public List<Text> teamTexts;
 
-    // Use this for initialization
-    void Start () {
-
-	}
-
-	// Update is called once per frame
-//	void Update () {
-//	
-//	}
-
     public void updateScore()
     {
         TeamPlayer[] players = FindObjectsOfType<TeamPlayer>();
@@ -79,10 +69,7 @@ rulesList.RemoveAt(0);
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
-		GameRule rule = new GameRule(
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "player shoots the ball"),
-			new GameRuleAction(delegate(TeamPlayer tp) { tp.ScorePoints(1); }, "player gains a point"),
-			display);
+		GameRule rule = new GameRule(randomCondition(), randomAction(), display);
 		rulesList.Add(rule);
 		Transform t = display.transform;
 		GameRuleCondition condition = rule.condition;
@@ -90,7 +77,22 @@ rulesList.RemoveAt(0);
 		t.GetChild(1).gameObject.GetComponent<Text>().text = rule.action.ToString();
 		t.GetChild(2).gameObject.GetComponent<Text>().text = condition.conditionHappened().ToString();
 	}
-
+	public static GameRuleCondition randomCondition() {
+		return Random.Range(0, 2) == 0 ?
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "player shoots the ball") :
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "player grabs the ball");
+	}
+	public static GameRuleAction randomAction() {
+		return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction());
+	}
+	public static GameRulePlayerSelector randomPlayerSelector() {
+		return Random.Range(0, 2) == 0 ?
+			(GameRulePlayerSelector)(new GameRulePlayerPlayerSelector()) :
+			(GameRulePlayerSelector)(new GameRuleOpponentPlayerSelector());
+	}
+	public static GameRulePlayerActionAction randomPlayerActionAction() {
+		return new GameRulePointsPlayerActionAction(Random.Range(-5, 6));
+	}
 	public void SendEvent(GameRuleEvent gre) {
 		foreach (GameRule rule in rulesList) {
 			rule.SendEvent(gre);
@@ -103,10 +105,10 @@ public class GameRule {
 	public GameRuleCondition condition = null;
 	public GameRuleAction action = null;
 	public GameObject ruleDisplay;
-	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject r) {
+	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject rd) {
 		condition = c;
 		action = a;
-		ruleDisplay = r;
+		ruleDisplay = rd;
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre))
@@ -114,6 +116,7 @@ public class GameRule {
 	}
 }
 
+////////////////Rule conditions////////////////
 public abstract class GameRuleCondition {
 	public virtual bool conditionHappened() {return false;}
 	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
@@ -159,13 +162,13 @@ public class GameRuleIntConstantValue : GameRuleValue {
 	public override string ToString() {return val.ToString();}
 }
 
-////////////////Events that trigger actions when the events happen////////////////
+////////////////Conditions that trigger actions when an event happen////////////////
 public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
 	public string conditionString;
-	public GameRuleEventHappenedCondition(GameRuleEventType gret, string s) {
-		eventType = gret;
-		conditionString = s;
+	public GameRuleEventHappenedCondition(GameRuleEventType et, string cs) {
+		eventType = et;
+		conditionString = cs;
 	}
 	public override bool conditionHappened(GameRuleEvent gre) {
 		return gre.eventType == eventType;
@@ -176,15 +179,65 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 }
 
 ////////////////Rule consequences////////////////
-public delegate void GameRuleActionAction(TeamPlayer tp);
-public class GameRuleAction {
-	public GameRuleActionAction takeAction;
-	public string actionString;
-	public GameRuleAction(GameRuleActionAction graa, string s) {
-		takeAction = graa;
-		actionString = s;
+public abstract class GameRuleAction {
+	public virtual void takeAction(TeamPlayer instigator) {}
+}
+
+////////////////Rule consequences on a player////////////////
+public class GameRulePlayerAction : GameRuleAction {
+	public GameRulePlayerSelector playerSelector;
+	public GameRulePlayerActionAction innerAction;
+	public GameRulePlayerAction(GameRulePlayerSelector ps, GameRulePlayerActionAction ia) {
+		playerSelector = ps;
+		innerAction = ia;
 	}
 	public override string ToString() {
-		return "Then " + actionString;
+		return "Then " + playerSelector + " " + innerAction.ToString();
+	}
+	public override void takeAction(TeamPlayer instigator) {
+		innerAction.takeAction(playerSelector.player(instigator));
+	}
+}
+////////////////Player selectors////////////////
+public abstract class GameRulePlayerSelector {
+	public abstract TeamPlayer player(TeamPlayer instigator);
+}
+
+public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
+	public override TeamPlayer player(TeamPlayer instigator) {
+		return instigator;
+	}
+	public override string ToString() {
+		return "player";
+	}
+}
+
+public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
+	public override TeamPlayer player(TeamPlayer instigator) {
+		return instigator.opponent;
+	}
+	public override string ToString() {
+		return "other player";
+	}
+}
+
+////////////////The actual functionality to affect players////////////////
+public abstract class GameRulePlayerActionAction {
+	public abstract void takeAction(TeamPlayer tp);
+}
+
+public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
+	public int pointsGiven;
+	public GameRulePointsPlayerActionAction(int pg) {
+		pointsGiven = pg;
+	}
+	public override void takeAction(TeamPlayer tp) {
+		tp.ScorePoints(pointsGiven);
+	}
+	public override string ToString() {
+		string pluralPointString = Mathf.Abs(pointsGiven) == 1 ? " point" : " points";
+		return pointsGiven >= 0 ?
+			"gains " + pointsGiven.ToString() + pluralPointString :
+			"loses " + (-pointsGiven).ToString() + pluralPointString;
 	}
 }
