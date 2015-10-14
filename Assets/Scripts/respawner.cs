@@ -20,5 +20,10 @@ public class respawner : MonoBehaviour {
         {
             player.Respawn();
         }
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+        if(ball != null)
+        {
+            ball.Respawn();
+        }
     }
 }

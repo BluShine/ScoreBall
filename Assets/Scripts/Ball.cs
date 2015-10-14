@@ -8,20 +8,23 @@ public class Ball : MonoBehaviour {
     float takeTimer = 0;
     public float carryRadius = .5f;
     public float tackleDuration = .2f;
+    public bool holdable = true;//if true, players can grab the ball
+    public bool ultimate = false;//if true, players can't move while holding the ball
 
     //state
     Rigidbody body;
     TeamPlayer currentPlayer;
     TeamPlayer previousPlayer;
     bool isHeld = false;
-
+    public Vector3 spawnPoint;
 	GameRules gameRules;
 
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
 		gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
-	}
+        spawnPoint = transform.position;
+    }
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
@@ -106,5 +109,12 @@ public class Ball : MonoBehaviour {
         body.velocity = shootVector;
         currentPlayer.removeBall(this);
         gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp: currentPlayer, bl: this));
+    }
+
+    public void Respawn()
+    {
+        transform.position = spawnPoint;
+        body.velocity = Vector3.zero;
+        body.angularVelocity = Vector3.zero;
     }
 }
