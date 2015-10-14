@@ -345,6 +345,10 @@ Prefab:
       propertyPath: scoreDisplay
       value: 
       objectReference: {fileID: 1716519675}
+    - target: {fileID: 11464294, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: opponent
+      value: 
+      objectReference: {fileID: 669069939}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
   m_IsPrefabParent: 0
@@ -1155,6 +1159,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 610110572}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &669069939 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11431056, guid: b77ccbd85cd2db040987d5e3e7d1f0b4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1599952908}
+  m_Script: {fileID: 11500000, guid: e22da305736815d42a5e52e87f9ed790, type: 3}
 --- !u!1001 &864031087
 Prefab:
   m_ObjectHideFlags: 0
@@ -2067,6 +2077,10 @@ Prefab:
       propertyPath: scoreDisplay
       value: 
       objectReference: {fileID: 10284415}
+    - target: {fileID: 11431056, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: opponent
+      value: 
+      objectReference: {fileID: 1953921783}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
   m_IsPrefabParent: 0
@@ -2348,6 +2362,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1940274648}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1953921783 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11464294, guid: eb75c9b5680861648ac82bb309ce9371,
+    type: 2}
+  m_PrefabInternal: {fileID: 153396180}
+  m_Script: {fileID: 11500000, guid: e22da305736815d42a5e52e87f9ed790, type: 3}
 --- !u!1 &2017175178
 GameObject:
   m_ObjectHideFlags: 0

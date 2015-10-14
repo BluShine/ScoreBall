@@ -43,6 +43,7 @@ public class TeamPlayer : MonoBehaviour {
 	public int score = 0;
     Vector3 spawnPosition;
     public LayerMask BALLMASK;
+	public TeamPlayer opponent;
 
 	GameRules gameRules;
 
