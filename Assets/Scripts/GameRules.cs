@@ -81,7 +81,7 @@ rulesList.RemoveAt(0);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
 		GameRule rule = new GameRule(
 			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "player shoots the ball"),
-			new GameRuleAction(delegate(TeamPlayer tp) {tp.score += 1;}, "player gains a point"),
+			new GameRuleAction(delegate(TeamPlayer tp) { tp.ScorePoints(1); }, "player gains a point"),
 			display);
 		rulesList.Add(rule);
 		Transform t = display.transform;

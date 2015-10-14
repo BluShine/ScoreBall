@@ -60,6 +60,12 @@ public class TeamPlayer : MonoBehaviour {
     {
         transform.position = spawnPosition;
     }
+
+    public void ScorePoints(int points)
+    {
+        score += points;
+        gameRules.updateScore();
+    }
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
