@@ -9,8 +9,11 @@ public enum GameRuleEventType {
 	PlayerShootBall,
 	PlayerGrabBall,
     PlayerTacklePlayer,
+    PlayerHitPlayer,
     PlayerHitObject,
     PlayerHitTrigger,
+    PlayerStealBall,
+    PlayerHitInTheFaceByBall,
     BallHitObject,
     BallHitTrigger,
     BallHitBall
@@ -18,14 +21,16 @@ public enum GameRuleEventType {
 
 public class GameRuleEvent {
 	public TeamPlayer instigator;
+    public TeamPlayer victim;
 	public GameRuleEventType eventType;
     public Ball ball;
     public Ball secondaryBall;
     public Collider collider; //this can be triggers or objects
-	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, 
+	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
         Ball bl = null, Ball bl2 = null, Collider col = null) {
 		eventType = gret;
 		instigator = tp;
+        victim = vct;
         ball = bl;
         secondaryBall = bl2;
         collider = col;

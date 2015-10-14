@@ -167,9 +167,10 @@ public class TeamPlayer : MonoBehaviour {
             Ray ballForwardRay = new Ray(transform.position, transform.forward);
             RaycastHit ballForwardCast;
             float rayDist = (ballHoldDistance + carriedBall.carryRadius) + .1f;
-            Debug.DrawLine(transform.position, transform.position + transform.forward * rayDist);
+            //detect wall hit
             if (Physics.SphereCast(ballForwardRay, 0.4f, out ballForwardCast, rayDist, BALLMASK))
             {
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitObject, tp: this, col:ballForwardCast.collider));
                 //stop
                 body.velocity = Vector3.zero;
 				//stop dash
@@ -204,7 +205,6 @@ public class TeamPlayer : MonoBehaviour {
             else if (Input.GetButtonDown(shootButton))
             {
                 carriedBall.shoot(transform.forward * ballShootPower);
-				gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp:this));
                 if(shootButton == dashButton)
                 {
                     dashCooldownTimer = dashCooldownDuration;
@@ -245,6 +245,12 @@ public class TeamPlayer : MonoBehaviour {
             {
                 carriedBall = collidedBall;
             }
+            else
+            {
+                //we didn't dodge the ball!
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));
+                tackle(collidedBall.getTackleVector(), collidedBall.tackleDuration);
+            }
             return true;
         }
         return false;
@@ -254,15 +260,16 @@ public class TeamPlayer : MonoBehaviour {
     {
         if (checkBallCollision(collision))
         {
-            //should probably send a message about this to the rules manager
+            
         }
         else if (checkPlayerCollision(collision))
         {
-            //also send the rules manager a message about this
+
         }
         //handle collision with walls and objects
         else
         {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitObject, tp: this, col:collision.collider));
             if (dashTimer > 0 && dashStopByWall)
             {
                 dashTimer = 0;
@@ -276,6 +283,7 @@ public class TeamPlayer : MonoBehaviour {
         TeamPlayer collidedPlayer = collision.gameObject.GetComponent<TeamPlayer>();
         if (collidedPlayer != null)
         {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitPlayer, tp: this, vct: collidedPlayer));
             if (dashTimer > 0)
             {
                 //steal the ball
@@ -285,12 +293,14 @@ public class TeamPlayer : MonoBehaviour {
                     if (collidedPlayer.carriedBall.grabBall(this))
                     {
                         carriedBall = stolenBall;
+                        gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: this, vct: collidedPlayer, bl:stolenBall));
                     }
                 }
                 //tackle them
                 Vector3 tackleVector = transform.forward * tacklePower +
                     Vector3.up * tackleLaunchPower;
                 collidedPlayer.tackle(tackleVector, tackleDuration);
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTacklePlayer, tp: this, vct: collidedPlayer));
             }
             if (dashStopByPlayer)
             {
