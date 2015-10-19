@@ -654,6 +654,7 @@ GameObject:
   - 33: {fileID: 332708570}
   - 65: {fileID: 332708569}
   - 23: {fileID: 332708568}
+  - 114: {fileID: 332708571}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -716,6 +717,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 332708566}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &332708571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 332708566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: wall
 --- !u!1 &350781054
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +832,7 @@ GameObject:
   - 33: {fileID: 394482120}
   - 65: {fileID: 394482119}
   - 23: {fileID: 394482118}
+  - 114: {fileID: 394482122}
   m_Layer: 10
   m_Name: BlueGoal
   m_TagString: Untagged
@@ -881,6 +895,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
+--- !u!114 &394482122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394482117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: goal
 --- !u!1 &406504127
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,6 +918,7 @@ GameObject:
   - 33: {fileID: 406504130}
   - 65: {fileID: 406504129}
   - 23: {fileID: 406504128}
+  - 114: {fileID: 406504132}
   m_Layer: 10
   m_Name: OrangeGoal
   m_TagString: Untagged
@@ -954,6 +981,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &406504132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 406504127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: goal
 --- !u!1 &411130248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,6 +1321,7 @@ GameObject:
   - 33: {fileID: 981707050}
   - 65: {fileID: 981707049}
   - 23: {fileID: 981707048}
+  - 114: {fileID: 981707051}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -1344,6 +1384,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 981707046}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &981707051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 981707046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: wall
 --- !u!1 &1025635857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,6 +1540,7 @@ GameObject:
   - 33: {fileID: 1240332789}
   - 65: {fileID: 1240332788}
   - 23: {fileID: 1240332787}
+  - 114: {fileID: 1240332791}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -1550,6 +1603,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2017175179}
   m_RootOrder: 5
+--- !u!114 &1240332791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1240332786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: wall
 --- !u!1 &1347217506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,6 +1917,7 @@ GameObject:
   - 33: {fileID: 1489997758}
   - 65: {fileID: 1489997757}
   - 23: {fileID: 1489997756}
+  - 114: {fileID: 1489997759}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1914,6 +1980,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1489997754}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1489997759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1489997754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: wall
 --- !u!1 &1510656354
 GameObject:
   m_ObjectHideFlags: 0

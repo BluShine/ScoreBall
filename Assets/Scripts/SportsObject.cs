@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 //base class for dynamic objects with rigidbodies: players, balls, etc. 
 //includes methods for respawning, duplicating, un-duplicating, and other behaviors that need to work for all dynamic objects
-public class SportsObject : MonoBehaviour {
+public class SportsObject : FieldObject {
 
     [HideInInspector]
     public Vector3 spawnPosition { get; private set; }
@@ -24,8 +24,6 @@ public class SportsObject : MonoBehaviour {
     [HideInInspector]
     public float freezeTime { get; private set; }
     bool usesFreezing = true;
-
-    public string sportName = "object";
 
     // Use this for initialization
     public void Start () {
