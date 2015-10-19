@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class respawner : MonoBehaviour {
+public class Respawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -15,15 +15,10 @@ public class respawner : MonoBehaviour {
 
     void OnTriggerEnter(Collider collision)
     {
-        TeamPlayer player = collision.gameObject.GetComponent<TeamPlayer>();
-        if(player != null)
+        SportsObject sportsObj = collision.gameObject.GetComponent<SportsObject>();
+        if(sportsObj != null)
         {
-            player.Respawn();
-        }
-        Ball ball = collision.gameObject.GetComponent<Ball>();
-        if(ball != null)
-        {
-            ball.Respawn();
+            sportsObj.Respawn();
         }
     }
 }

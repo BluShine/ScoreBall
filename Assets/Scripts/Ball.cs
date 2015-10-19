@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Ball : MonoBehaviour {
+public class Ball : SportsObject {
 
     //handling
     public float noTakebacksCooldown = .2f; //time in seconds
@@ -12,19 +12,14 @@ public class Ball : MonoBehaviour {
     public bool ultimate = false;//if true, players can't move while holding the ball
 
     //state
-    Rigidbody body;
     TeamPlayer currentPlayer;
     TeamPlayer previousPlayer;
     bool isHeld = false;
-    public Vector3 spawnPoint;
     public bool stuns = true;
-	GameRules gameRules;
 
 	// Use this for initialization
-	void Start () {
-        body = GetComponent<Rigidbody>();
-		gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
-        spawnPoint = transform.position;
+	new void Start () {
+        base.Start();
     }
 	
 	// FixedUpdate is called at a fixed rate
@@ -110,12 +105,5 @@ public class Ball : MonoBehaviour {
         body.velocity = shootVector;
         currentPlayer.removeBall(this);
         gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp: currentPlayer, bl: this));
-    }
-
-    public void Respawn()
-    {
-        transform.position = spawnPoint;
-        body.velocity = Vector3.zero;
-        body.angularVelocity = Vector3.zero;
     }
 }

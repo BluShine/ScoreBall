@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class TeamPlayer : MonoBehaviour {
+public class TeamPlayer : SportsObject {
 
     //physics
     public float moveSpeed = 500; //movement speed in pixels/sec
@@ -36,31 +36,17 @@ public class TeamPlayer : MonoBehaviour {
     public string shootButton = "Fire";
 	public string dashButton = "Fire";
 
-    Rigidbody body;
-
 	//game state
     Ball carriedBall;
 	public int score = 0;
-    Vector3 spawnPosition;
     public LayerMask BALLMASK;
 	public TeamPlayer opponent;
-
-	GameRules gameRules;
 
     public byte team;
 
 	// Use this for initialization
-	void Start () {
-        spawnPosition = transform.position;
-        body = GetComponent<Rigidbody>();
-		gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
-	}
-
-    public void Respawn()
-    {
-        transform.position = spawnPosition;
-        body.velocity = Vector3.zero;
-        body.angularVelocity = Vector3.zero;
+	new void Start () {
+        base.Start();
     }
 
     public void ScorePoints(int points)
