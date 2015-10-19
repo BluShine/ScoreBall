@@ -70,7 +70,8 @@ rulesList.RemoveAt(0);
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
-		GameRule rule = new GameRule(randomCondition(), randomAction(), display);
+        display.transform.localScale = ruleDisplayPrefab.transform.localScale;
+        GameRule rule = new GameRule(randomCondition(), randomAction(), display);
 		rulesList.Add(rule);
 		Transform t = display.transform;
 		GameRuleCondition condition = rule.condition;
@@ -80,8 +81,8 @@ rulesList.RemoveAt(0);
 	}
 	public static GameRuleCondition randomCondition() {
 		return Random.Range(0, 2) == 0 ?
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "player shoots the ball") :
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "player grabs the ball");
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot the ball") :
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab the ball");
 	}
 	public static GameRuleAction randomAction() {
 		return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction());
@@ -209,7 +210,7 @@ public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
 		return instigator;
 	}
 	public override string ToString() {
-		return "player";
+		return "you";
 	}
 }
 
@@ -218,7 +219,7 @@ public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
 		return instigator.opponent;
 	}
 	public override string ToString() {
-		return "other player";
+		return "your opponent";
 	}
 }
 
@@ -238,7 +239,7 @@ public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
 	public override string ToString() {
 		string pluralPointString = Mathf.Abs(pointsGiven) == 1 ? " point" : " points";
 		return pointsGiven >= 0 ?
-			"gains " + pointsGiven.ToString() + pluralPointString :
-			"loses " + (-pointsGiven).ToString() + pluralPointString;
+			"gain " + pointsGiven.ToString() + pluralPointString :
+			"lose " + (-pointsGiven).ToString() + pluralPointString;
 	}
 }
