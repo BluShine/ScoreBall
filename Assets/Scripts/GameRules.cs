@@ -8,34 +8,34 @@ using UnityEngine.UI;
 public enum GameRuleEventType {
 	PlayerShootBall,
 	PlayerGrabBall,
-    PlayerTacklePlayer,
-    PlayerHitPlayer,
-    PlayerHitObject,
-    PlayerHitTrigger,
-    PlayerStealBall,
-    PlayerHitInTheFaceByBall,
-    PlayerTouchBall,
-    BallHitObject,
-    BallHitTrigger,
-    BallHitBall
+	PlayerTacklePlayer,
+	PlayerHitPlayer,
+	PlayerHitObject,
+	PlayerHitTrigger,
+	PlayerStealBall,
+	PlayerHitInTheFaceByBall,
+	PlayerTouchBall,
+	BallHitObject,
+	BallHitTrigger,
+	BallHitBall
 }
 
 public class GameRuleEvent {
 	public TeamPlayer instigator;
-    public TeamPlayer victim;
+	public TeamPlayer victim;
 	public GameRuleEventType eventType;
-    public Ball ball;
-    public Ball secondaryBall;
-    public Collider collider; //this can be triggers or objects
+	public Ball ball;
+	public Ball secondaryBall;
+	public Collider collider; //this can be triggers or objects
 
 	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
-        Ball bl = null, Ball bl2 = null, Collider col = null) {
+		Ball bl = null, Ball bl2 = null, Collider col = null) {
 		eventType = gret;
 		instigator = tp;
-        victim = vct;
-        ball = bl;
-        secondaryBall = bl2;
-        collider = col;
+		victim = vct;
+		ball = bl;
+		secondaryBall = bl2;
+		collider = col;
 	}
 }
 
@@ -45,22 +45,34 @@ public class GameRules : MonoBehaviour {
 	public GameObject ruleDisplayPrefab;
 	public GameObject uiCanvas;
 
-    public List<Text> teamTexts;
+	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
+	public List<Text> teamTexts;
+	public List<int> teamScores;
+	//so that we have access to scores and stuff when evaluating rules
+	public static GameRules currentGameRules;
 
-    public void updateScore()
-    {
-        TeamPlayer[] players = FindObjectsOfType<TeamPlayer>();
-        int[] totalscores = new int[byte.MaxValue];
-        foreach(TeamPlayer p in players)
-        {
-            totalscores[p.team] += p.score;
-        }
-        for(int i = 0; i < teamTexts.Count; i++)
-        {
-            teamTexts[i].text = "score: " + totalscores[i];
-        }
-    }
+	public void RegisterPlayer(TeamPlayer tp) {
+		//resize the allPlayers list as needed
+		for (int i = tp.team - allPlayers.Count; i >= 0; i--)
+			allPlayers.Add(new List<TeamPlayer>());
 
+		allPlayers[tp.team].Add(tp);
+	}
+	public void UpdateScore()
+	{
+		foreach(List<TeamPlayer> teamPlayerList in allPlayers)
+		{
+			if (teamPlayerList == null)
+				continue;
+
+			int totalscore = 0;
+			foreach(TeamPlayer p in teamPlayerList)
+				totalscore += p.score;
+			int team = teamPlayerList[0].team;
+			teamTexts[team].text = "Score: " + totalscore;
+			teamScores[team] = totalscore;
+		}
+	}
 	public void GenerateNewRule() {
 //temporary, for now there is only one rule at a time
 while (rulesList.Count > 0) {
@@ -74,17 +86,44 @@ rulesList.RemoveAt(0);
         GameRule rule = new GameRule(randomCondition(), randomAction(), display);
 		rulesList.Add(rule);
 		Transform t = display.transform;
-		GameRuleCondition condition = rule.condition;
-		t.GetChild(0).gameObject.GetComponent<Text>().text = condition.ToString();
-		t.GetChild(1).gameObject.GetComponent<Text>().text = rule.action.ToString();
-		t.GetChild(2).gameObject.GetComponent<Text>().text = condition.conditionHappened().ToString();
+		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
+		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
 	}
 	public static GameRuleCondition randomCondition() {
+		return Random.Range(0, 2) == 0 ? randomComparisonCondition() : randomEventHappenedCondition();
+	}
+	public static GameRuleComparisonCondition randomComparisonCondition() {
+		//only player-value comparison conditions for now
+		return new GameRulePlayerValueComparisonCondition(randomPlayerValue(), randomConditionOperator(), Random.Range(0, 2) == 0 ? randomValue() : randomPlayerValue());
+	}
+	public static GameRulePlayerValue randomPlayerValue() {
+		return new GameRulePlayerScoreValue();
+	}
+	public static GameRuleConditionOperator randomConditionOperator() {
+		int rand = Random.Range(0, 6);
+		if (rand == 0)
+			return GameRuleConditionOperator.lessThanOperator;
+		else if (rand == 1)
+			return GameRuleConditionOperator.greaterThanOperator;
+		else if (rand == 2)
+			return GameRuleConditionOperator.lessOrEqualOperator;
+		else if (rand == 3)
+			return GameRuleConditionOperator.greaterOrEqualOperator;
+		else if (rand == 4)
+			return GameRuleConditionOperator.intEqualOperator;
+		else
+			return GameRuleConditionOperator.intNotEqualOperator;
+	}
+	public static GameRuleValue randomValue() {
+		return new GameRuleIntConstantValue(Random.Range(-100, 101));
+	}
+	public static GameRuleCondition randomEventHappenedCondition() {
 		return Random.Range(0, 2) == 0 ?
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot the ball") :
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab the ball");
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot a ball") :
+			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab a ball");
 	}
 	public static GameRuleAction randomAction() {
+		//only player actions until we have ball actions or other environment or game state actions
 		return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction());
 	}
 	public static GameRulePlayerSelector randomPlayerSelector() {
@@ -95,7 +134,16 @@ rulesList.RemoveAt(0);
 	public static GameRulePlayerActionAction randomPlayerActionAction() {
 		return new GameRulePointsPlayerActionAction(Random.Range(-5, 6));
 	}
+
+	// FixedUpdate is called at a fixed rate
+	public void FixedUpdate() {
+		currentGameRules = this;
+		foreach (GameRule rule in rulesList) {
+			rule.CheckCondition();
+		}
+	}
 	public void SendEvent(GameRuleEvent gre) {
+		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
 			rule.SendEvent(gre);
 		}
@@ -112,6 +160,14 @@ public class GameRule {
 		action = a;
 		ruleDisplay = rd;
 	}
+	public void CheckCondition() {
+		//receive a list of all players that triggered the condition
+		List<TeamPlayer> triggeringPlayers = new List<TeamPlayer>();
+		condition.checkCondition(triggeringPlayers);
+		foreach (TeamPlayer tp in triggeringPlayers) {
+			action.takeAction(tp);
+		}
+	}
 	public void SendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre))
 			action.takeAction(gre.instigator);
@@ -120,33 +176,83 @@ public class GameRule {
 
 ////////////////Rule conditions////////////////
 public abstract class GameRuleCondition {
-	public virtual bool conditionHappened() {return false;}
+	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
 	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
 }
 
 ////////////////Conditions that trigger actions when checked////////////////
-public delegate bool GRVComparison(GameRuleValue left, GameRuleValue right);
 public class GameRuleComparisonCondition : GameRuleCondition {
-	public GRVComparison compare;
-	public string compareString = "";
-	public GameRuleValue leftGRV;
-	public GameRuleValue rightGRV;
-	public GameRuleComparisonCondition() {
-		leftGRV = new GameRuleIntConstantValue(3);
-		rightGRV = new GameRuleIntConstantValue(4);
-		compare = lessThan;
-		compareString = " < ";
+	public GameRuleConditionOperator conditionOperator;
+	public GameRuleComparisonCondition(GameRuleConditionOperator grco) {
+		conditionOperator = grco;
 	}
-	public override bool conditionHappened() {
-		return compare(leftGRV, rightGRV);
+}
+
+//comparison between a value on a player and a value that may or may not be on a player
+public class GameRulePlayerValueComparisonCondition : GameRuleComparisonCondition {
+	public GameRulePlayerValue leftGRPV;
+	public GameRuleValue rightGRV;
+	public GameRulePlayerValueComparisonCondition(GameRulePlayerValue grpvl, GameRuleConditionOperator grco, GameRuleValue grvr) :
+		base(grco) {
+		leftGRPV = grpvl;
+		rightGRV = grvr;
+	}
+	public override void checkCondition(List<TeamPlayer> triggeringPlayers) {
+		foreach (List<TeamPlayer> teamPlayerList in GameRules.currentGameRules.allPlayers) {
+			TeamPlayer player = teamPlayerList[0];
+			leftGRPV.player = player;
+			if (rightGRV is GameRulePlayerValue)
+				((GameRulePlayerValue)(rightGRV)).player = player.opponent;
+			if (conditionOperator.compare(leftGRPV, rightGRV))
+				triggeringPlayers.Add(player);
+		}
 	}
 	public override string ToString() {
-		return "If " + leftGRV.ToString() + compareString + rightGRV.ToString();
+		return GameRulePlayerPlayerSelector.possessiveString + " " +
+			leftGRPV.ToString() + " " +
+			conditionOperator.ToString() + " " +
+			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentPlayerSelector.possessiveString + " " : " ") +
+			rightGRV.ToString();
+	}
+}
+
+////////////////Operators to compare game rule values////////////////
+public delegate bool GameRuleValueComparison(GameRuleValue left, GameRuleValue right);
+public class GameRuleConditionOperator {
+	public GameRuleValueComparison compare;
+	public string compareString;
+	public GameRuleConditionOperator(GameRuleValueComparison grvc, string s) {
+		compare = grvc;
+		compareString = s;
+	}
+	public override string ToString() {
+		return compareString;
 	}
 
 	////////////////Boolean comparisons between two values////////////////
+	public static GameRuleConditionOperator lessThanOperator = new GameRuleConditionOperator(lessThan, "<");
 	public static bool lessThan(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() < right.intValue();
+	}
+	public static GameRuleConditionOperator greaterThanOperator = new GameRuleConditionOperator(greaterThan, ">");
+	public static bool greaterThan(GameRuleValue left, GameRuleValue right) {
+		return left.intValue() > right.intValue();
+	}
+	public static GameRuleConditionOperator lessOrEqualOperator = new GameRuleConditionOperator(lessOrEqual, "<=");
+	public static bool lessOrEqual(GameRuleValue left, GameRuleValue right) {
+		return left.intValue() <= right.intValue();
+	}
+	public static GameRuleConditionOperator greaterOrEqualOperator = new GameRuleConditionOperator(greaterOrEqual, ">=");
+	public static bool greaterOrEqual(GameRuleValue left, GameRuleValue right) {
+		return left.intValue() >= right.intValue();
+	}
+	public static GameRuleConditionOperator intEqualOperator = new GameRuleConditionOperator(intEqual, "=");
+	public static bool intEqual(GameRuleValue left, GameRuleValue right) {
+		return left.intValue() == right.intValue();
+	}
+	public static GameRuleConditionOperator intNotEqualOperator = new GameRuleConditionOperator(intNotEqual, "!=");
+	public static bool intNotEqual(GameRuleValue left, GameRuleValue right) {
+		return left.intValue() != right.intValue();
 	}
 }
 
@@ -164,6 +270,22 @@ public class GameRuleIntConstantValue : GameRuleValue {
 	public override string ToString() {return val.ToString();}
 }
 
+////////////////Values on players for use of comparing////////////////
+public abstract class GameRulePlayerValue : GameRuleValue {
+	//this gets set before the values are computed
+	public TeamPlayer player;
+}
+
+public class GameRulePlayerScoreValue : GameRulePlayerValue {
+	public override int intValue() {
+		return GameRules.currentGameRules.teamScores[player.team];
+	}
+	public override string ToString() {
+		return "score";
+	}
+}
+
+
 ////////////////Conditions that trigger actions when an event happen////////////////
 public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
@@ -176,7 +298,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return gre.eventType == eventType;
 	}
 	public override string ToString() {
-		return "If " + conditionString;
+		return conditionString;
 	}
 }
 
@@ -194,7 +316,7 @@ public class GameRulePlayerAction : GameRuleAction {
 		innerAction = ia;
 	}
 	public override string ToString() {
-		return "Then " + playerSelector + " " + innerAction.ToString();
+		return playerSelector + " " + innerAction.ToString();
 	}
 	public override void takeAction(TeamPlayer instigator) {
 		innerAction.takeAction(playerSelector.player(instigator));
@@ -206,6 +328,7 @@ public abstract class GameRulePlayerSelector {
 }
 
 public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
+	public static string possessiveString = "your";
 	public override TeamPlayer player(TeamPlayer instigator) {
 		return instigator;
 	}
@@ -215,6 +338,7 @@ public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
 }
 
 public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
+	public static string possessiveString = "your opponent's";
 	public override TeamPlayer player(TeamPlayer instigator) {
 		return instigator.opponent;
 	}
