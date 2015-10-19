@@ -58,7 +58,7 @@ public class TeamPlayer : SportsObject {
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
-        
+        base.FixedUpdate();
         	
 		//MOVEMENT--------------------------------------------------------------------
 		//increment dash timers
@@ -68,7 +68,7 @@ public class TeamPlayer : SportsObject {
 		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
         stunnedTimer -= Time.fixedDeltaTime;
         stunnedTimer = Mathf.Max(0, stunnedTimer);
-        stunnedTimer = Mathf.Max(0, freezeTime);
+        stunnedTimer = Mathf.Max(stunnedTimer, freezeTime);
         bool stunned = stunnedTimer > 0;
         if(!stunned)
         {

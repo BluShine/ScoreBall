@@ -122,12 +122,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body: {fileID: 0}
+  gameRules: {fileID: 0}
+  spawned: 0
+  sportName: beach ball
   noTakebacksCooldown: .400000006
   carryRadius: 1
   tackleDuration: .200000003
   holdable: 0
   ultimate: 0
-  spawnPoint: {x: 0, y: 0, z: 0}
   stuns: 0
 --- !u!135 &13554524
 SphereCollider:
@@ -151,6 +154,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: stuns
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: sportName
+      value: beach ball
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -122,12 +122,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body: {fileID: 0}
+  gameRules: {fileID: 0}
+  spawned: 0
+  sportName: ultimate ball
   noTakebacksCooldown: .400000006
   carryRadius: .300000012
   tackleDuration: .200000003
   holdable: 1
   ultimate: 1
-  spawnPoint: {x: 0, y: 0, z: 0}
+  stuns: 1
 --- !u!135 &13572278
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -150,6 +154,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ultimate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: sportName
+      value: ultimate ball
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

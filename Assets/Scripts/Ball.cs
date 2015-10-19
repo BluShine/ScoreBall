@@ -24,13 +24,14 @@ public class Ball : SportsObject {
 	
 	// FixedUpdate is called at a fixed rate
 	void FixedUpdate () {
+        base.FixedUpdate();
         takeTimer -= Time.fixedDeltaTime;
         takeTimer = Mathf.Max(0, takeTimer);
         if (isHeld)
         {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
-        else
+        else if (freezeTime == 0)
         {
             body.constraints = RigidbodyConstraints.None;
         }

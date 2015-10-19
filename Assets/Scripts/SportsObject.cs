@@ -25,6 +25,8 @@ public class SportsObject : MonoBehaviour {
     public float freezeTime { get; private set; }
     bool usesFreezing = true;
 
+    public string sportName = "object";
+
     // Use this for initialization
     public void Start () {
         if (!spawned)
