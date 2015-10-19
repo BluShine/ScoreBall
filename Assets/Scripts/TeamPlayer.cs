@@ -48,12 +48,13 @@ public class TeamPlayer : SportsObject {
 	new void Start () {
         base.Start();
         useDefaultFreezing(false);
+		gameRules.RegisterPlayer(this);
     }
 
     public void ScorePoints(int points)
     {
         score += points;
-        gameRules.updateScore();
+        gameRules.UpdateScore();
     }
 	
 	// FixedUpdate is called at a fixed rate

@@ -116,8 +116,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: 0}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: -200, y: 285.999969}
-  m_SizeDelta: {x: 205, y: -597}
+  m_AnchoredPosition: {x: -320, y: 315}
+  m_SizeDelta: {x: 410, y: -670}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &10284417
 MonoBehaviour:
@@ -150,7 +150,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SCORE 1 - 5
+  m_Text: 'Score: 0'
 --- !u!222 &10284418
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2236,8 +2236,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: 0}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 200, y: 286.000061}
-  m_SizeDelta: {x: 205, y: -597}
+  m_AnchoredPosition: {x: 320, y: 315}
+  m_SizeDelta: {x: 410, y: -670}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1716519677
 MonoBehaviour:
@@ -2270,7 +2270,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SCORE 1 - 5
+  m_Text: 'Score: 0'
 --- !u!222 &1716519678
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2437,6 +2437,7 @@ MonoBehaviour:
   teamTexts:
   - {fileID: 10284417}
   - {fileID: 1716519677}
+  teamScores: 0000000000000000
 --- !u!4 &2084299616
 Transform:
   m_ObjectHideFlags: 0
