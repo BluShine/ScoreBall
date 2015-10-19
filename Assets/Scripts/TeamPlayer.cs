@@ -47,6 +47,7 @@ public class TeamPlayer : SportsObject {
 	// Use this for initialization
 	new void Start () {
         base.Start();
+        useDefaultFreezing(false);
     }
 
     public void ScorePoints(int points)
@@ -67,6 +68,7 @@ public class TeamPlayer : SportsObject {
 		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
         stunnedTimer -= Time.fixedDeltaTime;
         stunnedTimer = Mathf.Max(0, stunnedTimer);
+        stunnedTimer = Mathf.Max(0, freezeTime);
         bool stunned = stunnedTimer > 0;
         if(!stunned)
         {

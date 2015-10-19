@@ -21,6 +21,10 @@ public class SportsObject : MonoBehaviour {
     [HideInInspector]
     public bool spawned = false;
 
+    [HideInInspector]
+    public float freezeTime { get; private set; }
+    bool usesFreezing = true;
+
     // Use this for initialization
     public void Start () {
         if (!spawned)
@@ -30,14 +34,32 @@ public class SportsObject : MonoBehaviour {
             spawnScale = transform.localScale;
             duplicates = new List<SportsObject>();
             duplicates.Add(this);
+            freezeTime = 0;
         }
         body = GetComponent<Rigidbody>();
         gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
     }
+
+    public void useDefaultFreezing(bool useDefFreeze)
+    {
+        usesFreezing = useDefFreeze;
+    }
 	
 	// Update is called once per frame
-	public virtual void Update () {
-	    
+	public virtual void FixedUpdate () {
+        freezeTime -= Time.fixedDeltaTime;
+        freezeTime = Mathf.Max(0, freezeTime);
+        if (usesFreezing)
+        {
+            if (freezeTime > 0)
+            {
+                body.constraints = RigidbodyConstraints.FreezeAll;
+            }
+            else
+            {
+                body.constraints = RigidbodyConstraints.None;
+            }
+        }
 	}
 
     public virtual void Respawn()
@@ -64,6 +86,7 @@ public class SportsObject : MonoBehaviour {
             dupe.spawnRotation = spawnRotation;
             dupe.spawnScale = spawnScale;
             dupe.duplicates = duplicates;
+            dupe.Freeze(freezeTime);
             dupe.spawned = true;
             duplicates.Add(dupe);
         }
@@ -78,5 +101,10 @@ public class SportsObject : MonoBehaviour {
                 Destroy(dupe);
             }
         }
+    }
+
+    public virtual void Freeze(float duration)
+    {
+        freezeTime = Mathf.Max(freezeTime, duration);
     }
 }
