@@ -83,14 +83,15 @@ rulesList.RemoveAt(0);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
         display.transform.localScale = ruleDisplayPrefab.transform.localScale;
-        GameRule rule = new GameRule(randomCondition(), randomAction(), display);
+		GameRuleCondition condition = randomCondition();
+        GameRule rule = new GameRule(condition, randomAction(condition is GameRuleComparisonCondition), display);
 		rulesList.Add(rule);
 		Transform t = display.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
 	}
 	public static GameRuleCondition randomCondition() {
-		return Random.Range(0, 2) == 0 ? randomComparisonCondition() : randomEventHappenedCondition();
+		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
 	}
 	public static GameRuleComparisonCondition randomComparisonCondition() {
 		//only player-value comparison conditions for now
@@ -118,21 +119,26 @@ rulesList.RemoveAt(0);
 		return new GameRuleIntConstantValue(Random.Range(-100, 101));
 	}
 	public static GameRuleCondition randomEventHappenedCondition() {
-		return Random.Range(0, 2) == 0 ?
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot a ball") :
-			new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab a ball");
+		if (Random.Range(0, 2) == 0)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot a ball");
+		else
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab a ball");
 	}
-	public static GameRuleAction randomAction() {
+	public static GameRuleAction randomAction(bool isComparison) {
 		//only player actions until we have ball actions or other environment or game state actions
-		return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction());
+		return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction(isComparison));
 	}
 	public static GameRulePlayerSelector randomPlayerSelector() {
-		return Random.Range(0, 2) == 0 ?
-			(GameRulePlayerSelector)(new GameRulePlayerPlayerSelector()) :
-			(GameRulePlayerSelector)(new GameRuleOpponentPlayerSelector());
+		if (Random.Range(0, 2) == 0)
+			return new GameRulePlayerPlayerSelector();
+		else
+			return new GameRuleOpponentPlayerSelector();
 	}
-	public static GameRulePlayerActionAction randomPlayerActionAction() {
-		return new GameRulePointsPlayerActionAction(Random.Range(-5, 6));
+	public static GameRulePlayerActionAction randomPlayerActionAction(bool isComparison) {
+		if (Random.Range(0, 2) == 0)
+			return new GameRuleFreezePlayerActionAction(Random.Range(0.0f, 10.0f));
+		else
+			return new GameRulePointsPlayerActionAction(Random.Range(-5, 6));
 	}
 
 	// FixedUpdate is called at a fixed rate
@@ -208,10 +214,10 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		}
 	}
 	public override string ToString() {
-		return GameRulePlayerPlayerSelector.possessiveString + " " +
-			leftGRPV.ToString() + " " +
-			conditionOperator.ToString() + " " +
-			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentPlayerSelector.possessiveString + " " : " ") +
+		return GameRulePlayerPlayerSelector.possessivePrefix +
+			leftGRPV.ToString() +
+			conditionOperator.ToString() +
+			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentPlayerSelector.possessivePrefix : "") +
 			rightGRV.ToString();
 	}
 }
@@ -230,27 +236,27 @@ public class GameRuleConditionOperator {
 	}
 
 	////////////////Boolean comparisons between two values////////////////
-	public static GameRuleConditionOperator lessThanOperator = new GameRuleConditionOperator(lessThan, "<");
+	public static GameRuleConditionOperator lessThanOperator = new GameRuleConditionOperator(lessThan, " < ");
 	public static bool lessThan(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() < right.intValue();
 	}
-	public static GameRuleConditionOperator greaterThanOperator = new GameRuleConditionOperator(greaterThan, ">");
+	public static GameRuleConditionOperator greaterThanOperator = new GameRuleConditionOperator(greaterThan, " > ");
 	public static bool greaterThan(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() > right.intValue();
 	}
-	public static GameRuleConditionOperator lessOrEqualOperator = new GameRuleConditionOperator(lessOrEqual, "<=");
+	public static GameRuleConditionOperator lessOrEqualOperator = new GameRuleConditionOperator(lessOrEqual, " <= ");
 	public static bool lessOrEqual(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() <= right.intValue();
 	}
-	public static GameRuleConditionOperator greaterOrEqualOperator = new GameRuleConditionOperator(greaterOrEqual, ">=");
+	public static GameRuleConditionOperator greaterOrEqualOperator = new GameRuleConditionOperator(greaterOrEqual, " >= ");
 	public static bool greaterOrEqual(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() >= right.intValue();
 	}
-	public static GameRuleConditionOperator intEqualOperator = new GameRuleConditionOperator(intEqual, "=");
+	public static GameRuleConditionOperator intEqualOperator = new GameRuleConditionOperator(intEqual, " = ");
 	public static bool intEqual(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() == right.intValue();
 	}
-	public static GameRuleConditionOperator intNotEqualOperator = new GameRuleConditionOperator(intNotEqual, "!=");
+	public static GameRuleConditionOperator intNotEqualOperator = new GameRuleConditionOperator(intNotEqual, " != ");
 	public static bool intNotEqual(GameRuleValue left, GameRuleValue right) {
 		return left.intValue() != right.intValue();
 	}
@@ -316,7 +322,7 @@ public class GameRulePlayerAction : GameRuleAction {
 		innerAction = ia;
 	}
 	public override string ToString() {
-		return playerSelector + " " + innerAction.ToString();
+		return playerSelector + " " + innerAction.ToString(playerSelector.conjugate);
 	}
 	public override void takeAction(TeamPlayer instigator) {
 		innerAction.takeAction(playerSelector.player(instigator));
@@ -324,11 +330,15 @@ public class GameRulePlayerAction : GameRuleAction {
 }
 ////////////////Player selectors////////////////
 public abstract class GameRulePlayerSelector {
+	public int conjugate; //for verbs
 	public abstract TeamPlayer player(TeamPlayer instigator);
 }
 
 public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
-	public static string possessiveString = "your";
+	public static string possessivePrefix = "your ";
+	public GameRulePlayerPlayerSelector() {
+		conjugate = 0;
+	}
 	public override TeamPlayer player(TeamPlayer instigator) {
 		return instigator;
 	}
@@ -338,7 +348,10 @@ public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
 }
 
 public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
-	public static string possessiveString = "your opponent's";
+	public static string possessivePrefix = "your opponent's ";
+	public GameRuleOpponentPlayerSelector() {
+		conjugate = 1;
+	}
 	public override TeamPlayer player(TeamPlayer instigator) {
 		return instigator.opponent;
 	}
@@ -350,9 +363,12 @@ public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
 ////////////////The actual functionality to affect players////////////////
 public abstract class GameRulePlayerActionAction {
 	public abstract void takeAction(TeamPlayer tp);
+	public abstract string ToString(int conjugate);
 }
 
 public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
+	public static string[] gainConjugates = new string[] {"gain ", "gains "};
+	public static string[] loseConjugates = new string[] {"lose ", "loses "};
 	public int pointsGiven;
 	public GameRulePointsPlayerActionAction(int pg) {
 		pointsGiven = pg;
@@ -360,10 +376,24 @@ public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
 	public override void takeAction(TeamPlayer tp) {
 		tp.ScorePoints(pointsGiven);
 	}
-	public override string ToString() {
+	public override string ToString(int conjugate) {
 		string pluralPointString = Mathf.Abs(pointsGiven) == 1 ? " point" : " points";
 		return pointsGiven >= 0 ?
-			"gain " + pointsGiven.ToString() + pluralPointString :
-			"lose " + (-pointsGiven).ToString() + pluralPointString;
+			gainConjugates[conjugate] + pointsGiven.ToString() + pluralPointString :
+			loseConjugates[conjugate] + (-pointsGiven).ToString() + pluralPointString;
+	}
+}
+
+public class GameRuleFreezePlayerActionAction : GameRulePlayerActionAction {
+	public static string[] freezeConjugates = new string[] {"freeze ", "freezes "};
+	public float timeFrozen;
+	public GameRuleFreezePlayerActionAction(float tf) {
+		timeFrozen = tf;
+	}
+	public override void takeAction(TeamPlayer tp) {
+		tp.Freeze(timeFrozen);
+	}
+	public override string ToString(int conjugate) {
+		return freezeConjugates[conjugate] + "for " + timeFrozen.ToString("F1") + " seconds";
 	}
 }
