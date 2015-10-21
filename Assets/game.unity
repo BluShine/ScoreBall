@@ -309,6 +309,14 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 480024, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
       propertyPath: m_LocalPosition.x
       value: 5
@@ -349,6 +357,34 @@ Prefab:
       propertyPath: opponent
       value: 
       objectReference: {fileID: 669069939}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: .150000006
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.data[0].value
+      value: .25
+      objectReference: {fileID: 0}
+    - target: {fileID: 19817382, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
   m_IsPrefabParent: 0
@@ -729,6 +765,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: wall
+  team: 0
 --- !u!1 &350781054
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,6 +944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: goal
+  team: 2
 --- !u!1 &406504127
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,6 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: goal
+  team: 1
 --- !u!1 &411130248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1243,10 +1282,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 11413498, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
-      propertyPath: noTakebacksCooldown
-      value: .400000006
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
   m_IsPrefabParent: 0
@@ -1396,6 +1431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: wall
+  team: 0
 --- !u!1 &1025635857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1615,6 +1651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: wall
+  team: 0
 --- !u!1 &1347217506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1992,6 +2029,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sportName: wall
+  team: 0
 --- !u!1 &1510656354
 GameObject:
   m_ObjectHideFlags: 0
@@ -2119,6 +2157,14 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 465864, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
       propertyPath: m_LocalPosition.x
       value: -5
@@ -2149,7 +2195,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 465864, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11431056, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
       propertyPath: scoreDisplay
@@ -2159,6 +2205,34 @@ Prefab:
       propertyPath: opponent
       value: 
       objectReference: {fileID: 1953921783}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.data[0].value
+      value: .25
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 19873820, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: InitialModule.startSpeed.maxCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
   m_IsPrefabParent: 0

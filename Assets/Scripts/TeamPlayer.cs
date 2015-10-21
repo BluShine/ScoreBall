@@ -41,14 +41,16 @@ public class TeamPlayer : SportsObject {
 	public int score = 0;
     public LayerMask BALLMASK;
 	public TeamPlayer opponent;
-
-    public byte team;
+    TrailRenderer line;
+    ParticleSystem particles;
 
 	// Use this for initialization
 	new void Start () {
         base.Start();
         useDefaultFreezing(false);
 		gameRules.RegisterPlayer(this);
+        line = GetComponent<TrailRenderer>();
+        particles = GetComponent<ParticleSystem>();
     }
 
     public void ScorePoints(int points)
@@ -85,7 +87,7 @@ public class TeamPlayer : SportsObject {
 		//normal movement if we aren't dashing.
         if (stunned)
         {
-            
+            line.enabled = true;
         }
         else if (dashing)
         {
@@ -102,10 +104,14 @@ public class TeamPlayer : SportsObject {
 
             //dash movement
             body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
+
+            //effect
+            line.enabled = true;
         }
         else {
-			//get input vector from joystick/keys
-			Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
+            line.enabled = false;
+            //get input vector from joystick/keys
+            Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
 			if (input.magnitude > 1)
 			{
 				input.Normalize();
@@ -238,6 +244,7 @@ public class TeamPlayer : SportsObject {
         body.angularVelocity = new Vector3(Random.value, Random.value, Random.value).normalized * 
             TACKLESPINNINESS;
         stunnedTimer = duration;
+        particles.Play();
     }
 
     bool checkBallCollision(Collision collision)
@@ -258,12 +265,14 @@ public class TeamPlayer : SportsObject {
                 {
                     dashTimer = 0;
                 }
+                particles.Play();
             }
             else if (collidedBall.stuns)
             {
                 //we didn't dodge the ball!
                 gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));
                 tackle(collidedBall.getTackleVector(), collidedBall.tackleDuration);
+                particles.Play();
             }
             return true;
         }
@@ -287,6 +296,7 @@ public class TeamPlayer : SportsObject {
             if (dashTimer > 0 && dashStopByWall)
             {
                 dashTimer = 0;
+                particles.Play();
             }
         }
     }
@@ -311,6 +321,7 @@ public class TeamPlayer : SportsObject {
                     }
                 }
                 //tackle them
+                particles.Play();
                 Vector3 tackleVector = transform.forward * tacklePower +
                     Vector3.up * tackleLaunchPower;
                 collidedPlayer.tackle(tackleVector, tackleDuration);
@@ -331,6 +342,7 @@ public class TeamPlayer : SportsObject {
         {
             carriedBall.transform.SetParent(null);
             carriedBall = null;
+            particles.Play();
         }
     }
 }
