@@ -146,10 +146,23 @@ public class GameRules : MonoBehaviour {
 		return new GameRuleIntConstantValue(Random.Range(-100, 101));
 	}
 	public static GameRuleCondition randomEventHappenedCondition() {
-		if (Random.Range(0, 2) == 0)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot a ball");
+		int rand = Random.Range(0, 7);
+		if (rand == 0)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot the ball");
+		else if (rand == 1)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab the ball");
+		else if (rand == 2)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitObject, "you bump into a wall");
+		else if (rand == 3)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTouchBall, "you touch the ball");
+		else if (rand == 4)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitInTheFaceByBall, "your opponent hits you with the ball");
+		else if (rand == 5)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitPlayer, "you bump into your opponent");
+		else if (rand == 6)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, "you steal the ball");
 		else
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab a ball");
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTacklePlayer, "you tackle your opponent");
 	}
 	public static GameRuleAction randomAction(bool isComparison) {
 		//only player actions until we have ball actions or other environment or game state actions
@@ -163,7 +176,7 @@ public class GameRules : MonoBehaviour {
 	}
 	public static GameRulePlayerActionAction randomPlayerActionAction(bool isComparison) {
 		if (Random.Range(0, 2) == 0)
-			return new GameRuleFreezePlayerActionAction(Random.Range(0.0f, 10.0f));
+			return new GameRuleFreezePlayerActionAction(Random.Range(0.25f, 4.0f));
 		else
 			return new GameRulePointsPlayerActionAction(Random.Range(-5, 6));
 	}
