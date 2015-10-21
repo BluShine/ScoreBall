@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Respawner : MonoBehaviour {
+public class RespawnerObject : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
