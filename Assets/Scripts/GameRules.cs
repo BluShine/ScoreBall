@@ -74,21 +74,48 @@ public class GameRules : MonoBehaviour {
 		}
 	}
 	public void GenerateNewRule() {
-//temporary, for now there is only one rule at a time
-while (rulesList.Count > 0) {
-Destroy(rulesList[0].ruleDisplay);
-rulesList.RemoveAt(0);
-}
+		//only 3 rules for now
+		if (rulesList.Count >= 3)
+			return;
+
+		//shift the current rules left
+		float widthoffset = ((RectTransform)(ruleDisplayPrefab.transform)).rect.width * -0.5f;
+		foreach (GameRule gameRule in rulesList) {
+			offsetRuleDisplayX(gameRule, widthoffset);
+		}
+
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
         display.transform.localScale = ruleDisplayPrefab.transform.localScale;
+
+		//unity has no good way of giving us the button we clicked, so we have to remember it here
+		Button deleteButton = display.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
+		deleteButton.onClick.AddListener(() => {this.DeleteRule(deleteButton);});
+
 		GameRuleCondition condition = randomCondition();
         GameRule rule = new GameRule(condition, randomAction(condition is GameRuleComparisonCondition), display);
 		rulesList.Add(rule);
+		offsetRuleDisplayX(rule, -widthoffset * (rulesList.Count - 1));
 		Transform t = display.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
+	}
+	public void DeleteRule(Button button) {
+		RectTransform ruleTransform = (RectTransform)(button.transform.parent);
+		float widthoffset = ruleTransform.rect.width * 0.5f;
+		GameObject ruleDisplay = ruleTransform.gameObject;
+		for (int i = 0; i < rulesList.Count;) {
+			GameRule gameRule = rulesList[i];
+			if (gameRule.ruleDisplay == ruleDisplay) {
+				widthoffset = -widthoffset;
+				rulesList.RemoveAt(i);
+			} else {
+				offsetRuleDisplayX(gameRule, widthoffset);
+				i++;
+			}
+		}
+		Destroy(ruleDisplay);
 	}
 	public static GameRuleCondition randomCondition() {
 		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
@@ -153,6 +180,14 @@ rulesList.RemoveAt(0);
 		foreach (GameRule rule in rulesList) {
 			rule.SendEvent(gre);
 		}
+	}
+
+	//General helpers
+	public static void offsetRuleDisplayX(GameRule gameRule, float widthoffset) {
+		Transform t = gameRule.ruleDisplay.transform;
+		Vector3 position = t.localPosition;
+		position.x += widthoffset;
+		t.localPosition = position;
 	}
 }
 
