@@ -289,15 +289,13 @@ public class TeamPlayer : SportsObject {
         {
 
         }
-        //handle collision with walls and objects
-        else
+        else if (checkSportsCollision(collision))
         {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitObject, tp: this, col:collision.collider));
-            if (dashTimer > 0 && dashStopByWall)
-            {
-                dashTimer = 0;
-                particles.Play();
-            }
+
+        }
+        else if (checkFieldCollision(collision))
+        {
+
         }
     }
 
@@ -331,6 +329,28 @@ public class TeamPlayer : SportsObject {
             {
                 dashTimer = 0;
             }
+            return true;
+        }
+        return false;
+    }
+
+    bool checkSportsCollision(Collision collision)
+    {
+        SportsObject sObject = collision.gameObject.GetComponent<SportsObject>();
+        if (sObject != null)
+        {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitSportsObject, tp: this, so: sObject));
+            return true;
+        }
+        return false;
+    }
+
+    bool checkFieldCollision(Collision collision)
+    {
+        FieldObject fObject = collision.gameObject.GetComponent<FieldObject>();
+        if (fObject != null)
+        {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo: fObject));
             return true;
         }
         return false;

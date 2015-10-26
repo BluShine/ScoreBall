@@ -10,13 +10,14 @@ public enum GameRuleEventType {
 	PlayerGrabBall,
 	PlayerTacklePlayer,
 	PlayerHitPlayer,
-	PlayerHitObject,
-	PlayerHitTrigger,
+    PlayerHitSportsObject,
+    PlayerHitFieldObject,
+    PlayerHitTrigger,
 	PlayerStealBall,
 	PlayerHitInTheFaceByBall,
 	PlayerTouchBall,
-	BallHitObject,
-	BallHitTrigger,
+	BallHitSportsObject,
+	BallHitFieldObject,
 	BallHitBall
 }
 
@@ -26,17 +27,19 @@ public class GameRuleEvent {
 	public GameRuleEventType eventType;
 	public Ball ball;
 	public Ball secondaryBall;
-	public Collider collider; //this can be triggers or objects
+    public SportsObject sportsObj;
+    public FieldObject fieldObj;
 
 	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
-		Ball bl = null, Ball bl2 = null, Collider col = null) {
+		Ball bl = null, Ball bl2 = null, SportsObject so = null, FieldObject fo = null) {
 		eventType = gret;
 		instigator = tp;
 		victim = vct;
 		ball = bl;
 		secondaryBall = bl2;
-		collider = col;
-	}
+        sportsObj = so;
+        fieldObj = fo;
+    }
 }
 
 ////////////////Master rules handler object////////////////

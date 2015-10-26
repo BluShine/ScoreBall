@@ -45,9 +45,13 @@ public class Ball : SportsObject {
         } else if(checkPlayerCollision(collision))
         {
 
-        } else
+        } else if(checkSportsCollision(collision))
         {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitObject, bl: this, col:collision.collider));
+
+        }
+        else if (checkFieldCollision(collision))
+        {
+
         }
     }
 
@@ -74,6 +78,28 @@ public class Ball : SportsObject {
         if(hitBall != null)
         {
             gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitBall, bl: this, bl2: hitBall));
+            return true;
+        }
+        return false;
+    }
+
+    bool checkSportsCollision(Collision collision)
+    {
+        SportsObject sObject = collision.gameObject.GetComponent<SportsObject>();
+        if (sObject != null)
+        {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitSportsObject, bl: this, so: sObject));
+            return true;
+        }
+        return false;
+    }
+
+    bool checkFieldCollision(Collision collision)
+    {
+        FieldObject fObject = collision.gameObject.GetComponent<FieldObject>();
+        if (fObject != null)
+        {
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitFieldObject, bl: this, fo: fObject));
             return true;
         }
         return false;
