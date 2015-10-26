@@ -47,11 +47,13 @@ public class Ball : SportsObject {
 
         } else if(checkSportsCollision(collision))
         {
-
+			Debug.Log("Ball hit sports object" + collision.gameObject);
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitSportsObject, bl: this, so:collision.collider.GetComponent<SportsObject>()));
         }
         else if (checkFieldCollision(collision))
         {
-
+			Debug.Log("Ball hit field object " + collision.gameObject);
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitFieldObject, bl: this, fo:collision.collider.GetComponent<FieldObject>()));
         }
     }
 

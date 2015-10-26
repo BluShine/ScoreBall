@@ -182,7 +182,7 @@ public class TeamPlayer : SportsObject {
             //detect wall hit
             if (Physics.SphereCast(ballForwardRay, 0.4f, out ballForwardCast, rayDist, BALLMASK))
             {
-                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitObject, tp: this, col:ballForwardCast.collider));
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo:ballForwardCast.collider.GetComponent<FieldObject>()));
                 //stop
                 body.velocity = Vector3.zero;
 				//stop dash
