@@ -2587,9 +2587,10 @@ MonoBehaviour:
   ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
   uiCanvas: {fileID: 350781054}
   teamTexts:
+  - {fileID: 0}
   - {fileID: 10284417}
   - {fileID: 1716519677}
-  teamScores: 0000000000000000
+  teamScores: 000000000000000000000000
 --- !u!4 &2084299616
 Transform:
   m_ObjectHideFlags: 0
