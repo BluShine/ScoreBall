@@ -15,6 +15,8 @@ public class SportsObject : FieldObject {
     public Rigidbody body;
     [HideInInspector]
     public List<SportsObject> duplicates { get; private set; }
+    static int MAXDUPLICATES = 100;
+
     [HideInInspector]
     public GameRules gameRules;
 
@@ -80,6 +82,10 @@ public class SportsObject : FieldObject {
     {
         for(int i = 0; i < times; i++)
         {
+            if(duplicates.Count >= MAXDUPLICATES)
+            {
+                return;
+            }
             SportsObject dupe = Instantiate<SportsObject>(this);
             //manually "spawn" our duplicate so that it has our same spawnposition, etc.
             dupe.spawnPosition = spawnPosition;
