@@ -31,7 +31,7 @@ public class GameRuleEvent {
 	public Ball secondaryBall;
     public SportsObject sportsObj;
     public FieldObject fieldObj;
-
+	public string param;
 	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
 		Ball bl = null, Ball bl2 = null, SportsObject so = null, FieldObject fo = null) {
 		eventType = gret;
@@ -41,9 +41,12 @@ public class GameRuleEvent {
 		secondaryBall = bl2;
         sportsObj = so;
         fieldObj = fo;
+		if (gret == GameRuleEventType.PlayerHitFieldObject || gret == GameRuleEventType.BallHitFieldObject)
+			param = fo.sportName;
+		else
+			param = null;
     }
-
-	public SportsObject getEventSportsObject() {
+	public SportsObject getEventSource() {
 		if (eventType >= GameRuleEventType.BallEventTypeStart)
 			return ball;
 		else
@@ -64,7 +67,7 @@ public class GameRules : MonoBehaviour {
 	public static GameRules currentGameRules;
 
 	public void RegisterPlayer(TeamPlayer tp) {
-		//resize the allPlayers list as needed, fill in with nulls
+		//fill unused teams in the allPlayers list with nulls as needed
 		for (int i = tp.team - allPlayers.Count; i >= 1; i--)
 			allPlayers.Add(null);
 
@@ -74,8 +77,7 @@ public class GameRules : MonoBehaviour {
 
 		allPlayers[tp.team].Add(tp);
 	}
-	public void UpdateScore()
-	{
+	public void UpdateScore() {
 		foreach(List<TeamPlayer> teamPlayerList in allPlayers)
 		{
 			//in case the team numbers are not consecutive
@@ -138,6 +140,7 @@ public class GameRules : MonoBehaviour {
 		}
 		Destroy(ruleDisplay);
 	}
+
 	public static GameRuleCondition randomCondition() {
 		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
 	}
@@ -169,7 +172,7 @@ public class GameRules : MonoBehaviour {
 	public static GameRuleCondition randomEventHappenedCondition() {
 		//2/3 player, 1/3 ball
 		if (Random.Range(0, 3) < 2) {
-			int rand = Random.Range(0, 8);
+			int rand = Random.Range(0, 9);
 			if (rand == 0)
 				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot the ball");
 			else if (rand == 1)
@@ -181,35 +184,50 @@ public class GameRules : MonoBehaviour {
 //			else if (rand == 4)
 //				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitSportsObject, "you bump into ????");
 			else if (rand == 4)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, "you bump into a wall");
+				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, "you hit a ", "wall");
 			else if (rand == 5)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, "you steal the ball");
+				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, "you hit a ", "goal");
 			else if (rand == 6)
+				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, "you steal the ball");
+			else if (rand == 7)
 				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitInTheFaceByBall, "your opponent hits you with the ball");
 			else
 				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTouchBall, "you touch the ball");
 		} else {
-			int rand = Random.Range(0, 2);
+			int rand = Random.Range(0, 3);
 			if (rand == 0)
 //				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitSportsObject, "the ball bumps into ????");
 //			else if (rand == 1)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, "the ball bumps into a wall");
+				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, "the ball hits a ", "wall");
+			else if (rand == 1)
+				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, "the ball hits a ", "goal");
 			else
 				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitBall, "the ball bumps into another ball");
 		}
 	}
 	public static GameRuleAction randomAction(bool isComparison, bool playerAction) {
-		//only player actions until we have ball actions or other environment or game state actions
-		if (playerAction)
-			return new GameRulePlayerAction(randomPlayerSelector(), randomPlayerActionAction(isComparison));
-		else
-			return new GameRuleBallAction(randomBallActionAction());
+		GameRuleSportsObjectSelector selector = playerAction ?
+			randomPlayerSourceSportsObjectSelector() :
+			randomBallSourceSportsObjectSelector();
+		return new GameRuleAction(selector, randomActionActionForTarget(selector));
 	}
-	public static GameRulePlayerSelector randomPlayerSelector() {
+	public static GameRuleSportsObjectSelector randomPlayerSourceSportsObjectSelector() {
 		if (Random.Range(0, 2) == 0)
-			return new GameRulePlayerPlayerSelector();
+			return GameRulePlayerSportsObjectSelector.instance;
 		else
-			return new GameRuleOpponentPlayerSelector();
+			return GameRuleOpponentSportsObjectSelector.instance;
+	}
+	public static GameRuleSportsObjectSelector randomBallSourceSportsObjectSelector() {
+		if (Random.Range(0, 2) == 0)
+			return GameRuleBallSportsObjectSelector.instance;
+		else
+			return GameRuleBallShooterSportsObjectSelector.instance;
+	}
+	public static GameRuleSportsObjectActionAction randomActionActionForTarget(GameRuleSportsObjectSelector selector) {
+		if (selector.targetType() == typeof(Ball))
+			return randomBallActionAction();
+		else
+			return randomPlayerActionAction(false);
 	}
 	public static GameRuleSportsObjectActionAction randomPlayerActionAction(bool isComparison) {
 isComparison = false;
@@ -275,7 +293,7 @@ public class GameRule {
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre)) {
-			action.takeAction(gre.getEventSportsObject());
+			action.takeAction(gre.getEventSource());
 		}
 	}
 }
@@ -314,10 +332,10 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		}
 	}
 	public override string ToString() {
-		return GameRulePlayerPlayerSelector.possessivePrefix +
+		return GameRulePlayerSportsObjectSelector.possessivePrefix +
 			leftGRPV.ToString() +
 			conditionOperator.ToString() +
-			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentPlayerSelector.possessivePrefix : "") +
+			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentSportsObjectSelector.possessivePrefix : "") +
 			rightGRV.ToString();
 	}
 }
@@ -396,80 +414,106 @@ public class GameRulePlayerScoreValue : GameRulePlayerValue {
 public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
 	public string conditionString;
-	public GameRuleEventHappenedCondition(GameRuleEventType et, string cs) {
+	public string param;
+	public GameRuleEventHappenedCondition(GameRuleEventType et, string cs, string p = null) {
 		eventType = et;
 		conditionString = cs;
+		param = p;
 	}
 	public override bool conditionHappened(GameRuleEvent gre) {
-		return gre.eventType == eventType;
+		return gre.eventType == eventType && gre.param == param;
 	}
 	public override string ToString() {
-		return conditionString;
+		return conditionString + param;
 	}
 }
 
 ////////////////Rule consequences////////////////
-public abstract class GameRuleAction {
-	public abstract void takeAction(SportsObject sportsObject);
-}
-
-public class GameRulePlayerAction : GameRuleAction {
-	public GameRulePlayerSelector playerSelector;
+public class GameRuleAction {
+	public GameRuleSportsObjectSelector sportsObjectSelector;
 	public GameRuleSportsObjectActionAction innerAction;
-	public GameRulePlayerAction(GameRulePlayerSelector ps, GameRuleSportsObjectActionAction ia) {
-		playerSelector = ps;
+	public GameRuleAction(GameRuleSportsObjectSelector sos, GameRuleSportsObjectActionAction ia) {
+		sportsObjectSelector = sos;
 		innerAction = ia;
 	}
 	public override string ToString() {
-		return playerSelector + " " + innerAction.ToString(playerSelector.conjugate);
+		return sportsObjectSelector.ToString() + " " + innerAction.ToString(sportsObjectSelector.conjugate);
 	}
-	public override void takeAction(SportsObject instigator) {
-		innerAction.takeAction(playerSelector.player((TeamPlayer)(instigator)));
-	}
-}
-
-public class GameRuleBallAction : GameRuleAction {
-	public GameRuleSportsObjectActionAction innerAction;
-	public GameRuleBallAction(GameRuleSportsObjectActionAction ia) {
-		innerAction = ia;
-	}
-	public override string ToString() {
-		return "the ball " + innerAction.ToString(1);
-	}
-	public override void takeAction(SportsObject ball) {
-		innerAction.takeAction(ball);
+	public void takeAction(SportsObject source) {
+		innerAction.takeAction(sportsObjectSelector.target(source));
 	}
 }
 
-////////////////Player selectors////////////////
-public abstract class GameRulePlayerSelector {
+////////////////Sports object selectors////////////////
+public abstract class GameRuleSportsObjectSelector {
 	public int conjugate; //for verbs
-	public abstract TeamPlayer player(TeamPlayer instigator);
+	public abstract SportsObject target(SportsObject source);
+	public abstract System.Type targetType();
 }
 
-public class GameRulePlayerPlayerSelector : GameRulePlayerSelector {
-	public static string possessivePrefix = "your ";
-	public GameRulePlayerPlayerSelector() {
-		conjugate = 0;
+public abstract class GameRuleSourceSportsObjectSelector : GameRuleSportsObjectSelector {
+	public override SportsObject target(SportsObject source) {
+		return source;
 	}
-	public override TeamPlayer player(TeamPlayer instigator) {
-		return instigator;
+}
+
+public class GameRulePlayerSportsObjectSelector : GameRuleSourceSportsObjectSelector {
+	public static string possessivePrefix = "your ";
+	public static GameRulePlayerSportsObjectSelector instance = new GameRulePlayerSportsObjectSelector();
+	public GameRulePlayerSportsObjectSelector() {
+		conjugate = 0;
 	}
 	public override string ToString() {
 		return "you";
 	}
+	public override System.Type targetType() {
+		return typeof(TeamPlayer);
+	}
 }
 
-public class GameRuleOpponentPlayerSelector : GameRulePlayerSelector {
+public class GameRuleOpponentSportsObjectSelector : GameRuleSportsObjectSelector {
 	public static string possessivePrefix = "your opponent's ";
-	public GameRuleOpponentPlayerSelector() {
+	public static GameRuleOpponentSportsObjectSelector instance = new GameRuleOpponentSportsObjectSelector();
+	public GameRuleOpponentSportsObjectSelector() {
 		conjugate = 1;
 	}
-	public override TeamPlayer player(TeamPlayer instigator) {
-		return instigator.opponent;
+	public override SportsObject target(SportsObject source) {
+		return ((TeamPlayer)(source)).opponent;
 	}
 	public override string ToString() {
 		return "your opponent";
+	}
+	public override System.Type targetType() {
+		return typeof(TeamPlayer);
+	}
+}
+
+public class GameRuleBallShooterSportsObjectSelector : GameRuleSportsObjectSelector {
+	public static GameRuleBallShooterSportsObjectSelector instance = new GameRuleBallShooterSportsObjectSelector();
+	public GameRuleBallShooterSportsObjectSelector() {
+		conjugate = 1;
+	}
+	public override SportsObject target(SportsObject source) {
+		return ((Ball)(source)).currentPlayer;
+	}
+	public override string ToString() {
+		return "the player who shot the ball";
+	}
+	public override System.Type targetType() {
+		return typeof(TeamPlayer);
+	}
+}
+
+public class GameRuleBallSportsObjectSelector : GameRuleSourceSportsObjectSelector {
+	public static GameRuleBallSportsObjectSelector instance = new GameRuleBallSportsObjectSelector();
+	public GameRuleBallSportsObjectSelector() {
+		conjugate = 1;
+	}
+	public override string ToString() {
+		return "the ball";
+	}
+	public override System.Type targetType() {
+		return typeof(Ball);
 	}
 }
 
