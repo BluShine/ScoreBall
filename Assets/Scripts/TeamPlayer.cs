@@ -41,6 +41,7 @@ public class TeamPlayer : SportsObject {
 	public int score = 0;
     public LayerMask BALLMASK;
 	public TeamPlayer opponent;
+    PlayerAnimation playerAnim;
     TrailRenderer line;
     ParticleSystem particles;
 
@@ -51,6 +52,7 @@ public class TeamPlayer : SportsObject {
 		gameRules.RegisterPlayer(this);
         line = GetComponent<TrailRenderer>();
         particles = GetComponent<ParticleSystem>();
+        playerAnim = GetComponentInChildren<PlayerAnimation>();
     }
 
     public void ScorePoints(int points)
@@ -73,7 +75,8 @@ public class TeamPlayer : SportsObject {
         stunnedTimer = Mathf.Max(0, stunnedTimer);
         stunnedTimer = Mathf.Max(stunnedTimer, freezeTime);
         bool stunned = stunnedTimer > 0;
-        if(!stunned)
+        playerAnim.stunned = stunned;
+        if (!stunned)
         {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
@@ -124,8 +127,10 @@ public class TeamPlayer : SportsObject {
 					Quaternion.Euler(0, 90 -Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
 					Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
 			}
-			//movement
-			Vector3 movingVel = new Vector3(0, body.velocity.y, 0);
+            //update anim
+            playerAnim.UpdateMotion(new Vector2(transform.forward.x, transform.forward.z));
+            //movement
+            Vector3 movingVel = new Vector3(0, body.velocity.y, 0);
 			//strafing
 			if (inputMag > turnThreashold)
 			{
