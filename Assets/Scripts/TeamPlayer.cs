@@ -66,14 +66,11 @@ public class TeamPlayer : SportsObject {
         base.FixedUpdate();
         	
 		//MOVEMENT--------------------------------------------------------------------
-		//increment dash timers
-		dashTimer -= Time.fixedDeltaTime;
-		dashTimer = Mathf.Max(0, dashTimer);
-		dashCooldownTimer -= Time.fixedDeltaTime;
-		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer);
-        stunnedTimer -= Time.fixedDeltaTime;
-        stunnedTimer = Mathf.Max(0, stunnedTimer);
-        stunnedTimer = Mathf.Max(stunnedTimer, freezeTime);
+		//decrement dash timers
+		dashTimer = Mathf.Max(0, dashTimer - Time.fixedDeltaTime);
+		dashCooldownTimer = Mathf.Max(0, dashCooldownTimer - Time.fixedDeltaTime);
+		//decrement stunnedTimer, freezeTime is already at least 0
+		stunnedTimer = Mathf.Max(freezeTime, stunnedTimer - Time.fixedDeltaTime);
         bool stunned = stunnedTimer > 0;
         playerAnim.stunned = stunned;
         if (!stunned)
@@ -228,6 +225,11 @@ public class TeamPlayer : SportsObject {
                 }
             }
         }
+	}
+
+	public override void Unfreeze() {
+		base.Unfreeze();
+		stunnedTimer = 0.0f;
 	}
 
     void OnCollisionStay(Collision collision)

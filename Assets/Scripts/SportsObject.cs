@@ -50,8 +50,7 @@ public class SportsObject : FieldObject {
 	
 	// Update is called once per frame
 	public virtual void FixedUpdate () {
-        freezeTime -= Time.fixedDeltaTime;
-        freezeTime = Mathf.Max(0, freezeTime);
+        freezeTime = Mathf.Max(0, freezeTime - Time.fixedDeltaTime);
         if (usesFreezing)
         {
             if (freezeTime > 0)
@@ -112,8 +111,12 @@ public class SportsObject : FieldObject {
 
     public virtual void Freeze(float duration)
     {
-        freezeTime = Mathf.Max(freezeTime, duration);
+		freezeTime += duration;
     }
+
+	public virtual void Unfreeze() {
+		freezeTime = 0.0f;
+	}
 
 	//collision handling
 	void OnCollisionEnter(Collision collision) {

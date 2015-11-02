@@ -11,8 +11,8 @@ public enum GameRuleEventType : int {
 	PlayerGrabBall,
 	PlayerTacklePlayer,
 	PlayerHitPlayer,
-    PlayerHitSportsObject,
-    PlayerHitFieldObject,
+	PlayerHitSportsObject,
+	PlayerHitFieldObject,
 	PlayerStealBall,
 	PlayerHitInTheFaceByBall,
 	PlayerTouchBall,
@@ -29,8 +29,8 @@ public class GameRuleEvent {
 	public GameRuleEventType eventType;
 	public Ball ball;
 	public Ball secondaryBall;
-    public SportsObject sportsObj;
-    public FieldObject fieldObj;
+	public SportsObject sportsObj;
+	public FieldObject fieldObj;
 	public string param;
 	public GameRuleEvent(GameRuleEventType gret, TeamPlayer tp = null, TeamPlayer vct = null,
 		Ball bl = null, Ball bl2 = null, SportsObject so = null, FieldObject fo = null) {
@@ -39,13 +39,13 @@ public class GameRuleEvent {
 		victim = vct;
 		ball = bl;
 		secondaryBall = bl2;
-        sportsObj = so;
-        fieldObj = fo;
+		sportsObj = so;
+		fieldObj = fo;
 		if (gret == GameRuleEventType.PlayerHitFieldObject || gret == GameRuleEventType.BallHitFieldObject)
 			param = fo.sportName;
 		else
 			param = null;
-    }
+	}
 	public SportsObject getEventSource() {
 		if (eventType >= GameRuleEventType.BallEventTypeStart)
 			return ball;
@@ -57,6 +57,7 @@ public class GameRuleEvent {
 ////////////////Master rules handler object////////////////
 public class GameRules : MonoBehaviour {
 	List<GameRule> rulesList = new List<GameRule>();
+	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
 	public GameObject ruleDisplayPrefab;
 	public GameObject uiCanvas;
 
@@ -106,7 +107,7 @@ public class GameRules : MonoBehaviour {
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
-        display.transform.localScale = ruleDisplayPrefab.transform.localScale;
+		display.transform.localScale = ruleDisplayPrefab.transform.localScale;
 
 		//unity has no good way of giving us the button we clicked, so we have to remember it here
 		Button deleteButton = display.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
@@ -117,7 +118,7 @@ public class GameRules : MonoBehaviour {
 		bool playerAction = true;
 		if (!isComparison && ((GameRuleEventHappenedCondition)(condition)).eventType >= GameRuleEventType.BallEventTypeStart)
 			playerAction = false;
-        GameRule rule = new GameRule(condition, randomAction(isComparison, playerAction), display);
+		GameRule rule = new GameRule(condition, randomAction(isComparison, playerAction), display);
 		rulesList.Add(rule);
 		offsetRuleDisplayX(rule, -widthoffset * (rulesList.Count - 1));
 		Transform t = display.transform;
@@ -169,98 +170,113 @@ public class GameRules : MonoBehaviour {
 	public static GameRuleValue randomValue() {
 		return new GameRuleIntConstantValue(Random.Range(-100, 101));
 	}
-	public static GameRuleCondition randomEventHappenedCondition() {
+	public static GameRuleEventHappenedCondition randomEventHappenedCondition() {
 		//2/3 player, 1/3 ball
-		if (Random.Range(0, 3) < 2) {
-			int rand = Random.Range(0, 9);
-			if (rand == 0)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, "you shoot the ball");
-			else if (rand == 1)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, "you grab the ball");
-			else if (rand == 2)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTacklePlayer, "you tackle your opponent");
-			else if (rand == 3)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitPlayer, "you bump into your opponent");
-//			else if (rand == 4)
-//				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitSportsObject, "you bump into ????");
-			else if (rand == 4)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, "you hit a ", "wall");
-			else if (rand == 5)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, "you hit a ", "goal");
-			else if (rand == 6)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, "you steal the ball");
-			else if (rand == 7)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitInTheFaceByBall, "your opponent hits you with the ball");
-			else
-				return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTouchBall, "you touch the ball");
-		} else {
-			int rand = Random.Range(0, 3);
-			if (rand == 0)
-//				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitSportsObject, "the ball bumps into ????");
-//			else if (rand == 1)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, "the ball hits a ", "wall");
-			else if (rand == 1)
-				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, "the ball hits a ", "goal");
-			else
-				return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitBall, "the ball bumps into another ball");
-		}
+		if (Random.Range(0, 3) < 2)
+			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance);
+		else
+			return randomBallEventHappenedCondition(GameRuleBallSelector.instance);
+	}
+	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
+		int rand = Random.Range(0, 9);
+		if (rand == 0)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, selector, " shoot the ball");
+		else if (rand == 1)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, selector, " grab the ball");
+		else if (rand == 2)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTacklePlayer, selector, " tackle your opponent");
+		else if (rand == 3)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitPlayer, selector, " bump into your opponent");
+//		else if (rand == 4)
+//			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitSportsObject, selector, " bump into ????");
+		else if (rand == 4)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, selector, " hit a ", "wall");
+		else if (rand == 5)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, selector, " hit a ", "goal");
+		else if (rand == 6)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, selector, " steal the ball");
+		else if (rand == 7)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitInTheFaceByBall, selector, " get smacked by the ball");
+		else
+			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTouchBall, selector, " touch the ball");
+	}
+	public static GameRuleEventHappenedCondition randomBallEventHappenedCondition(GameRuleSelector selector) {
+		int rand = Random.Range(0, 3);
+		if (rand == 0)
+//			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitSportsObject, selector, " bumps into ????");
+//		else if (rand == 1)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, selector, " hits a ", "wall");
+		else if (rand == 1)
+			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, selector, " hits a ", "goal");
+		else
+			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitBall, selector, " bumps into another ball");
 	}
 	public static GameRuleAction randomAction(bool isComparison, bool playerAction) {
-		GameRuleSportsObjectSelector selector = playerAction ?
-			randomPlayerSourceSportsObjectSelector() :
-			randomBallSourceSportsObjectSelector();
+		GameRuleSelector selector = playerAction ?
+			randomPlayerSourceSelector() :
+			randomBallSourceSelector();
 		return new GameRuleAction(selector, randomActionActionForTarget(selector));
 	}
-	public static GameRuleSportsObjectSelector randomPlayerSourceSportsObjectSelector() {
+	public static GameRuleSelector randomPlayerSourceSelector() {
 		if (Random.Range(0, 2) == 0)
-			return GameRulePlayerSportsObjectSelector.instance;
+			return GameRulePlayerSelector.instance;
 		else
-			return GameRuleOpponentSportsObjectSelector.instance;
+			return GameRuleOpponentSelector.instance;
 	}
-	public static GameRuleSportsObjectSelector randomBallSourceSportsObjectSelector() {
+	public static GameRuleSelector randomBallSourceSelector() {
 		if (Random.Range(0, 2) == 0)
-			return GameRuleBallSportsObjectSelector.instance;
+			return GameRuleBallSelector.instance;
 		else
-			return GameRuleBallShooterSportsObjectSelector.instance;
+			return GameRuleBallShooterSelector.instance;
 	}
-	public static GameRuleSportsObjectActionAction randomActionActionForTarget(GameRuleSportsObjectSelector selector) {
+	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector selector) {
 		if (selector.targetType() == typeof(Ball))
 			return randomBallActionAction();
 		else
 			return randomPlayerActionAction(false);
 	}
-	public static GameRuleSportsObjectActionAction randomPlayerActionAction(bool isComparison) {
+	public static GameRuleActionAction randomPlayerActionAction(bool isComparison) {
 isComparison = false;
-		int rand = Random.Range(0, 3);
+		int rand = Random.Range(0, 4);
 		if (rand == 0) {
 			int points = Random.Range(-5, 5);
 			if (points >= 0)
 				points++;
 			return new GameRulePointsPlayerActionAction(points);
 		} else if (rand == 1)
-			return new GameRuleFreezeSportsObjectActionAction(Random.Range(0.25f, 4.0f));
+			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+		else if (rand == 2)
+			return new GameRuleDuplicateActionAction();
 		else
-			return new GameRuleDuplicateSportsObjectActionAction();
+			return new GameRuleFreezeUntilConditionActionAction(
+				randomPlayerEventHappenedCondition(
+					randomPlayerSourceSelector()));
 	}
-	public static GameRuleSportsObjectActionAction randomBallActionAction() {
+	public static GameRuleActionAction randomBallActionAction() {
 		int rand = Random.Range(0, 2);
 		if (rand == 0)
-			return new GameRuleFreezeSportsObjectActionAction(Random.Range(0.25f, 4.0f));
+			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
 		else
-			return new GameRuleDuplicateSportsObjectActionAction();
+			return new GameRuleDuplicateActionAction();
 	}
 
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
 		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
-			rule.CheckCondition();
+			rule.checkCondition();
 		}
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
-			rule.SendEvent(gre);
+			rule.sendEvent(gre);
+		}
+
+		//check wait timers and remove any if they happen
+		for (int i = waitTimers.Count - 1; i >= 0; i--) {
+			if (waitTimers[i].conditionHappened(gre))
+				waitTimers.RemoveAt(i);
 		}
 	}
 
@@ -283,7 +299,7 @@ public class GameRule {
 		action = a;
 		ruleDisplay = rd;
 	}
-	public void CheckCondition() {
+	public void checkCondition() {
 		//receive a list of all players that triggered the condition
 		List<TeamPlayer> triggeringPlayers = new List<TeamPlayer>();
 		condition.checkCondition(triggeringPlayers);
@@ -291,7 +307,7 @@ public class GameRule {
 			action.takeAction(tp);
 		}
 	}
-	public void SendEvent(GameRuleEvent gre) {
+	public void sendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre)) {
 			action.takeAction(gre.getEventSource());
 		}
@@ -332,10 +348,10 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		}
 	}
 	public override string ToString() {
-		return GameRulePlayerSportsObjectSelector.possessivePrefix +
+		return GameRulePlayerSelector.possessivePrefix +
 			leftGRPV.ToString() +
 			conditionOperator.ToString() +
-			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentSportsObjectSelector.possessivePrefix : "") +
+			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentSelector.possessivePrefix : "") +
 			rightGRV.ToString();
 	}
 }
@@ -415,52 +431,57 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
 	public string conditionString;
 	public string param;
-	public GameRuleEventHappenedCondition(GameRuleEventType et, string cs, string p = null) {
+	public GameRuleSelector selector;
+	public GameRuleEventHappenedCondition(GameRuleEventType et, GameRuleSelector grs, string cs, string p = null) {
 		eventType = et;
 		conditionString = cs;
 		param = p;
+		selector = grs;
 	}
 	public override bool conditionHappened(GameRuleEvent gre) {
 		return gre.eventType == eventType && gre.param == param;
 	}
+	public bool conditionHappened(GameRuleEvent gre, SportsObject target) {
+		return conditionHappened(gre) && selector.target(target) == gre.getEventSource();
+	}
 	public override string ToString() {
-		return conditionString + param;
+		return selector.ToString() + conditionString + param;
 	}
 }
 
 ////////////////Rule consequences////////////////
 public class GameRuleAction {
-	public GameRuleSportsObjectSelector sportsObjectSelector;
-	public GameRuleSportsObjectActionAction innerAction;
-	public GameRuleAction(GameRuleSportsObjectSelector sos, GameRuleSportsObjectActionAction ia) {
-		sportsObjectSelector = sos;
+	public GameRuleSelector selector;
+	public GameRuleActionAction innerAction;
+	public GameRuleAction(GameRuleSelector sos, GameRuleActionAction ia) {
+		selector = sos;
 		innerAction = ia;
 	}
 	public override string ToString() {
-		return sportsObjectSelector.ToString() + " " + innerAction.ToString(sportsObjectSelector.conjugate);
+		return selector.ToString() + " " + innerAction.ToString(selector.conjugate);
 	}
 	public void takeAction(SportsObject source) {
-		innerAction.takeAction(sportsObjectSelector.target(source));
+		innerAction.takeAction(selector.target(source));
 	}
 }
 
 ////////////////Sports object selectors////////////////
-public abstract class GameRuleSportsObjectSelector {
+public abstract class GameRuleSelector {
 	public int conjugate; //for verbs
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
 }
 
-public abstract class GameRuleSourceSportsObjectSelector : GameRuleSportsObjectSelector {
+public abstract class GameRuleSourceSelector : GameRuleSelector {
 	public override SportsObject target(SportsObject source) {
 		return source;
 	}
 }
 
-public class GameRulePlayerSportsObjectSelector : GameRuleSourceSportsObjectSelector {
+public class GameRulePlayerSelector : GameRuleSourceSelector {
 	public static string possessivePrefix = "your ";
-	public static GameRulePlayerSportsObjectSelector instance = new GameRulePlayerSportsObjectSelector();
-	public GameRulePlayerSportsObjectSelector() {
+	public static GameRulePlayerSelector instance = new GameRulePlayerSelector();
+	public GameRulePlayerSelector() {
 		conjugate = 0;
 	}
 	public override string ToString() {
@@ -471,10 +492,10 @@ public class GameRulePlayerSportsObjectSelector : GameRuleSourceSportsObjectSele
 	}
 }
 
-public class GameRuleOpponentSportsObjectSelector : GameRuleSportsObjectSelector {
+public class GameRuleOpponentSelector : GameRuleSelector {
 	public static string possessivePrefix = "your opponent's ";
-	public static GameRuleOpponentSportsObjectSelector instance = new GameRuleOpponentSportsObjectSelector();
-	public GameRuleOpponentSportsObjectSelector() {
+	public static GameRuleOpponentSelector instance = new GameRuleOpponentSelector();
+	public GameRuleOpponentSelector() {
 		conjugate = 1;
 	}
 	public override SportsObject target(SportsObject source) {
@@ -488,9 +509,9 @@ public class GameRuleOpponentSportsObjectSelector : GameRuleSportsObjectSelector
 	}
 }
 
-public class GameRuleBallShooterSportsObjectSelector : GameRuleSportsObjectSelector {
-	public static GameRuleBallShooterSportsObjectSelector instance = new GameRuleBallShooterSportsObjectSelector();
-	public GameRuleBallShooterSportsObjectSelector() {
+public class GameRuleBallShooterSelector : GameRuleSelector {
+	public static GameRuleBallShooterSelector instance = new GameRuleBallShooterSelector();
+	public GameRuleBallShooterSelector() {
 		conjugate = 1;
 	}
 	public override SportsObject target(SportsObject source) {
@@ -504,9 +525,9 @@ public class GameRuleBallShooterSportsObjectSelector : GameRuleSportsObjectSelec
 	}
 }
 
-public class GameRuleBallSportsObjectSelector : GameRuleSourceSportsObjectSelector {
-	public static GameRuleBallSportsObjectSelector instance = new GameRuleBallSportsObjectSelector();
-	public GameRuleBallSportsObjectSelector() {
+public class GameRuleBallSelector : GameRuleSourceSelector {
+	public static GameRuleBallSelector instance = new GameRuleBallSelector();
+	public GameRuleBallSelector() {
 		conjugate = 1;
 	}
 	public override string ToString() {
@@ -518,27 +539,35 @@ public class GameRuleBallSportsObjectSelector : GameRuleSourceSportsObjectSelect
 }
 
 ////////////////The actual functionality to affect players and sports objects////////////////
-public abstract class GameRuleSportsObjectActionAction {
+public abstract class GameRuleActionAction {
 	public abstract void takeAction(SportsObject so);
 	public abstract string ToString(int conjugate);
 }
 
-public abstract class GameRulePlayerActionAction : GameRuleSportsObjectActionAction {
-	public override void takeAction(SportsObject so) {
-		takeAction((TeamPlayer)(so));
+public abstract class GameRuleUntilConditionActionAction : GameRuleActionAction {
+	public GameRuleEventHappenedCondition untilCondition;
+	public GameRuleUntilConditionActionAction(GameRuleEventHappenedCondition grehc) {
+		untilCondition = grehc;
 	}
-	public abstract void takeAction(TeamPlayer tp);
+	public override void takeAction(SportsObject so) {
+		GameRules.currentGameRules.waitTimers.Add(new GameRuleActionWaitTimer(untilCondition, so, this));
+	}
+	public override string ToString(int conjugate) {
+		return getConjugate(conjugate) + "until " + untilCondition.ToString();
+	}
+	public abstract void cancelAction(SportsObject so);
+	public abstract string getConjugate(int conjugate);
 }
 
-public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
+public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 	public static string[] gainConjugates = new string[] {"gain ", "gains "};
 	public static string[] loseConjugates = new string[] {"lose ", "loses "};
 	public int pointsGiven;
 	public GameRulePointsPlayerActionAction(int pg) {
 		pointsGiven = pg;
 	}
-	public override void takeAction(TeamPlayer tp) {
-		tp.ScorePoints(pointsGiven);
+	public override void takeAction(SportsObject so) {
+		((TeamPlayer)(so)).ScorePoints(pointsGiven);
 	}
 	public override string ToString(int conjugate) {
 		string pluralPointString = Mathf.Abs(pointsGiven) == 1 ? " point" : " points";
@@ -548,10 +577,10 @@ public class GameRulePointsPlayerActionAction : GameRulePlayerActionAction {
 	}
 }
 
-public class GameRuleFreezeSportsObjectActionAction : GameRuleSportsObjectActionAction {
+public class GameRuleFreezeActionAction : GameRuleActionAction {
 	public static string[] freezeConjugates = new string[] {"freeze ", "freezes "};
 	public float timeFrozen;
-	public GameRuleFreezeSportsObjectActionAction(float tf) {
+	public GameRuleFreezeActionAction(float tf) {
 		timeFrozen = tf;
 	}
 	public override void takeAction(SportsObject so) {
@@ -562,12 +591,49 @@ public class GameRuleFreezeSportsObjectActionAction : GameRuleSportsObjectAction
 	}
 }
 
-public class GameRuleDuplicateSportsObjectActionAction : GameRuleSportsObjectActionAction {
+public class GameRuleDuplicateActionAction : GameRuleActionAction {
 	public static string[] duplicateConjugates = new string[] { "get ", "gets " };
 	public override void takeAction(SportsObject so) {
 		so.Duplicate(1);
 	}
 	public override string ToString(int conjugate) {
 		return duplicateConjugates[conjugate] + "duplicated";
+	}
+}
+
+public class GameRuleFreezeUntilConditionActionAction : GameRuleUntilConditionActionAction {
+	public static string[] freezeConjugates = new string[] {"freeze ", "freezes "};
+	public GameRuleFreezeUntilConditionActionAction(GameRuleEventHappenedCondition grehc) :
+		base(grehc) {
+	}
+	public override void takeAction(SportsObject so) {
+		so.Freeze(1000000000.0f);
+		base.takeAction(so);
+	}
+	public override void cancelAction(SportsObject so) {
+		so.Unfreeze();
+	}
+	public override string getConjugate(int conjugate) {
+		return freezeConjugates[conjugate];
+	}
+}
+
+////////////////Wait timers for conditions that don't happen until an event////////////////
+public class GameRuleActionWaitTimer {
+	public GameRuleEventHappenedCondition condition;
+	public SportsObject target;
+	public GameRuleUntilConditionActionAction action;
+	public GameRuleActionWaitTimer(GameRuleEventHappenedCondition grehc, SportsObject so,
+		GameRuleUntilConditionActionAction grucaa) {
+		condition = grehc;
+		target = so;
+		action = grucaa;
+	}
+	public bool conditionHappened(GameRuleEvent gre) {
+		if (condition.conditionHappened(gre, target)) {
+			action.cancelAction(target);
+			return true;
+		}
+		return false;
 	}
 }
