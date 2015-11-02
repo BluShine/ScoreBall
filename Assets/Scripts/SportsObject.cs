@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 //base class for dynamic objects with rigidbodies: players, balls, etc. 
 //includes methods for respawning, duplicating, un-duplicating, and other behaviors that need to work for all dynamic objects
+//collisions are handled here, but ignored; subclasses will provide functionality for handling collisions
 public class SportsObject : FieldObject {
 
     [HideInInspector]
@@ -113,4 +114,66 @@ public class SportsObject : FieldObject {
     {
         freezeTime = Mathf.Max(freezeTime, duration);
     }
+
+	//collision handling
+	void OnCollisionEnter(Collision collision) {
+		handleCollision(collision.gameObject);
+	}
+
+	void OnTriggerEnter(Collider collider) {
+		handleCollision(collider.gameObject);
+	}
+
+	void handleCollision(GameObject gameObject) {
+		if(checkBallCollision(gameObject)) {
+		} else if(checkPlayerCollision(gameObject)) {
+		} else if(checkSportsCollision(gameObject)) {
+		} else if (checkFieldCollision(gameObject)) {
+		}
+	}
+
+	public bool checkPlayerCollision(GameObject gameObject) {
+		//check if the collision is with a player
+		TeamPlayer collidedPlayer = gameObject.GetComponent<TeamPlayer>();
+		if (collidedPlayer != null) {
+			handlePlayerCollision(collidedPlayer);
+			return true;
+		}
+		return false;
+	}
+
+	public bool checkBallCollision(GameObject gameObject) {
+		//check if the collision is with a ball
+		Ball hitBall = gameObject.GetComponent<Ball>();
+		if(hitBall != null) {
+			handleBallCollision(hitBall);
+			return true;
+		}
+		return false;
+	}
+
+	public bool checkSportsCollision(GameObject gameObject) {
+		//check if the collision is with a sports object other than a ball
+		SportsObject sObject = gameObject.GetComponent<SportsObject>();
+		if (sObject != null) {
+			handleSportsCollision(sObject);
+			return true;
+		}
+		return false;
+	}
+
+	public bool checkFieldCollision(GameObject gameObject) {
+		//check if the collision is with a field object
+		FieldObject fObject = gameObject.GetComponent<FieldObject>();
+		if (fObject != null) {
+			handleFieldCollision(fObject);
+			return true;
+		}
+		return false;
+	}
+
+	public virtual void handlePlayerCollision(TeamPlayer collidedPlayer) {}
+	public virtual void handleBallCollision(Ball hitBall) {}
+	public virtual void handleSportsCollision(SportsObject sObject) {}
+	public virtual void handleFieldCollision(FieldObject fObject) {}
 }

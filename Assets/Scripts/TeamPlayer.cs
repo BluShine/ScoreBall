@@ -227,11 +227,11 @@ public class TeamPlayer : SportsObject {
 
     void OnCollisionStay(Collision collision)
     {
-        if (checkBallCollision(collision))
+        if (checkBallCollision(collision.gameObject))
         {
             //should probably send a message about this to the rules manager
         }
-        else if (checkPlayerCollision(collision))
+		else if (checkPlayerCollision(collision.gameObject))
         {
             //also send the rules manager a message about this
         }
@@ -247,113 +247,54 @@ public class TeamPlayer : SportsObject {
         particles.Play();
     }
 
-    bool checkBallCollision(Collision collision)
-    {
-        //check if the collision is a ball
-        Ball collidedBall = collision.gameObject.GetComponent<Ball>();
-        if (collidedBall != null)
-        {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTouchBall, tp: this, bl: collidedBall));
-            if (collidedBall.grabBall(this))
-            {
-                carriedBall = collidedBall;
-                if(carriedBall.ultimate)
-                {
-                    body.velocity = Vector3.zero;
-                }
-                if(!dashWhileCarrying)
-                {
-                    dashTimer = 0;
-                }
-                particles.Play();
-            }
-            else if (collidedBall.stuns)
-            {
-                //we didn't dodge the ball!
-                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));
-                tackle(collidedBall.getTackleVector(), collidedBall.tackleDuration);
-                particles.Play();
-            }
-            return true;
-        }
-        return false;
+	public override void handleBallCollision(Ball collidedBall) {
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTouchBall, tp: this, bl: collidedBall));
+		if (collidedBall.grabBall(this)) {
+			carriedBall = collidedBall;
+			if(carriedBall.ultimate) {
+				body.velocity = Vector3.zero;
+			}
+			if(!dashWhileCarrying) {
+				dashTimer = 0;
+			}
+			particles.Play();
+		} else if (collidedBall.stuns) {
+			//we didn't dodge the ball!
+			gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));
+			tackle(collidedBall.getTackleVector(), collidedBall.tackleDuration);
+			particles.Play();
+		}
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (checkBallCollision(collision))
-        {
-            
-        }
-        else if (checkPlayerCollision(collision))
-        {
-
-        }
-        else if (checkSportsCollision(collision))
-        {
-
-        }
-        else if (checkFieldCollision(collision))
-        {
-
-        }
+	public override void handlePlayerCollision(TeamPlayer collidedPlayer) {
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitPlayer, tp: this, vct: collidedPlayer));
+		if (dashTimer > 0) {
+			//steal the ball
+			if (collidedPlayer.carriedBall != null) {
+				Ball stolenBall = collidedPlayer.carriedBall;
+				if (collidedPlayer.carriedBall.grabBall(this)) {
+					carriedBall = stolenBall;
+					gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: this, vct: collidedPlayer, bl:stolenBall));
+				}
+			}
+			//tackle them
+			particles.Play();
+			Vector3 tackleVector = transform.forward * tacklePower +
+			Vector3.up * tackleLaunchPower;
+			collidedPlayer.tackle(tackleVector, tackleDuration);
+			gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTacklePlayer, tp: this, vct: collidedPlayer));
+		}
+		if (dashStopByPlayer) {
+			dashTimer = 0;
+		}
     }
 
-    bool checkPlayerCollision(Collision collision)
-    {
-        //check if the collision is a player
-        TeamPlayer collidedPlayer = collision.gameObject.GetComponent<TeamPlayer>();
-        if (collidedPlayer != null)
-        {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitPlayer, tp: this, vct: collidedPlayer));
-            if (dashTimer > 0)
-            {
-                //steal the ball
-                if (collidedPlayer.carriedBall != null)
-                {
-                    Ball stolenBall = collidedPlayer.carriedBall;
-                    if (collidedPlayer.carriedBall.grabBall(this))
-                    {
-                        carriedBall = stolenBall;
-                        gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: this, vct: collidedPlayer, bl:stolenBall));
-                    }
-                }
-                //tackle them
-                particles.Play();
-                Vector3 tackleVector = transform.forward * tacklePower +
-                    Vector3.up * tackleLaunchPower;
-                collidedPlayer.tackle(tackleVector, tackleDuration);
-                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTacklePlayer, tp: this, vct: collidedPlayer));
-            }
-            if (dashStopByPlayer)
-            {
-                dashTimer = 0;
-            }
-            return true;
-        }
-        return false;
+	public override void handleSportsCollision(SportsObject sObject) {
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitSportsObject, tp: this, so: sObject));
     }
 
-    bool checkSportsCollision(Collision collision)
-    {
-        SportsObject sObject = collision.gameObject.GetComponent<SportsObject>();
-        if (sObject != null)
-        {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitSportsObject, tp: this, so: sObject));
-            return true;
-        }
-        return false;
-    }
-
-    bool checkFieldCollision(Collision collision)
-    {
-        FieldObject fObject = collision.gameObject.GetComponent<FieldObject>();
-        if (fObject != null)
-        {
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo: fObject));
-            return true;
-        }
-        return false;
+	public override void handleFieldCollision(FieldObject fObject) {
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo: fObject));
     }
 
     public void removeBall(Ball rBall)
