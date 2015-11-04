@@ -17,6 +17,12 @@ public class SportsObject : FieldObject {
     [HideInInspector]
     public List<SportsObject> duplicates { get; private set; }
     static int MAXDUPLICATES = 100;
+    static float DUPLICATIONCOOLDOWN = .15f;
+    float dupeCoolTimer = .15f;
+
+    static float DUPELICATELIFETIME = 20;
+    public float lifeTime = 0;
+    public bool expires;
 
     [HideInInspector]
     public GameRules gameRules;
@@ -50,6 +56,13 @@ public class SportsObject : FieldObject {
 	
 	// Update is called once per frame
 	public virtual void FixedUpdate () {
+        dupeCoolTimer = Mathf.Max(0, dupeCoolTimer - Time.fixedDeltaTime);
+        lifeTime = Mathf.Max(0, lifeTime - Time.fixedDeltaTime);
+        if(expires && lifeTime == 0)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         freezeTime = Mathf.Max(0, freezeTime - Time.fixedDeltaTime);
         if (usesFreezing)
         {
@@ -80,6 +93,8 @@ public class SportsObject : FieldObject {
 
     public virtual void Duplicate(int times)
     {
+        if(dupeCoolTimer > 0) return;
+        dupeCoolTimer = DUPLICATIONCOOLDOWN;
         for(int i = 0; i < times; i++)
         {
             if(duplicates.Count >= MAXDUPLICATES)
@@ -94,6 +109,8 @@ public class SportsObject : FieldObject {
             dupe.duplicates = duplicates;
             dupe.Freeze(freezeTime);
             dupe.spawned = true;
+            dupe.expires = true;
+            dupe.lifeTime = DUPELICATELIFETIME;
             duplicates.Add(dupe);
         }
     }
@@ -111,7 +128,7 @@ public class SportsObject : FieldObject {
 
     public virtual void Freeze(float duration)
     {
-		freezeTime += duration;
+		freezeTime = Mathf.Max(duration, freezeTime);
     }
 
 	public virtual void Unfreeze() {
@@ -124,7 +141,7 @@ public class SportsObject : FieldObject {
 	}
 
 	void OnTriggerEnter(Collider collider) {
-		handleCollision(collider.gameObject);
+        handleCollision(collider.gameObject);
 	}
 
 	void handleCollision(GameObject gameObject) {
