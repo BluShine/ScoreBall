@@ -4,10 +4,10 @@ public class GameRuleGenerator {
 	public static GameRule GenerateNewRule(GameObject display) {
 		GameRuleCondition condition = randomCondition();
 		bool isComparison = condition is GameRuleComparisonCondition;
-		bool playerAction = true;
+		bool playerCondition = true;
 		if (!isComparison && ((GameRuleEventHappenedCondition)(condition)).eventType >= GameRuleEventType.BallEventTypeStart)
-			playerAction = false;
-		return new GameRule(condition, randomAction(isComparison, playerAction), display);
+			playerCondition = false;
+		return new GameRule(condition, randomAction(isComparison, playerCondition), display);
 	}
 	public static GameRuleCondition randomCondition() {
 		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
@@ -40,49 +40,59 @@ public class GameRuleGenerator {
 	public static GameRuleEventHappenedCondition randomEventHappenedCondition() {
 		//2/3 player, 1/3 ball
 		if (Random.Range(0, 3) < 2)
-			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance);
+			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance/*, false*/);
 		else
 			return randomBallEventHappenedCondition(GameRuleBallSelector.instance);
 	}
-	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
+	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector/*, bool thirdperson*/) {
 		int rand = Random.Range(0, 9);
+		GameRuleEventType eventType;
+		string param = null;
 		if (rand == 0)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerShootBall, selector, " shoot the ball");
+			eventType = GameRuleEventType.PlayerShootBall;
 		else if (rand == 1)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerGrabBall, selector, " grab the ball");
+			eventType = GameRuleEventType.PlayerGrabBall;
 		else if (rand == 2)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTacklePlayer, selector, " tackle your opponent");
+			eventType = GameRuleEventType.PlayerTacklePlayer;
 		else if (rand == 3)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitPlayer, selector, " bump into your opponent");
-		//		else if (rand == 4)
-		//			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitSportsObject, selector, " bump into ????");
-		else if (rand == 4)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, selector, " hit a ", "wall");
-		else if (rand == 5)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitFieldObject, selector, " hit a ", "goal");
-		else if (rand == 6)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerStealBall, selector, " steal the ball");
+			eventType = GameRuleEventType.PlayerHitPlayer;
+//		else if (rand == 4)
+//			eventType = GameRuleEventType.PlayerHitSportsObject;
+		else if (rand == 4) {
+			eventType = GameRuleEventType.PlayerHitFieldObject;
+			param = "wall";
+		} else if (rand == 5) {
+			eventType = GameRuleEventType.PlayerHitFieldObject;
+			param = "goal";
+		} else if (rand == 6)
+			eventType = GameRuleEventType.PlayerStealBall;
 		else if (rand == 7)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerHitInTheFaceByBall, selector, " get smacked by the ball");
+			eventType = GameRuleEventType.PlayerHitInTheFaceByBall;
 		else
-			return new GameRuleEventHappenedCondition(GameRuleEventType.PlayerTouchBall, selector, " touch the ball");
+			eventType = GameRuleEventType.PlayerTouchBall;
+		return new GameRuleEventHappenedCondition(eventType, selector, param);
 	}
 	public static GameRuleEventHappenedCondition randomBallEventHappenedCondition(GameRuleSelector selector) {
 		int rand = Random.Range(0, 3);
+		GameRuleEventType eventType;
+		string param = null;
 		if (rand == 0)
-			//			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitSportsObject, selector, " bumps into ????");
-			//		else if (rand == 1)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, selector, " hits a ", "wall");
-		else if (rand == 1)
-			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitFieldObject, selector, " hits a ", "goal");
-		else
-			return new GameRuleEventHappenedCondition(GameRuleEventType.BallHitBall, selector, " bumps into another ball");
+/*			eventType = GameRuleEventType.BallHitSportsObject;
+		else if (rand == 1)*/ {
+			eventType = GameRuleEventType.BallHitFieldObject;
+			param = "wall";
+		} else if (rand == 1) {
+			eventType = GameRuleEventType.BallHitFieldObject;
+			param = "goal";
+		} else
+			eventType = GameRuleEventType.BallHitBall;
+		return new GameRuleEventHappenedCondition(eventType, selector, param);
 	}
-	public static GameRuleAction randomAction(bool isComparison, bool playerAction) {
-		GameRuleSelector selector = playerAction ?
+	public static GameRuleAction randomAction(bool isComparison, bool playerCondition) {
+		GameRuleSelector selector = playerCondition ?
 			randomPlayerSourceSelector() :
 			randomBallSourceSelector();
-		return new GameRuleAction(selector, randomActionActionForTarget(selector));
+		return new GameRuleAction(selector, randomActionActionForTarget(selector, playerCondition));
 	}
 	public static GameRuleSelector randomPlayerSourceSelector() {
 		if (Random.Range(0, 2) == 0)
@@ -96,13 +106,13 @@ public class GameRuleGenerator {
 		else
 			return GameRuleBallShooterSelector.instance;
 	}
-	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector selector) {
+	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector selector, bool playerCondition) {
 		if (selector.targetType() == typeof(Ball))
 			return randomBallActionAction();
 		else
-			return randomPlayerActionAction(false);
+			return randomPlayerActionAction(false/*, playerCondition*/);
 	}
-	public static GameRuleActionAction randomPlayerActionAction(bool isComparison) {
+	public static GameRuleActionAction randomPlayerActionAction(bool isComparison/*, bool playerCondition*/) {
 		isComparison = false;
 		int rand = Random.Range(0, 4);
 		if (rand == 0) {

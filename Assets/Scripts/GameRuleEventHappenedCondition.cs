@@ -48,17 +48,45 @@ public class GameRuleEvent {
 		else
 			return instigator;
 	}
+	public static string getEventText(GameRuleEventType et, bool thirdperson) {
+		switch (et) {
+			case GameRuleEventType.PlayerShootBall:
+				return (thirdperson ? "shoots" : "shoot") + " the ball";
+			case GameRuleEventType.PlayerGrabBall:
+				return (thirdperson ? "grabs" : "grab") + " the ball";
+			case GameRuleEventType.PlayerTacklePlayer:
+				return (thirdperson ? "tackles" : "tackle") + " your opponent";
+			case GameRuleEventType.PlayerHitPlayer:
+				return (thirdperson ? "bumps" : "bump") + " into your opponent";
+//			case GameRuleEventType.PlayerHitSportsObject:
+//				return (thirdperson ? "bumps" : "bump") + " into ????");
+			case GameRuleEventType.PlayerHitFieldObject:
+				return (thirdperson ? "hits" : "hit") + " a ";
+			case GameRuleEventType.PlayerStealBall:
+				return (thirdperson ? "steals" : "steal") + " the ball";
+			case GameRuleEventType.PlayerHitInTheFaceByBall:
+				return (thirdperson ? "gets" : "get") + " smacked by the ball";
+			case GameRuleEventType.PlayerTouchBall:
+				return (thirdperson ? "touches" : "touch") + " the ball";
+//			case GameRuleEventType.BallHitSportsObject:
+//				return "bumps into ????";
+			case GameRuleEventType.BallHitFieldObject:
+				return "hits a ";
+			case GameRuleEventType.BallHitBall:
+				return "bumps into another ball";
+			default:
+				return "";
+		}
+	}
 }
 
 ////////////////Conditions that trigger actions when an event happen////////////////
 public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
-	public string conditionString;
 	public string param;
 	public GameRuleSelector selector;
-	public GameRuleEventHappenedCondition(GameRuleEventType et, GameRuleSelector grs, string cs, string p = null) {
+	public GameRuleEventHappenedCondition(GameRuleEventType et, GameRuleSelector grs, string p) {
 		eventType = et;
-		conditionString = cs;
 		param = p;
 		selector = grs;
 	}
@@ -69,6 +97,6 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return conditionHappened(gre) && selector.target(target) == gre.getEventSource();
 	}
 	public override string ToString() {
-		return selector.ToString() + conditionString + param;
+		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType, false) + param;
 	}
 }
