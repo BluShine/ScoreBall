@@ -79,6 +79,11 @@ public class SportsObject : FieldObject {
 
     public virtual void Respawn()
     {
+        if(expires)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         transform.position = spawnPosition;
         transform.rotation = Quaternion.Euler(spawnRotation);
         transform.localScale = spawnScale;
