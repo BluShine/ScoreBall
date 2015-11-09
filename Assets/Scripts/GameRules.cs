@@ -87,12 +87,30 @@ public class GameRules : MonoBehaviour {
 		Destroy(ruleDisplay);
 	}
 
+    public void deleteAllRules()
+    {
+        for(int i = 0; i < rulesList.Count; i++)
+        {
+            Destroy(rulesList[i].ruleDisplay);
+        }
+        rulesList = new List<GameRule>();
+    }
+
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
 		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
 			rule.checkCondition();
 		}
+
+        if(Input.GetButtonDown("Submit"))
+        {
+            GenerateNewRule();
+        }
+        if(Input.GetButtonDown("Cancel"))
+        {
+            deleteAllRules();
+        }
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		currentGameRules = this;
