@@ -115,12 +115,15 @@ public class GameRuleGenerator {
 	public static GameRuleActionAction randomPlayerActionAction(bool isComparison/*, bool playerCondition*/) {
 		isComparison = false;
 		int rand = Random.Range(0, 4);
-		if (rand == 0) {
-			int points = Random.Range(-5, 5);
+		if (rand > 0) {
+			int points = Random.Range(-5, 10);
 			if (points >= 0)
 				points++;
 			return new GameRulePointsPlayerActionAction(points);
 		}
+        else
+            return new GameRuleDuplicateActionAction();
+        /*
 		else if (rand == 1)
 			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
 		else if (rand == 2)
@@ -128,13 +131,15 @@ public class GameRuleGenerator {
 		else
 			return new GameRuleFreezeUntilConditionActionAction(
 				randomPlayerEventHappenedCondition(
-					randomPlayerSourceSelector()));
+					randomPlayerSourceSelector()));*/
 	}
 	public static GameRuleActionAction randomBallActionAction() {
-		int rand = Random.Range(0, 2);
+        return new GameRuleDuplicateActionAction();
+        /*
+        int rand = Random.Range(0, 2);
 		if (rand == 0)
 			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
 		else
-			return new GameRuleDuplicateActionAction();
+			return new GameRuleDuplicateActionAction();*/
 	}
 }
