@@ -34,6 +34,11 @@ public class SportsObject : FieldObject {
     public float freezeTime { get; private set; }
     bool usesFreezing = true;
 
+    //sound
+    public List<AudioClip> hitSounds;
+    [HideInInspector]
+    public AudioSource soundSource;
+
     // Use this for initialization
     public void Start () {
         if (!spawned)
@@ -47,6 +52,7 @@ public class SportsObject : FieldObject {
         }
         body = GetComponent<Rigidbody>();
         gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
+        soundSource = GetComponent<AudioSource>();
     }
 
     public void useDefaultFreezing(bool useDefFreeze)
@@ -143,19 +149,36 @@ public class SportsObject : FieldObject {
 	//collision handling
 	void OnCollisionEnter(Collision collision) {
 		handleCollision(collision.gameObject);
-	}
+        //play a sound if we aren't already playing a more important sound
+        if (!soundSource.isPlaying)
+        {
+            soundSource.clip = hitSounds[Random.Range(0, hitSounds.Count)];
+            soundSource.Play();
+        }
+    }
 
 	void OnTriggerEnter(Collider collider) {
         handleCollision(collider.gameObject);
 	}
 
 	void handleCollision(GameObject gameObject) {
-		if(checkBallCollision(gameObject)) {
-		} else if(checkPlayerCollision(gameObject)) {
-		} else if(checkSportsCollision(gameObject)) {
-		} else if (checkFieldCollision(gameObject)) {
-		}
-	}
+        if (checkBallCollision(gameObject))
+        {
+        }
+        else if (checkPlayerCollision(gameObject))
+        {
+        }
+        else if (checkSportsCollision(gameObject))
+        {
+        }
+        else if (checkFieldCollision(gameObject))
+        {
+        }
+        else
+        {
+            return;
+        }
+    }
 
 	public bool checkPlayerCollision(GameObject gameObject) {
 		//check if the collision is with a player

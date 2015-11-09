@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class TeamPlayer : SportsObject {
@@ -36,7 +36,10 @@ public class TeamPlayer : SportsObject {
     public string shootButton = "Fire";
 	public string dashButton = "Fire";
 
-	//game state
+    //sound
+    public List<AudioClip> tackleSounds;
+
+    //game state
     Ball carriedBall;
 	public int score = 0;
     public LayerMask BALLMASK;
@@ -251,7 +254,11 @@ public class TeamPlayer : SportsObject {
         body.angularVelocity = new Vector3(Random.value, Random.value, Random.value).normalized * 
             TACKLESPINNINESS;
         stunnedTimer = duration;
+        //emit particles
         particles.Play();
+        //play sound
+        soundSource.clip = tackleSounds[Random.Range(0, tackleSounds.Count)];
+        soundSource.Play();
     }
 
 	public override void handleBallCollision(Ball collidedBall) {

@@ -88,7 +88,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 2
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: .389705896, b: .907403529, a: 1}
   m_Intensity: .300000012
   m_Range: 7
   m_SpotAngle: 30
@@ -122,15 +122,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sportName: ultimate ball
+  team: 0
   body: {fileID: 0}
+  lifeTime: 0
+  expires: 0
   gameRules: {fileID: 0}
   spawned: 0
-  sportName: ultimate ball
   noTakebacksCooldown: .400000006
   carryRadius: .300000012
   tackleDuration: .200000003
   holdable: 1
   ultimate: 1
+  currentPlayer: {fileID: 0}
+  previousPlayer: {fileID: 0}
   stuns: 1
 --- !u!135 &13572278
 SphereCollider:
@@ -158,6 +163,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: sportName
       value: ultimate ball
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.g
+      value: .389705896
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.b
+      value: .907403529
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

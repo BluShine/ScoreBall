@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Ball : SportsObject {
 
@@ -17,9 +17,14 @@ public class Ball : SportsObject {
     bool isHeld = false;
     public bool stuns = true;
 
+    //sound
+    public List<AudioClip> kickSounds;
+    public List<AudioClip> catchSounds;
+
 	// Use this for initialization
 	new void Start () {
         base.Start();
+        soundSource = GetComponent<AudioSource>();
     }
 	
 	// FixedUpdate is called at a fixed rate
@@ -59,6 +64,7 @@ public class Ball : SportsObject {
     {
         if (holdable && takeTimer == 0)
         {
+            //give control of the ball to the player who 
             if (currentPlayer != null)
             {
                 currentPlayer.removeBall(this);
@@ -67,7 +73,11 @@ public class Ball : SportsObject {
             previousPlayer = currentPlayer;
             currentPlayer = player;
             isHeld = true;
+            //send event
             gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerGrabBall, tp: currentPlayer, bl: this));
+            //play sound
+            soundSource.clip = catchSounds[Random.Range(0, catchSounds.Count)];
+            soundSource.Play();
             return true;
         }
         return false;
@@ -79,7 +89,12 @@ public class Ball : SportsObject {
         body.constraints = RigidbodyConstraints.None;
         takeTimer = noTakebacksCooldown;
         body.velocity = shootVector;
+        //remove the player's control over the ball
         currentPlayer.removeBall(this);
+        //send event
         gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp: currentPlayer, bl: this));
+        //play sound
+        soundSource.clip = catchSounds[Random.Range(0, kickSounds.Count)];
+        soundSource.Play();
     }
 }
