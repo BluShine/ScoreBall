@@ -6,8 +6,10 @@ public class TeamPlayer : SportsObject {
 
     //physics
     public float moveSpeed = 500; //movement speed in pixels/sec
+    public float moveAccel = 1; //1 = reach full speed in 1 second. 10 = reach full speed in 1/10th of a second. Applies to move, dash, and strafe.
     public float strafeSpeed = 500; //"strafing" speed in pixels/sec
 	public float dashSpeed = 1000; //dashing speed in pixels/sec (not additive with move/strafe)
+    public float jumpSpeed = 10; //velocity when you jump
 	public float dashDuration = .7f; //duration of dash in seconds
 	float dashTimer = 0;
 	public float dashCooldownDuration = 2; //cooldown time between dashes in seconds
@@ -19,14 +21,16 @@ public class TeamPlayer : SportsObject {
     public float turnThreashold = .3f; //input threashold for turning only.
     float stunnedTimer = 0;
     public float tackleDuration = 1f; //how long you stun opponents when you tackle them
-    public float tacklePower = 10f; //forward velocity of people you tackle
-    public float tackleLaunchPower = 3f; //upwards velocity of people you tackle
-    static float TACKLESPINNINESS = 100; //how fast you spin when you're tackled
+    public float tacklePower = 7f; //forward velocity of people you tackle
+    public float tackleLaunchPower = 40f; //upwards velocity of people you tackle
+    static float TACKLESPINNINESS = 150; //how fast you spin when you're tackled
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
+    public float ballLobPower = 1000;
     public bool butterFingers = false; //if true, player will drop the ball if we run	face-first into a wall
 	public bool dashWhileCarrying = false;
+    public bool jumpWhileCarrying = false;
     public bool dashStopByWall = true;
     public bool dashStopByPlayer = true;
 
@@ -35,6 +39,8 @@ public class TeamPlayer : SportsObject {
     public string yAxis = "Vertical";
     public string shootButton = "Fire";
 	public string dashButton = "Fire";
+    public string hopButton = "Fire";
+    public string lobButton = "Fire";
 
     //sound
     public List<AudioClip> tackleSounds;
@@ -80,6 +86,8 @@ public class TeamPlayer : SportsObject {
         {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
+        //check if we're on the ground
+        bool isOnGround = Physics.Raycast(transform.position, -transform.up, .5f);
 		//dash input
 		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
 			(dashWhileCarrying || carriedBall == null)) {
@@ -87,7 +95,7 @@ public class TeamPlayer : SportsObject {
 			dashCooldownTimer = dashCooldownDuration;
 		}
         bool dashing = dashTimer > 0;
-		//normal movement if we aren't dashing.
+        //normal movement if we aren't dashing.
         if (stunned)
         {
             line.enabled = true;
@@ -106,75 +114,117 @@ public class TeamPlayer : SportsObject {
             }
 
             //dash movement
+            /*
+            //velocity movement
             body.velocity = new Vector3(0, body.velocity.y, 0) + transform.forward * dashSpeed;
+            */
+
+            //force movement
+            body.AddForce(transform.forward * dashSpeed * moveAccel, ForceMode.Acceleration);
+            if (body.velocity.magnitude > dashSpeed)
+            {
+                body.velocity = body.velocity.normalized * dashSpeed;
+            }
 
             //effect
             line.enabled = true;
         }
-        else {
-            line.enabled = false;
-            //get input vector from joystick/keys
-            Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
-			if (input.magnitude > 1)
-			{
-				input.Normalize();
-			}
-			float inputMag = input.magnitude;
-			//rotate towards joystick
-			if (inputMag != 0)
-			{
-				transform.rotation = Quaternion.RotateTowards(transform.rotation,
-					Quaternion.Euler(0, 90 -Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
-					Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
-			}
-            //update anim
-            playerAnim.UpdateMotion(new Vector2(transform.forward.x, transform.forward.z));
-            //movement
-            Vector3 movingVel = new Vector3(0, body.velocity.y, 0);
-			//strafing
-			if (inputMag > turnThreashold)
-			{
-				movingVel += Mathf.Min(1, inputMag / strafeThreashold) * strafeSpeed * new Vector3(input.x, 0, input.y);
-			}
-			//running
-			if (inputMag > strafeThreashold)
-			{
-				Vector3 playerRot = transform.forward;
-				movingVel += inputMag * moveSpeed * new Vector3(playerRot.x, 0, playerRot.z);
-			}
-			//rotate our velocity if we're sliding along a wall.
-			Ray fRay = new Ray(transform.position, transform.forward);
-			RaycastHit fRHit;
-			//spherecast further if we're carrying a ball
-			float sDist = .5f;
-			if (carriedBall != null)
-			{
-				sDist += carriedBall.carryRadius + ballHoldDistance;
-			}
-			//Debug.DrawLine(transform.position, transform.position + transform.forward * sDist);
-			//spherecast forwards
-			if (Physics.SphereCast(fRay, .4f, out fRHit, sDist, BALLMASK))
-			{
-				Vector3 tDir = Vector3.Cross(fRHit.normal, transform.up);
-				if (Vector3.Dot(tDir, movingVel) > .5f)
-				{
-					movingVel = movingVel.magnitude * tDir;
-				}
-				else if (Vector3.Dot(-tDir, movingVel) > .5f)
-				{
-					movingVel = movingVel.magnitude * -tDir;
-				}
-			}
-            //Debug.DrawLine(transform.position, transform.position + body.velocity);
-            if (carriedBall != null && carriedBall.ultimate)
+        else if (carriedBall != null && carriedBall.ultimate)
+        {
+            //don't move if the ball is "ultimate"
+        }
+        else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0)
+        {
+            //jumping
+            if (isOnGround && Input.GetButtonDown(hopButton))
+            {
+                Debug.Log("hop");
+                body.AddForce(jumpSpeed * transform.up, ForceMode.VelocityChange);
+            }
+            //apply force to stop when there's no input.
+            Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
+            float horizontalMagnitude = horizontalVelocity.magnitude;
+            if(horizontalMagnitude > (strafeSpeed + moveSpeed) * moveAccel * Time.fixedDeltaTime)
+            {
+                body.AddForce(-horizontalVelocity.normalized * (moveSpeed + strafeSpeed) * moveAccel, ForceMode.Acceleration);
+            } else
             {
                 body.velocity = new Vector3(0, body.velocity.y, 0);
             }
-            else
+        }
+        else
+        {
+            line.enabled = false;
+            //get input vector from joystick/keys
+            Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
+            if (input.magnitude > 1)
             {
-                body.velocity = movingVel;
+                input.Normalize();
             }
-		}
+            float inputMag = input.magnitude;
+            //rotate towards joystick
+            if (inputMag != 0)
+            {
+                transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                    Quaternion.Euler(0, 90 - Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
+                    Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
+            }
+            //update anim
+            playerAnim.UpdateMotion(new Vector2(transform.forward.x, transform.forward.z));
+            //movement
+            Vector3 movingVel = Vector3.zero;
+            //strafing
+            if (inputMag > turnThreashold)
+            {
+                movingVel += Mathf.Min(1, inputMag / strafeThreashold) * strafeSpeed * new Vector3(input.x, 0, input.y);
+            }
+            //running
+            if (inputMag > strafeThreashold)
+            {
+                Vector3 playerRot = transform.forward;
+                movingVel += inputMag * moveSpeed * new Vector3(playerRot.x, 0, playerRot.z);
+            }
+            //rotate our velocity if we're sliding along a wall.
+            Ray fRay = new Ray(transform.position, transform.forward);
+            RaycastHit fRHit;
+            //spherecast further if we're carrying a ball
+            float sDist = .5f;
+            if (carriedBall != null)
+            {
+                sDist += carriedBall.carryRadius + ballHoldDistance;
+            }
+            //Debug.DrawLine(transform.position, transform.position + transform.forward * sDist);
+            //spherecast forwards, ignoring the ball
+            if (Physics.SphereCast(fRay, .4f, out fRHit, sDist, BALLMASK))
+            {
+                //get the angular difference between forward and the surface normal
+                Vector3 tDir = Vector3.Cross(fRHit.normal, transform.up);
+                //correct our movement left or right within a max angle of 0.5
+                if (Vector3.Dot(tDir, movingVel) > .5f)
+                {
+                    movingVel = movingVel.magnitude * tDir;
+                }
+                else if (Vector3.Dot(-tDir, movingVel) > .5f)
+                {
+                    movingVel = movingVel.magnitude * -tDir;
+                }
+            }
+            //Add movement force
+            body.AddForce(movingVel * moveAccel, ForceMode.Acceleration);
+            //limit horizontal movement speed
+            Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
+            if(horizontalVelocity.magnitude > moveSpeed + strafeSpeed)
+            {
+                Vector3 hReducedSpeed = horizontalVelocity.normalized * (moveSpeed + strafeSpeed);
+                body.velocity = new Vector3(hReducedSpeed.x, body.velocity.y, hReducedSpeed.z);
+            }
+            
+            //jumping
+            if(isOnGround && Input.GetButtonDown(hopButton))
+            {
+                body.AddForce(jumpSpeed * transform.up, ForceMode.VelocityChange);
+            }
+        }
 
         //BALL HANDLING---------------------------------------------------------
         if (carriedBall != null)
@@ -193,7 +243,6 @@ public class TeamPlayer : SportsObject {
 				//stop dash
 				dashTimer = 0;
                 //calculate the distance to move away from the wall
-                Debug.Log(Vector3.Dot(transform.forward, ballForwardCast.normal));
                 transform.position += ballForwardCast.normal * 
                     (Vector3.Dot(transform.forward, ballForwardCast.normal) *
                     (ballForwardCast.distance - rayDist)) * .5f;
@@ -221,12 +270,21 @@ public class TeamPlayer : SportsObject {
             }
             else if (Input.GetButtonDown(shootButton))
             {
-                carriedBall.shoot(transform.forward * ballShootPower);
-                if(shootButton == dashButton)
+                carriedBall.shoot(transform.forward * ballShootPower + body.velocity);
+                if (shootButton == dashButton)
                 {
                     dashCooldownTimer = dashCooldownDuration;
                 }
             }
+            else if (Input.GetButtonDown(lobButton))
+            {
+                carriedBall.shoot((transform.forward + transform.up * 1.5f).normalized * ballLobPower + body.velocity);
+                if(lobButton == dashButton)
+                {
+                    dashCooldownTimer = dashCooldownDuration;
+                }
+            }
+
         }
 	}
 
