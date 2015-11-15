@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5456098}
   - 114: {fileID: 11487848}
   - 108: {fileID: 10857082}
+  - 82: {fileID: 8207624}
   m_Layer: 9
   m_Name: UltimateBall
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 113308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -2.36999989}
+  m_LocalPosition: {x: 0, y: 1.75999999, z: -4.0140295}
   m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,6 +80,76 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!82 &8207624
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113308}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 682386428b305f245b43e617f9dc4ec2, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
 --- !u!108 &10857082
 Light:
   m_ObjectHideFlags: 1
@@ -129,6 +200,13 @@ MonoBehaviour:
   expires: 0
   gameRules: {fileID: 0}
   spawned: 0
+  hitSounds:
+  - {fileID: 8300000, guid: 682386428b305f245b43e617f9dc4ec2, type: 3}
+  - {fileID: 8300000, guid: 34062eefdc5c6bd4282ba694cebd52f2, type: 3}
+  - {fileID: 8300000, guid: 3303a94cd14759549bb75ce498e0db37, type: 3}
+  - {fileID: 8300000, guid: 34e454129ebd1f34e91c7485fe22d66c, type: 3}
+  - {fileID: 8300000, guid: cb65c3ef2f631884fbf53b8c0e798f4d, type: 3}
+  soundSource: {fileID: 0}
   noTakebacksCooldown: .400000006
   carryRadius: .300000012
   tackleDuration: .200000003
@@ -137,6 +215,12 @@ MonoBehaviour:
   currentPlayer: {fileID: 0}
   previousPlayer: {fileID: 0}
   stuns: 1
+  kickSounds:
+  - {fileID: 8300000, guid: 9045bcfaa4267db43a190ad66f44e4bc, type: 3}
+  - {fileID: 8300000, guid: 6085ec7e4816b3445af36e8d8f41380a, type: 3}
+  catchSounds:
+  - {fileID: 8300000, guid: 2ddf64a76629850489039de0af92a58c, type: 3}
+  - {fileID: 8300000, guid: ae13098bdf91c9e44a09281a1b3966c0, type: 3}
 --- !u!135 &13572278
 SphereCollider:
   m_ObjectHideFlags: 1

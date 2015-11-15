@@ -264,11 +264,11 @@ GameObject:
   - 4: {fileID: 482990}
   - 114: {fileID: 11469952}
   - 54: {fileID: 5474300}
-  - 135: {fileID: 13573078}
   - 96: {fileID: 9635132}
   - 199: {fileID: 19987910}
   - 198: {fileID: 19847560}
   - 82: {fileID: 8207908}
+  - 136: {fileID: 13682558}
   m_Layer: 8
   m_Name: OrangePlayer
   m_TagString: Untagged
@@ -1044,26 +1044,32 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dc9e998603bc4bc4eb3e63ba03f7318b, type: 3}
   soundSource: {fileID: 0}
   moveSpeed: 0
+  moveAccel: 20
   strafeSpeed: 10
   dashSpeed: 17.7579994
+  jumpSpeed: 10
   dashDuration: .467999995
   dashCooldownDuration: 1.324
   turnSpeed: 720
   strafeThreashold: .00999999978
   turnThreashold: .00999999978
   tackleDuration: 2.35640001
-  tacklePower: 15
-  tackleLaunchPower: 10
+  tacklePower: 9.34000015
+  tackleLaunchPower: 13.1199999
   ballHoldDistance: 1.10000002
-  ballShootPower: 20
+  ballShootPower: 15
+  ballLobPower: 13
   butterFingers: 1
   dashWhileCarrying: 0
+  jumpWhileCarrying: 0
   dashStopByWall: 1
   dashStopByPlayer: 1
   xAxis: Horizontal2
   yAxis: Vertical2
-  shootButton: Fire2
-  dashButton: Fire2
+  shootButton: Shoot2
+  dashButton: Shoot2
+  hopButton: Hop2
+  lobButton: Lob2
   tackleSounds:
   - {fileID: 8300000, guid: bfd39c2dc14118940a68cd59970b9eda, type: 3}
   score: 0
@@ -1143,18 +1149,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentObject: {fileID: 134144}
---- !u!135 &13573078
-SphereCollider:
+--- !u!136 &13682558
+CapsuleCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 164914}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 813d7a24f1216854ba1090b7928b0a19, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: .5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Height: 1.79999995
+  m_Direction: 1
+  m_Center: {x: 0, y: .400000006, z: 0}
 --- !u!198 &19847560
 ParticleSystem:
   m_ObjectHideFlags: 1
