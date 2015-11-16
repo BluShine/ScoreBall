@@ -1,0 +1,389 @@
+fileFormatVersion: 2
+guid: 92322432cac51af4b81b7e4cde3fb2c1
+timeCreated: 1447701245
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: head_f_1
+    21300002: head_r_1
+    21300004: smile
+    21300006: body1
+    21300008: body2
+    21300010: hand_1
+    21300012: hand_2
+    21300014: frown
+    21300016: hand_motion_1
+    21300018: eye1
+    21300020: hand_motion_2
+    21300022: head_r_2
+    21300024: eye2
+    21300026: head_f_2
+    21300028: eye3
+    21300030: character_15
+    21300032: foot_f_1A
+    21300034: foot_r_1A
+    21300036: head_f_3
+    21300038: head_r_3
+    21300040: foot_f_1B
+    21300042: foot_r_1B
+    21300044: foot_f_2A
+    21300046: foot_r_2A
+    21300048: foot_f_2B
+    21300050: foot_r_2B
+    21300052: foot_f_3A
+    21300054: foot_r_3A
+    21300056: character_28
+    21300058: foot_r_3B
+    21300060: foot_f_3B
+    21300062: character_31
+    21300064: character_32
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: head_f_1
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 804
+        width: 179
+        height: 181
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: head_r_1
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 818
+        width: 168
+        height: 182
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: smile
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 935
+        width: 48
+        height: 42
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: body1
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 744
+        width: 158
+        height: 238
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: body2
+      rect:
+        serializedVersion: 2
+        x: 686
+        y: 748
+        width: 166
+        height: 242
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: hand_1
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 932
+        width: 52
+        height: 66
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: hand_2
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 928
+        width: 64
+        height: 68
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: frown
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 881
+        width: 54
+        height: 37
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: hand_motion_1
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 830
+        width: 78
+        height: 82
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: eye1
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 814
+        width: 18
+        height: 42
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: hand_motion_2
+      rect:
+        serializedVersion: 2
+        x: 908
+        y: 732
+        width: 84
+        height: 88
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: head_r_2
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 572
+        width: 174
+        height: 192
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: eye2
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 755
+        width: 20
+        height: 41
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: head_f_2
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 560
+        width: 178
+        height: 189
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: eye3
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 696
+        width: 17
+        height: 38
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_1A
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 572
+        width: 68
+        height: 88
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_1A
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 587
+        width: 64
+        height: 80
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: head_f_3
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 331
+        width: 186
+        height: 193
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: head_r_3
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 347
+        width: 173
+        height: 181
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_1B
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 462
+        width: 64
+        height: 95
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_1B
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 498
+        width: 54
+        height: 75
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_2A
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 384
+        width: 98
+        height: 65
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_2A
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 416
+        width: 88
+        height: 60
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_2B
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 310
+        width: 108
+        height: 62
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_2B
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 339
+        width: 85
+        height: 56
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_3A
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 222
+        width: 84
+        height: 75
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_3A
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 250
+        width: 73
+        height: 74
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_r_3B
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 160
+        width: 77
+        height: 72
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: foot_f_3B
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 136
+        width: 90
+        height: 76
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: character_31
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 106
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
