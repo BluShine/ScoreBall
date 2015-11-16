@@ -1067,7 +1067,7 @@ MonoBehaviour:
   xAxis: Horizontal2
   yAxis: Vertical2
   shootButton: Shoot2
-  dashButton: Shoot2
+  dashButton: Dash2
   hopButton: Hop2
   lobButton: Lob2
   tackleSounds:
