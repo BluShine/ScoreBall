@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
@@ -93,7 +93,7 @@ public class GameRules : MonoBehaviour {
         {
             Destroy(rulesList[i].ruleDisplay);
         }
-        rulesList = new List<GameRule>();
+        rulesList.Clear();
     }
 
 	// FixedUpdate is called at a fixed rate

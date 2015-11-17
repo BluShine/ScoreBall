@@ -84,7 +84,7 @@ public class GameRuleEvent {
 public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
 	public string param;
-	public GameRuleSelector selector;
+	public GameRuleSelector selector; // this is unused except for in text display and until-condition actions
 	public GameRuleEventHappenedCondition(GameRuleEventType et, GameRuleSelector grs, string p) {
 		eventType = et;
 		param = p;
@@ -93,10 +93,10 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public override bool conditionHappened(GameRuleEvent gre) {
 		return gre.eventType == eventType && gre.param == param;
 	}
-	public bool conditionHappened(GameRuleEvent gre, SportsObject target) {
-		return conditionHappened(gre) && selector.target(target) == gre.getEventSource();
+	public bool conditionHappened(GameRuleEvent gre, SportsObject triggerSource) {
+		return conditionHappened(gre) && selector.target(triggerSource) == gre.getEventSource();
 	}
 	public override string ToString() {
-		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType, false) + param;
+		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType, selector.conjugate == 1) + param;
 	}
 }

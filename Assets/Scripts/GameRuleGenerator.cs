@@ -4,14 +4,16 @@ public class GameRuleGenerator {
 	public static GameRule GenerateNewRule(GameObject display) {
 		GameRuleCondition condition = randomCondition();
 		bool isComparison = condition is GameRuleComparisonCondition;
-		bool playerCondition = true;
+		bool ballCondition = false;
 		if (!isComparison && ((GameRuleEventHappenedCondition)(condition)).eventType >= GameRuleEventType.BallEventTypeStart)
-			playerCondition = false;
-		return new GameRule(condition, randomAction(isComparison, playerCondition), display);
+			ballCondition = true;
+		return new GameRule(condition, randomAction(isComparison, ballCondition), display);
 	}
 	public static GameRuleCondition randomCondition() {
 		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
 	}
+
+	////////////////GameRuleComparisonCondition generation////////////////
 	public static GameRuleComparisonCondition randomComparisonCondition() {
 		//only player-value comparison conditions for now
 		return new GameRulePlayerValueComparisonCondition(randomPlayerValue(), randomConditionOperator(), Random.Range(0, 2) == 0 ? randomValue() : randomPlayerValue());
@@ -37,14 +39,26 @@ public class GameRuleGenerator {
 	public static GameRuleValue randomValue() {
 		return new GameRuleIntConstantValue(Random.Range(-100, 101));
 	}
+
+	////////////////GameRuleEventHappenedCondition generation////////////////
+	//generate a random EventHappenedCondition for a rule
 	public static GameRuleEventHappenedCondition randomEventHappenedCondition() {
 		//2/3 player, 1/3 ball
 		if (Random.Range(0, 3) < 2)
-			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance/*, false*/);
+			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance);
 		else
 			return randomBallEventHappenedCondition(GameRuleBallSelector.instance);
 	}
-	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector/*, bool thirdperson*/) {
+	//generate a random EventHappenedCondition for an until-condition action
+	//the given selector selects the object that triggers the end of the until-condition action
+	public static GameRuleEventHappenedCondition randomEventHappenedConditionForTarget(GameRuleSelector sourceToTrigger) {
+		if (sourceToTrigger.targetType() == typeof(Ball))
+			return randomBallEventHappenedCondition(sourceToTrigger);
+		else
+			return randomPlayerEventHappenedCondition(sourceToTrigger);
+	}
+	//generate a random EventHappenedCondition for a player event source
+	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
 		int rand = Random.Range(0, 9);
 		GameRuleEventType eventType;
 		string param = null;
@@ -88,11 +102,54 @@ public class GameRuleGenerator {
 			eventType = GameRuleEventType.BallHitBall;
 		return new GameRuleEventHappenedCondition(eventType, selector, param);
 	}
-	public static GameRuleAction randomAction(bool isComparison, bool playerCondition) {
-		GameRuleSelector selector = playerCondition ?
-			randomPlayerSourceSelector() :
-			randomBallSourceSelector();
-		return new GameRuleAction(selector, randomActionActionForTarget(selector, playerCondition));
+
+	////////////////GameRuleAction generation////////////////
+	public static GameRuleAction randomAction(bool isComparison, bool ballCondition) {
+		GameRuleSelector sourceToTarget = randomSelectorForSource(ballCondition);
+		return new GameRuleAction(sourceToTarget, randomActionActionForTarget(sourceToTarget, ballCondition));
+	}
+	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector sourceToTarget, bool ballCondition) {
+		if (sourceToTarget.targetType() == typeof(Ball))
+			return randomBallActionAction(ballCondition);
+		else
+			return randomPlayerActionAction(false, ballCondition);
+	}
+	public static GameRuleActionAction randomPlayerActionAction(bool isComparison, bool ballCondition) {
+isComparison = false;
+		int rand = Random.Range(0, 4);
+		if (rand == 0) {
+			int points = Random.Range(-5, 10);
+			if (points >= 0)
+				points++;
+			return new GameRulePointsPlayerActionAction(points);
+		} else if (rand == 1)
+			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+		else if (rand == 2)
+			return new GameRuleDuplicateActionAction();
+		else
+			return new GameRuleFreezeUntilConditionActionAction(
+				randomEventHappenedConditionForTarget(
+					randomSelectorForSource(ballCondition)));
+	}
+	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
+		int rand = Random.Range(0, 3);
+		if (rand == 0)
+			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+		else if (rand == 1)
+			return new GameRuleDuplicateActionAction();
+		else {
+			return new GameRuleFreezeUntilConditionActionAction(
+				randomEventHappenedConditionForTarget(
+					randomSelectorForSource(ballCondition)));
+		}
+	}
+
+	////////////////GameRuleSelectors for actions and conditions////////////////
+	public static GameRuleSelector randomSelectorForSource(bool ballCondition) {
+		if (ballCondition)
+			return randomBallSourceSelector();
+		else
+			return randomPlayerSourceSelector();
 	}
 	public static GameRuleSelector randomPlayerSourceSelector() {
 		if (Random.Range(0, 2) == 0)
@@ -101,45 +158,12 @@ public class GameRuleGenerator {
 			return GameRuleOpponentSelector.instance;
 	}
 	public static GameRuleSelector randomBallSourceSelector() {
-		if (Random.Range(0, 2) == 0)
-			return GameRuleBallSelector.instance;
-		else
-			return GameRuleBallShooterSelector.instance;
-	}
-	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector selector, bool playerCondition) {
-		if (selector.targetType() == typeof(Ball))
-			return randomBallActionAction();
-		else
-			return randomPlayerActionAction(false/*, playerCondition*/);
-	}
-	public static GameRuleActionAction randomPlayerActionAction(bool isComparison/*, bool playerCondition*/) {
-		isComparison = false;
-		int rand = Random.Range(0, 4);
-		if (rand > 0) {
-			int points = Random.Range(-5, 10);
-			if (points >= 0)
-				points++;
-			return new GameRulePointsPlayerActionAction(points);
-		}
-        else
-            return new GameRuleDuplicateActionAction();
-        /*
-		else if (rand == 1)
-			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
-		else if (rand == 2)
-			return new GameRuleDuplicateActionAction();
-		else
-			return new GameRuleFreezeUntilConditionActionAction(
-				randomPlayerEventHappenedCondition(
-					randomPlayerSourceSelector()));*/
-	}
-	public static GameRuleActionAction randomBallActionAction() {
-        return new GameRuleDuplicateActionAction();
-        /*
-        int rand = Random.Range(0, 2);
+		int rand = Random.Range(0, 2);
 		if (rand == 0)
-			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+			return GameRuleBallSelector.instance;
+		else if (rand == 1)
+			return GameRuleBallShooterSelector.instance;
 		else
-			return new GameRuleDuplicateActionAction();*/
+			return GameRuleBallShooterOpponentSelector.instance;
 	}
 }

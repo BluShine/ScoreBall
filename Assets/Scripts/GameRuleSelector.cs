@@ -58,6 +58,22 @@ public class GameRuleBallShooterSelector : GameRuleSelector {
 	}
 }
 
+public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
+	public static GameRuleBallShooterOpponentSelector instance = new GameRuleBallShooterOpponentSelector();
+	public GameRuleBallShooterOpponentSelector() {
+		conjugate = 1;
+	}
+	public override SportsObject target(SportsObject source) {
+		return ((Ball)(source)).currentPlayer.opponent;
+	}
+	public override string ToString() {
+		return "the opponent of the player who shot the ball";
+	}
+	public override System.Type targetType() {
+		return typeof(TeamPlayer);
+	}
+}
+
 public class GameRuleBallSelector : GameRuleSourceSelector {
 	public static GameRuleBallSelector instance = new GameRuleBallSelector();
 	public GameRuleBallSelector() {

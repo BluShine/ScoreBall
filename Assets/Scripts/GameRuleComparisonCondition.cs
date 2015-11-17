@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 ////////////////Rule conditions////////////////
 public abstract class GameRuleCondition {
-	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) { }
-	public virtual bool conditionHappened(GameRuleEvent gre) { return false; }
+	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
+	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
 }
 
 ////////////////Conditions that trigger actions when checked////////////////
