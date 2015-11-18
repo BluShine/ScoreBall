@@ -9,7 +9,7 @@ public class PlayerAnimation : MonoBehaviour {
     static float TURNMINTIME = 0.1f;
     public Vector3 offset = new Vector3(0,0,0.5f);
 
-    enum Direction { left, right, towards, away}
+    enum Direction { NW, SW, NE, SE}
     Direction lastDirection;
 
     public bool stunned = false;
@@ -43,55 +43,63 @@ public class PlayerAnimation : MonoBehaviour {
     {
         if (turnTime > 0 || motion.sqrMagnitude == 0)
             return;
+
+
         //going horizontal or vertical
-        if(Mathf.Abs(motion.x) + .001 >= Mathf.Abs(motion.y)) //a little bit biased towards horizontal animations
+        if(motion.y > 0 && motion.x != 0) //running "North" aka "away from the camera"
         {
             //going right or left?
             if(motion.x > 0)
             {
-                if (lastDirection != Direction.right)
+                if (lastDirection != Direction.NW)
                 {
-                    lastDirection = Direction.right;
+                    lastDirection = Direction.NW;
                     //use negative scale to flip the sprite right
                     transform.localScale = new Vector3(
                         -Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
                     turnTime = TURNMINTIME;
-                    anim.SetInteger("state", 0);
+                    anim.SetTrigger("run_b");
                 }
             } else
             {
-                if (lastDirection != Direction.left)
+                if (lastDirection != Direction.NE)
                 {
-                    lastDirection = Direction.left;
+                    lastDirection = Direction.NE;
                     transform.localScale = new Vector3(
                         Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
                     turnTime = TURNMINTIME;
-                    anim.SetInteger("state", 0);
+                    anim.SetTrigger("run_b");
                 }
             }
-        } else
+        } else if (motion.y < 0 && motion.x != 0)
         {
-            if(motion.y > 0)
+            //going right or left?
+            if (motion.x > 0)
             {
-                if(lastDirection != Direction.away)
+                if (lastDirection != Direction.SW)
                 {
-                    lastDirection = Direction.away;
+                    lastDirection = Direction.SW;
+                    //use negative scale to flip the sprite right
                     transform.localScale = new Vector3(
-                        Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                        -Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
                     turnTime = TURNMINTIME;
-                    anim.SetInteger("state", 2);
-                }
-            } else
-            {
-                if (lastDirection != Direction.towards)
-                {
-                    lastDirection = Direction.towards;
-                    transform.localScale = new Vector3(
-                        Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-                    turnTime = TURNMINTIME;
-                    anim.SetInteger("state", 1);
+                    anim.SetTrigger("run");
                 }
             }
+            else
+            {
+                if (lastDirection != Direction.SE)
+                {
+                    lastDirection = Direction.SE;
+                    transform.localScale = new Vector3(
+                        Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                    turnTime = TURNMINTIME;
+                    anim.SetTrigger("run");
+                }
+            }
+        } else if (motion.y == 0 && motion.x == 0)
+        {
+            anim.SetTrigger("idle");
         }
     }
 }
