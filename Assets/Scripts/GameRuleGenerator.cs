@@ -1,8 +1,26 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class GameRuleGenerator {
+	private static GameRuleCondition condition;
+	private static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
+	private static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
+	private static List<GameRuleEventType> eventTypesList = buildEventTypesList();
+	private static List<GameRuleEventType> buildEventTypesList() {
+		List<GameRuleEventType> values = new List<GameRuleEventType>();
+		foreach (GameRuleEventType eventType in System.Enum.GetValues(typeof(GameRuleEventType))) {
+			if (eventType < GameRuleEventType.PlayerEventTypeStart && eventType < GameRuleEventType.PlayerEventTypeEnd) {
+				playerEventTypesList.Add(eventType);
+				values.Add(eventType);
+			} else if (eventType < GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) {
+				ballEventTypesList.Add(eventType);
+				values.Add(eventType);
+			}
+		}
+		return values;
+	}
 	public static GameRule GenerateNewRule(GameObject display) {
-		GameRuleCondition condition = randomCondition();
+		condition = randomCondition();
 		bool isComparison = condition is GameRuleComparisonCondition;
 		bool ballCondition = false;
 		if (!isComparison && ((GameRuleEventHappenedCondition)(condition)).eventType >= GameRuleEventType.BallEventTypeStart)
@@ -59,48 +77,29 @@ public class GameRuleGenerator {
 	}
 	//generate a random EventHappenedCondition for a player event source
 	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
-		int rand = Random.Range(0, 9);
-		GameRuleEventType eventType;
+		List<GameRuleEventType> acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
+acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
+		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
 		string param = null;
-		if (rand == 0)
-			eventType = GameRuleEventType.PlayerShootBall;
-		else if (rand == 1)
-			eventType = GameRuleEventType.PlayerGrabBall;
-		else if (rand == 2)
-			eventType = GameRuleEventType.PlayerTacklePlayer;
-		else if (rand == 3)
-			eventType = GameRuleEventType.PlayerHitPlayer;
-//		else if (rand == 4)
-//			eventType = GameRuleEventType.PlayerHitSportsObject;
-		else if (rand == 4) {
-			eventType = GameRuleEventType.PlayerHitFieldObject;
-			param = "wall";
-		} else if (rand == 5) {
-			eventType = GameRuleEventType.PlayerHitFieldObject;
-			param = "goal";
-		} else if (rand == 6)
-			eventType = GameRuleEventType.PlayerStealBall;
-		else if (rand == 7)
-			eventType = GameRuleEventType.PlayerHitInTheFaceByBall;
-		else
-			eventType = GameRuleEventType.PlayerTouchBall;
+		if (eventType == GameRuleEventType.PlayerHitFieldObject)
+			param = randomFieldObjectType();
 		return new GameRuleEventHappenedCondition(eventType, selector, param);
 	}
 	public static GameRuleEventHappenedCondition randomBallEventHappenedCondition(GameRuleSelector selector) {
-		int rand = Random.Range(0, 3);
-		GameRuleEventType eventType;
+		List<GameRuleEventType> acceptableEventTypes = new List<GameRuleEventType>(ballEventTypesList);
+acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
+		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
 		string param = null;
-		if (rand == 0)
-/*			eventType = GameRuleEventType.BallHitSportsObject;
-		else if (rand == 1)*/ {
-			eventType = GameRuleEventType.BallHitFieldObject;
-			param = "wall";
-		} else if (rand == 1) {
-			eventType = GameRuleEventType.BallHitFieldObject;
-			param = "goal";
-		} else
-			eventType = GameRuleEventType.BallHitBall;
+		if (eventType == GameRuleEventType.BallHitFieldObject)
+			param = randomFieldObjectType();
 		return new GameRuleEventHappenedCondition(eventType, selector, param);
+	}
+	public static string randomFieldObjectType() {
+		int rand = Random.Range(0, 2);
+		if (rand == 0)
+			return "goal";
+		else
+			return "wall";
 	}
 
 	////////////////GameRuleAction generation////////////////

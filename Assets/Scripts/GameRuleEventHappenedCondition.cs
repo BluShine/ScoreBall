@@ -12,11 +12,13 @@ public enum GameRuleEventType : int {
 	PlayerStealBall,
 	PlayerHitInTheFaceByBall,
 	PlayerTouchBall,
+	PlayerEventTypeEnd = 999,
 
 	BallEventTypeStart = 1000,
 	BallHitSportsObject,
 	BallHitFieldObject,
-	BallHitBall
+	BallHitBall,
+	BallEventTypeEnd = 1999
 }
 
 public class GameRuleEvent {
