@@ -64,7 +64,8 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 		conjugate = 1;
 	}
 	public override SportsObject target(SportsObject source) {
-		return ((Ball)(source)).currentPlayer.opponent;
+		TeamPlayer shooter = ((Ball)(source)).currentPlayer;
+		return shooter == null ? null : shooter.opponent;
 	}
 	public override string ToString() {
 		return "the opponent of the player who shot the ball";

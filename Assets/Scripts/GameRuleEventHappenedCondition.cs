@@ -101,7 +101,8 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 
 		//collisions don't happen between players/balls and field objects on the players' teams
 		if (gre.eventType == GameRuleEventType.BallHitFieldObject) {
-			if (gre.ball.currentPlayer.team == gre.fieldObj.team)
+			TeamPlayer ballPlayer = gre.ball.currentPlayer;
+			if (ballPlayer != null && ballPlayer.team == gre.fieldObj.team)
 				return false;
 		} else if (gre.eventType == GameRuleEventType.PlayerHitFieldObject) {
 			if (gre.instigator.team == gre.fieldObj.team)

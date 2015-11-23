@@ -15,8 +15,11 @@ public class GameRules : MonoBehaviour {
 	public List<Text> teamTexts;
 	public List<int> teamScores;
 	//so that we have access to scores and stuff when evaluating rules
-	public static GameRules currentGameRules;
+	public static GameRules instance;
 
+	public void Start() {
+		instance = this;
+	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed
 		for (int i = tp.team - allPlayers.Count; i >= 1; i--)
@@ -60,7 +63,7 @@ public class GameRules : MonoBehaviour {
 		display.transform.localScale = ruleDisplayPrefab.transform.localScale;
 
 		//unity has no good way of giving us the button we clicked, so we have to remember it here
-		Button deleteButton = display.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
+		Button deleteButton = getButtonFromRuleDisplay(display);
 		deleteButton.onClick.AddListener(() => {this.DeleteRule(deleteButton);});
 
 		GameRule rule = GameRuleGenerator.GenerateNewRule(display);
@@ -83,24 +86,37 @@ public class GameRules : MonoBehaviour {
 				offsetRuleDisplayX(gameRule, widthoffset);
 				i++;
 			}
+
+			//cancel any wait timers associated with this rule
+			GameRuleActionAction innerAction = gameRule.action.innerAction;
+			if (innerAction is GameRuleUntilConditionActionAction) {
+				GameRuleEventHappenedCondition untilCondition =
+					((GameRuleUntilConditionActionAction)(innerAction)).untilCondition;
+				//loop through all the wait timers and cancel their actions if they have this rule
+				for (int j = waitTimers.Count - 1; j >= 0; j--) {
+					if (waitTimers[i].condition == untilCondition) {
+						waitTimers[i].cancelAction();
+						waitTimers.RemoveAt(i);
+					}
+				}
+			}
 		}
 		Destroy(ruleDisplay);
 	}
 
     public void deleteAllRules()
     {
-        for(int i = 0; i < rulesList.Count; i++)
+        for(int i = rulesList.Count - 1; i >= 0; i--)
         {
-            Destroy(rulesList[i].ruleDisplay);
+			DeleteRule(getButtonFromRuleDisplay(rulesList[i].ruleDisplay));
         }
         rulesList.Clear();
     }
 
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
-		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
-			rule.checkCondition();
+			rule.update();
 		}
 
         if(Input.GetButtonDown("Submit"))
@@ -113,7 +129,6 @@ public class GameRules : MonoBehaviour {
         }
 	}
 	public void SendEvent(GameRuleEvent gre) {
-		currentGameRules = this;
 		foreach (GameRule rule in rulesList) {
 			rule.sendEvent(gre);
 		}
@@ -126,6 +141,9 @@ public class GameRules : MonoBehaviour {
 	}
 
 	//General helpers
+	public static Button getButtonFromRuleDisplay(GameObject ruleDisplay) {
+		return ruleDisplay.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
+	}
 	public static void offsetRuleDisplayX(GameRule gameRule, float widthoffset) {
 		Transform t = gameRule.ruleDisplay.transform;
 		Vector3 position = t.localPosition;
@@ -136,25 +154,44 @@ public class GameRules : MonoBehaviour {
 
 ////////////////Represents a single game rule////////////////
 public class GameRule {
-	public GameRuleCondition condition = null;
-	public GameRuleAction action = null;
+	public GameRuleCondition condition;
+	public GameRuleAction action;
 	public GameObject ruleDisplay;
+	public GameObject flashDisplay;
 	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject rd) {
 		condition = c;
 		action = a;
 		ruleDisplay = rd;
+		flashDisplay = rd.transform.FindChild("Flash").gameObject;
+	}
+	public void update() {
+		checkCondition();
 	}
 	public void checkCondition() {
 		//receive a list of all players that triggered the condition
 		List<TeamPlayer> triggeringPlayers = new List<TeamPlayer>();
 		condition.checkCondition(triggeringPlayers);
-		foreach (TeamPlayer tp in triggeringPlayers) {
-			action.takeAction(tp);
+		if (triggeringPlayers.Count > 0) {
+			foreach (TeamPlayer tp in triggeringPlayers) {
+				action.takeAction(tp);
+			}
+			startFlash();
 		}
 	}
 	public void sendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre)) {
 			action.takeAction(gre.getEventSource());
+			startFlash();
 		}
+	}
+	public void startFlash() {
+		Image flashImage = flashDisplay.GetComponent<Image>();
+		//this is apparently the way to reset a CrossFadeAlpha
+		flashImage.CrossFadeAlpha(0.75f, 0.0f, false);
+		flashImage.CrossFadeAlpha(0.0f, 1.0f, false);
+		flashImage.enabled = true;
+		RectTransform flashSize = ((RectTransform)(flashImage.transform));
+		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
+		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
 	}
 }

@@ -29,7 +29,7 @@ public abstract class GameRuleUntilConditionActionAction : GameRuleActionAction 
 		untilCondition = grehc;
 	}
 	public override void takeAction(SportsObject source, SportsObject target) {
-		GameRules.currentGameRules.waitTimers.Add(new GameRuleActionWaitTimer(untilCondition, source, target, this));
+		GameRules.instance.waitTimers.Add(new GameRuleActionWaitTimer(untilCondition, source, target, this));
 	}
 	public override string ToString(int conjugate) {
 		return getConjugate(conjugate) + "until " + untilCondition.ToString();
@@ -114,9 +114,12 @@ public class GameRuleActionWaitTimer {
 	}
 	public bool conditionHappened(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre, source)) {
-			action.cancelAction(target);
+			cancelAction();
 			return true;
 		}
 		return false;
+	}
+	public void cancelAction() {
+		action.cancelAction(target);
 	}
 }
