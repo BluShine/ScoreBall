@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: d1960578c85c56a4d81dcbec76c570f4
-timeCreated: 1448312105
+timeCreated: 1448312900
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -122,8 +122,8 @@ TextureImporter:
         y: 923
         width: 78
         height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_1
       rect:
@@ -132,8 +132,8 @@ TextureImporter:
         y: 927
         width: 68
         height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_2
       rect:
@@ -142,8 +142,8 @@ TextureImporter:
         y: 926
         width: 101
         height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_3
       rect:
@@ -152,8 +152,8 @@ TextureImporter:
         y: 891
         width: 78
         height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_4
       rect:
@@ -162,8 +162,8 @@ TextureImporter:
         y: 871
         width: 45
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_5
       rect:
@@ -172,8 +172,8 @@ TextureImporter:
         y: 859
         width: 36
         height: 74
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_6
       rect:
@@ -182,8 +182,8 @@ TextureImporter:
         y: 864
         width: 43
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_7
       rect:
@@ -192,8 +192,8 @@ TextureImporter:
         y: 902
         width: 41
         height: 66
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_8
       rect:
@@ -202,8 +202,8 @@ TextureImporter:
         y: 916
         width: 54
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_9
       rect:
@@ -212,8 +212,8 @@ TextureImporter:
         y: 811
         width: 85
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_10
       rect:
@@ -222,8 +222,8 @@ TextureImporter:
         y: 825
         width: 117
         height: 67
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_11
       rect:
@@ -232,8 +232,8 @@ TextureImporter:
         y: 811
         width: 81
         height: 48
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_12
       rect:
@@ -242,8 +242,8 @@ TextureImporter:
         y: 819
         width: 143
         height: 78
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_13
       rect:
@@ -252,8 +252,8 @@ TextureImporter:
         y: 678
         width: 135
         height: 98
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_14
       rect:
@@ -262,8 +262,8 @@ TextureImporter:
         y: 695
         width: 120
         height: 93
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_15
       rect:
@@ -272,8 +272,8 @@ TextureImporter:
         y: 740
         width: 80
         height: 48
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_16
       rect:
@@ -282,8 +282,8 @@ TextureImporter:
         y: 748
         width: 93
         height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_17
       rect:
@@ -292,8 +292,8 @@ TextureImporter:
         y: 707
         width: 66
         height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_18
       rect:
@@ -302,8 +302,8 @@ TextureImporter:
         y: 627
         width: 93
         height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_19
       rect:
@@ -312,8 +312,8 @@ TextureImporter:
         y: 656
         width: 66
         height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_20
       rect:
@@ -322,8 +322,8 @@ TextureImporter:
         y: 660
         width: 69
         height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_21
       rect:
@@ -332,8 +332,8 @@ TextureImporter:
         y: 595
         width: 85
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_22
       rect:
@@ -342,8 +342,8 @@ TextureImporter:
         y: 649
         width: 81
         height: 55
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_23
       rect:
@@ -352,8 +352,8 @@ TextureImporter:
         y: 484
         width: 132
         height: 102
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_24
       rect:
@@ -362,8 +362,8 @@ TextureImporter:
         y: 536
         width: 113
         height: 92
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_25
       rect:
@@ -372,8 +372,8 @@ TextureImporter:
         y: 571
         width: 65
         height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_26
       rect:
@@ -382,8 +382,8 @@ TextureImporter:
         y: 475
         width: 101
         height: 87
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_27
       rect:
@@ -392,8 +392,8 @@ TextureImporter:
         y: 460
         width: 44
         height: 74
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_28
       rect:
@@ -402,8 +402,8 @@ TextureImporter:
         y: 524
         width: 81
         height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_29
       rect:
@@ -412,8 +412,8 @@ TextureImporter:
         y: 516
         width: 54
         height: 48
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_30
       rect:
@@ -422,8 +422,8 @@ TextureImporter:
         y: 499
         width: 52
         height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_31
       rect:
@@ -432,8 +432,8 @@ TextureImporter:
         y: 483
         width: 69
         height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_32
       rect:
@@ -442,8 +442,8 @@ TextureImporter:
         y: 458
         width: 47
         height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_33
       rect:
@@ -452,8 +452,8 @@ TextureImporter:
         y: 396
         width: 78
         height: 50
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_34
       rect:
@@ -462,8 +462,8 @@ TextureImporter:
         y: 323
         width: 48
         height: 89
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_35
       rect:
@@ -472,8 +472,8 @@ TextureImporter:
         y: 332
         width: 33
         height: 87
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_36
       rect:
@@ -482,8 +482,8 @@ TextureImporter:
         y: 363
         width: 54
         height: 74
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_37
       rect:
@@ -492,8 +492,8 @@ TextureImporter:
         y: 368
         width: 48
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_38
       rect:
@@ -502,8 +502,8 @@ TextureImporter:
         y: 378
         width: 44
         height: 76
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_39
       rect:
@@ -512,8 +512,8 @@ TextureImporter:
         y: 400
         width: 45
         height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_40
       rect:
@@ -522,8 +522,8 @@ TextureImporter:
         y: 358
         width: 62
         height: 50
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_41
       rect:
@@ -532,8 +532,8 @@ TextureImporter:
         y: 402
         width: 77
         height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_42
       rect:
@@ -542,8 +542,8 @@ TextureImporter:
         y: 307
         width: 68
         height: 95
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_43
       rect:
@@ -552,8 +552,8 @@ TextureImporter:
         y: 324
         width: 36
         height: 76
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_44
       rect:
@@ -562,8 +562,8 @@ TextureImporter:
         y: 332
         width: 69
         height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_45
       rect:
@@ -572,8 +572,8 @@ TextureImporter:
         y: 248
         width: 72
         height: 49
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_46
       rect:
@@ -582,8 +582,8 @@ TextureImporter:
         y: 239
         width: 49
         height: 54
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_47
       rect:
@@ -592,8 +592,8 @@ TextureImporter:
         y: 243
         width: 50
         height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_48
       rect:
@@ -602,8 +602,8 @@ TextureImporter:
         y: 245
         width: 47
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_49
       rect:
@@ -612,8 +612,8 @@ TextureImporter:
         y: 260
         width: 129
         height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_50
       rect:
@@ -622,8 +622,8 @@ TextureImporter:
         y: 272
         width: 100
         height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_51
       rect:
@@ -632,8 +632,8 @@ TextureImporter:
         y: 225
         width: 53
         height: 43
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_52
       rect:
@@ -642,8 +642,8 @@ TextureImporter:
         y: 143
         width: 130
         height: 73
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_53
       rect:
@@ -652,8 +652,8 @@ TextureImporter:
         y: 98
         width: 50
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_54
       rect:
@@ -662,8 +662,8 @@ TextureImporter:
         y: 104
         width: 60
         height: 82
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_55
       rect:
@@ -672,8 +672,8 @@ TextureImporter:
         y: 112
         width: 51
         height: 76
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_56
       rect:
@@ -682,8 +682,8 @@ TextureImporter:
         y: 120
         width: 65
         height: 72
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_57
       rect:
@@ -692,8 +692,8 @@ TextureImporter:
         y: 134
         width: 38
         height: 54
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_58
       rect:
@@ -702,8 +702,8 @@ TextureImporter:
         y: 35
         width: 83
         height: 47
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_59
       rect:
@@ -712,8 +712,8 @@ TextureImporter:
         y: 34
         width: 68
         height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_60
       rect:
@@ -722,8 +722,8 @@ TextureImporter:
         y: 32
         width: 65
         height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_61
       rect:
@@ -732,8 +732,8 @@ TextureImporter:
         y: 26
         width: 57
         height: 55
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_62
       rect:
@@ -742,8 +742,8 @@ TextureImporter:
         y: 27
         width: 45
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_63
       rect:
@@ -752,8 +752,8 @@ TextureImporter:
         y: 26
         width: 46
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: flora_64
       rect:
@@ -762,8 +762,8 @@ TextureImporter:
         y: 28
         width: 54
         height: 69
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
