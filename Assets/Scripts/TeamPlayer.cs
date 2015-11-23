@@ -24,6 +24,9 @@ public class TeamPlayer : SportsObject {
     public float tacklePower = 7f; //forward velocity of people you tackle
     public float tackleLaunchPower = 40f; //upwards velocity of people you tackle
     static float TACKLESPINNINESS = 150; //how fast you spin when you're tackled
+    static float DIZZYSPINSPEED = .6759f;//rotations per sec
+    static float DIZZYWALKINGPOWER = .5f; //spin influence vs player input. 1 = equal to player, 0 = none
+    static float DIZZYSTANDINGPOWER = .1f; //spin movement speed when player input is 0
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
@@ -133,7 +136,7 @@ public class TeamPlayer : SportsObject {
         {
             //don't move if the ball is "ultimate"
         }
-        else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0)
+        else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0 && dizzyTime == 0)
         {
             //jumping
             if (isOnGround && Input.GetButtonDown(hopButton))
@@ -160,6 +163,20 @@ public class TeamPlayer : SportsObject {
             if (input.magnitude > 1)
             {
                 input.Normalize();
+            }
+            if (dizzyTime > 0)
+            {
+                float spinAngle = (Time.time * Mathf.PI * 2 * DIZZYSPINSPEED) % 360;
+                if (input.x == 0 && input.y == 0)
+                {
+                    input += new Vector2(Mathf.Cos(spinAngle), Mathf.Sin(spinAngle)) * DIZZYSTANDINGPOWER;
+                }
+                else
+                {
+                    input += new Vector2(Mathf.Cos(spinAngle), Mathf.Sin(spinAngle)) * DIZZYWALKINGPOWER;
+                }
+                if(input.magnitude > 1)
+                    input.Normalize();
             }
             float inputMag = input.magnitude;
             //rotate towards joystick

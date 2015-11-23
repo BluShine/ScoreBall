@@ -33,6 +33,10 @@ public class SportsObject : FieldObject {
     [HideInInspector]
     public float freezeTime { get; private set; }
     bool usesFreezing = true;
+    [HideInInspector]
+    public float dizzyTime { get; private set; }
+    bool usesDizzy = true;
+    static Vector3 DIZZYSPINVECTOR = new Vector3(0, 30, 0);
 
     //sound
     public List<AudioClip> hitSounds;
@@ -49,6 +53,7 @@ public class SportsObject : FieldObject {
             duplicates = new List<SportsObject>();
             duplicates.Add(this);
             freezeTime = 0;
+            dizzyTime = 0;
         }
         body = GetComponent<Rigidbody>();
         gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
@@ -58,6 +63,11 @@ public class SportsObject : FieldObject {
     public void useDefaultFreezing(bool useDefFreeze)
     {
         usesFreezing = useDefFreeze;
+    }
+
+    public void useDefaultDizzy(bool useDefDizzy)
+    {
+        usesDizzy = useDefDizzy;
     }
 	
 	// Update is called once per frame
@@ -80,6 +90,11 @@ public class SportsObject : FieldObject {
             {
                 body.constraints = RigidbodyConstraints.None;
             }
+        }
+        dizzyTime = Mathf.Max(0, dizzyTime - Time.fixedDeltaTime); 
+        if (usesDizzy && dizzyTime > 0)
+        {
+            body.AddTorque(DIZZYSPINVECTOR, ForceMode.Acceleration);
         }
 	}
 
