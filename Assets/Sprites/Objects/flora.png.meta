@@ -1,0 +1,771 @@
+fileFormatVersion: 2
+guid: d1960578c85c56a4d81dcbec76c570f4
+timeCreated: 1448312105
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: flora_0
+    21300002: flora_1
+    21300004: flora_2
+    21300006: flora_3
+    21300008: flora_4
+    21300010: flora_5
+    21300012: flora_6
+    21300014: flora_7
+    21300016: flora_8
+    21300018: flora_9
+    21300020: flora_10
+    21300022: flora_11
+    21300024: flora_12
+    21300026: flora_13
+    21300028: flora_14
+    21300030: flora_15
+    21300032: flora_16
+    21300034: flora_17
+    21300036: flora_18
+    21300038: flora_19
+    21300040: flora_20
+    21300042: flora_21
+    21300044: flora_22
+    21300046: flora_23
+    21300048: flora_24
+    21300050: flora_25
+    21300052: flora_26
+    21300054: flora_27
+    21300056: flora_28
+    21300058: flora_29
+    21300060: flora_30
+    21300062: flora_31
+    21300064: flora_32
+    21300066: flora_33
+    21300068: flora_34
+    21300070: flora_35
+    21300072: flora_36
+    21300074: flora_37
+    21300076: flora_38
+    21300078: flora_39
+    21300080: flora_40
+    21300082: flora_41
+    21300084: flora_42
+    21300086: flora_43
+    21300088: flora_44
+    21300090: flora_45
+    21300092: flora_46
+    21300094: flora_47
+    21300096: flora_48
+    21300098: flora_49
+    21300100: flora_50
+    21300102: flora_51
+    21300104: flora_52
+    21300106: flora_53
+    21300108: flora_54
+    21300110: flora_55
+    21300112: flora_56
+    21300114: flora_57
+    21300116: flora_58
+    21300118: flora_59
+    21300120: flora_60
+    21300122: flora_61
+    21300124: flora_62
+    21300126: flora_63
+    21300128: flora_64
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 50
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: flora_0
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 923
+        width: 78
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_1
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 927
+        width: 68
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_2
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 926
+        width: 101
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_3
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 891
+        width: 78
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_4
+      rect:
+        serializedVersion: 2
+        x: 592
+        y: 871
+        width: 45
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_5
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 859
+        width: 36
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_6
+      rect:
+        serializedVersion: 2
+        x: 732
+        y: 864
+        width: 43
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_7
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 902
+        width: 41
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_8
+      rect:
+        serializedVersion: 2
+        x: 882
+        y: 916
+        width: 54
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_9
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 811
+        width: 85
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_10
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 825
+        width: 117
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_11
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 811
+        width: 81
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_12
+      rect:
+        serializedVersion: 2
+        x: 811
+        y: 819
+        width: 143
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_13
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 678
+        width: 135
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_14
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 695
+        width: 120
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_15
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 740
+        width: 80
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_16
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 748
+        width: 93
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_17
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 707
+        width: 66
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_18
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 627
+        width: 93
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_19
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 656
+        width: 66
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_20
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 660
+        width: 69
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_21
+      rect:
+        serializedVersion: 2
+        x: 788
+        y: 595
+        width: 85
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_22
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 649
+        width: 81
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_23
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 484
+        width: 132
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_24
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 536
+        width: 113
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_25
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 571
+        width: 65
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_26
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 475
+        width: 101
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_27
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 460
+        width: 44
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_28
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 524
+        width: 81
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_29
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 516
+        width: 54
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_30
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 499
+        width: 52
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_31
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 483
+        width: 69
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_32
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 458
+        width: 47
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_33
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 396
+        width: 78
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_34
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 323
+        width: 48
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_35
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 332
+        width: 33
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_36
+      rect:
+        serializedVersion: 2
+        x: 518
+        y: 363
+        width: 54
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_37
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 368
+        width: 48
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_38
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 378
+        width: 44
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_39
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 400
+        width: 45
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_40
+      rect:
+        serializedVersion: 2
+        x: 826
+        y: 358
+        width: 62
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_41
+      rect:
+        serializedVersion: 2
+        x: 919
+        y: 402
+        width: 77
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_42
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 307
+        width: 68
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_43
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 324
+        width: 36
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_44
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 332
+        width: 69
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_45
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 248
+        width: 72
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_46
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 239
+        width: 49
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_47
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 243
+        width: 50
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_48
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 245
+        width: 47
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_49
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 260
+        width: 129
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_50
+      rect:
+        serializedVersion: 2
+        x: 756
+        y: 272
+        width: 100
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_51
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 225
+        width: 53
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_52
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 143
+        width: 130
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_53
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 98
+        width: 50
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_54
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 104
+        width: 60
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_55
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 112
+        width: 51
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_56
+      rect:
+        serializedVersion: 2
+        x: 855
+        y: 120
+        width: 65
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_57
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 134
+        width: 38
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_58
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 35
+        width: 83
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_59
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 34
+        width: 68
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_60
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 32
+        width: 65
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_61
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 26
+        width: 57
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_62
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 27
+        width: 45
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_63
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 26
+        width: 46
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: flora_64
+      rect:
+        serializedVersion: 2
+        x: 942
+        y: 28
+        width: 54
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
