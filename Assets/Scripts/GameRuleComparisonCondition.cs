@@ -25,7 +25,7 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		rightGRV = grvr;
 	}
 	public override void checkCondition(List<TeamPlayer> triggeringPlayers) {
-		foreach (List<TeamPlayer> teamPlayerList in GameRules.currentGameRules.allPlayers) {
+		foreach (List<TeamPlayer> teamPlayerList in GameRules.instance.allPlayers) {
 			TeamPlayer player = teamPlayerList[0];
 			leftGRPV.player = player;
 			if (rightGRV is GameRulePlayerValue)
@@ -105,7 +105,7 @@ public abstract class GameRulePlayerValue : GameRuleValue {
 
 public class GameRulePlayerScoreValue : GameRulePlayerValue {
 	public override int intValue() {
-		return GameRules.currentGameRules.teamScores[player.team];
+		return GameRules.instance.teamScores[player.team];
 	}
 	public override string ToString() {
 		return "score";
