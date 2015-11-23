@@ -24,9 +24,7 @@ public class TeamPlayer : SportsObject {
     public float tacklePower = 7f; //forward velocity of people you tackle
     public float tackleLaunchPower = 40f; //upwards velocity of people you tackle
     static float TACKLESPINNINESS = 150; //how fast you spin when you're tackled
-    static float DIZZYSPINSPEED = .6759f;//rotations per sec
-    static float DIZZYWALKINGPOWER = .5f; //spin influence vs player input. 1 = equal to player, 0 = none
-    static float DIZZYSTANDINGPOWER = .1f; //spin movement speed when player input is 0
+    static float DIZZYSPINSPEED = .3262f;//rotations per sec
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
@@ -166,17 +164,8 @@ public class TeamPlayer : SportsObject {
             }
             if (dizzyTime > 0)
             {
-                float spinAngle = (Time.time * Mathf.PI * 2 * DIZZYSPINSPEED) % 360;
-                if (input.x == 0 && input.y == 0)
-                {
-                    input += new Vector2(Mathf.Cos(spinAngle), Mathf.Sin(spinAngle)) * DIZZYSTANDINGPOWER;
-                }
-                else
-                {
-                    input += new Vector2(Mathf.Cos(spinAngle), Mathf.Sin(spinAngle)) * DIZZYWALKINGPOWER;
-                }
-                if(input.magnitude > 1)
-                    input.Normalize();
+                float spinAngle = (Time.time * 360 * DIZZYSPINSPEED) % 360;
+                input = Quaternion.Euler(0, 0, spinAngle) * input;
             }
             float inputMag = input.magnitude;
             //rotate towards joystick
