@@ -2,6 +2,8 @@
 
 ////////////////Game events////////////////
 public enum GameRuleEventType : int {
+	NoEventType = -1,
+
 	PlayerEventTypeStart = 0,
 	PlayerShootBall,
 	PlayerGrabBall,
@@ -93,7 +95,21 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		selector = grs;
 	}
 	public override bool conditionHappened(GameRuleEvent gre) {
-		return gre.eventType == eventType && gre.param == param;
+		//make sure that we have the right event
+		if (gre.eventType != eventType || gre.param != param)
+			return false;
+
+		//collisions don't happen between players/balls and field objects on the players' teams
+		if (gre.eventType == GameRuleEventType.BallHitFieldObject) {
+			if (gre.ball.currentPlayer.team == gre.fieldObj.team)
+				return false;
+		} else if (gre.eventType == GameRuleEventType.PlayerHitFieldObject) {
+			if (gre.instigator.team == gre.fieldObj.team)
+				return false;
+		}
+
+		//right event and no other disqualifications, the collision happened
+		return true;
 	}
 	public bool conditionHappened(GameRuleEvent gre, SportsObject triggerSource) {
 		return conditionHappened(gre) && selector.target(triggerSource) == gre.getEventSource();

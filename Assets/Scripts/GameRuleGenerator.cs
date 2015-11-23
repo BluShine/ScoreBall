@@ -9,10 +9,10 @@ public class GameRuleGenerator {
 	private static List<GameRuleEventType> buildEventTypesList() {
 		List<GameRuleEventType> values = new List<GameRuleEventType>();
 		foreach (GameRuleEventType eventType in System.Enum.GetValues(typeof(GameRuleEventType))) {
-			if (eventType < GameRuleEventType.PlayerEventTypeStart && eventType < GameRuleEventType.PlayerEventTypeEnd) {
+			if (eventType > GameRuleEventType.PlayerEventTypeStart && eventType < GameRuleEventType.PlayerEventTypeEnd) {
 				playerEventTypesList.Add(eventType);
 				values.Add(eventType);
-			} else if (eventType < GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) {
+			} else if (eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) {
 				ballEventTypesList.Add(eventType);
 				values.Add(eventType);
 			}
