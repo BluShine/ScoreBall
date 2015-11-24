@@ -152,6 +152,9 @@ public class GameRules : MonoBehaviour {
 		//adjust display
 		pointsText.text = pointsGiven >= 0 ? "+" + pointsGiven.ToString() : pointsGiven.ToString();
 		Color textColor = GameRules.instance.teamTexts[target.team].color;
+		textColor.r *= 0.8f;
+		textColor.g *= 0.8f;
+		textColor.b *= 0.8f;
 		textColor.a = 1.0f;
 		pointsText.color = textColor;
 	}
