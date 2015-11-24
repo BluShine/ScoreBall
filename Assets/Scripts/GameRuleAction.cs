@@ -1,4 +1,6 @@
 ﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 ////////////////Rule consequences////////////////
 public class GameRuleAction {
@@ -48,6 +50,7 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 	}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		((TeamPlayer)(target)).ScorePoints(pointsGiven);
+		GameRules.instance.spawnPointsText(pointsGiven, (TeamPlayer)(target));
 	}
 	public override string ToString(int conjugate) {
 		string pluralPointString = Math.Abs(pointsGiven) == 1 ? " point" : " points";

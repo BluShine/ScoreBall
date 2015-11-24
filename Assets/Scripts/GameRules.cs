@@ -6,10 +6,21 @@ using UnityEngine.UI;
 
 ////////////////Master rules handler object////////////////
 public class GameRules : MonoBehaviour {
+	public GameObject ruleDisplayPrefab;
+	public GameObject pointsTextPrefab;
+	public GameObject uiCanvas;
+	public GameObject mainCamera;
+
+	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
+	//const int POINTS_TEXT_POOL_AMOUNT = 8;
+	//constants for positioning the points text above the player and fading out
+	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
+	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
+	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
+	Queue<TextMesh> activePointsTexts = new Queue<TextMesh>();
+
 	List<GameRule> rulesList = new List<GameRule>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
-	public GameObject ruleDisplayPrefab;
-	public GameObject uiCanvas;
 
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public List<Text> teamTexts;
@@ -103,7 +114,6 @@ public class GameRules : MonoBehaviour {
 		}
 		Destroy(ruleDisplay);
 	}
-
     public void deleteAllRules()
     {
         for(int i = rulesList.Count - 1; i >= 0; i--)
@@ -112,6 +122,39 @@ public class GameRules : MonoBehaviour {
         }
         rulesList.Clear();
     }
+
+	public void spawnPointsText(int pointsGiven, TeamPlayer target) {
+		TextMesh pointsText;
+		GameObject pointsTextObject;
+		//add to the pool if there isn't enough
+		if (pointsTextPool.Count == 0) {
+			//for (int i = POINTS_TEXT_POOL_AMOUNT; i > 0; i--) {
+				pointsTextObject = GameObject.Instantiate(GameRules.instance.pointsTextPrefab);
+				pointsTextObject.GetComponent<MeshRenderer>().enabled = false;
+				pointsText = pointsTextObject.GetComponent<TextMesh>();
+				pointsTextPool.Push(pointsText);
+			//}
+		}
+
+		//get one from the pool
+		pointsText = pointsTextPool.Pop();
+		pointsTextObject = pointsText.gameObject;
+		pointsTextObject.GetComponent<MeshRenderer>().enabled = true;
+		activePointsTexts.Enqueue(pointsText);
+
+		//reposition
+		Vector3 newPosition = target.transform.position;
+		Transform cameraTransform = mainCamera.transform;
+		newPosition += cameraTransform.up * POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER;
+		pointsText.transform.position = newPosition;
+		pointsText.transform.localRotation = cameraTransform.rotation;
+
+		//adjust display
+		pointsText.text = pointsGiven >= 0 ? "+" + pointsGiven.ToString() : pointsGiven.ToString();
+		Color textColor = GameRules.instance.teamTexts[target.team].color;
+		textColor.a = 1.0f;
+		pointsText.color = textColor;
+	}
 
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
@@ -127,6 +170,23 @@ public class GameRules : MonoBehaviour {
         {
             deleteAllRules();
         }
+
+		//move and fade the points display
+		foreach (TextMesh pointsText in activePointsTexts) {
+			Vector3 newPosition = pointsText.transform.position;
+			newPosition += mainCamera.transform.up * POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER;
+			pointsText.transform.position = newPosition;
+			Color textColor = pointsText.color;
+			textColor.a -= Time.deltaTime / POINTS_TEXT_FADE_SECONDS;
+			pointsText.color = textColor;
+		}
+
+		//hide all the texts that are invisible
+		while (activePointsTexts.Count > 0 && activePointsTexts.Peek().color.a <= 0.0f) {
+			TextMesh pointsText = activePointsTexts.Dequeue();
+			pointsText.gameObject.GetComponent<MeshRenderer>().enabled = false;
+			pointsTextPool.Push(pointsText);
+		}
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		foreach (GameRule rule in rulesList) {
