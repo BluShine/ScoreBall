@@ -10,23 +10,23 @@ public class GameRules : MonoBehaviour {
 	public GameObject pointsTextPrefab;
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
+	//so that we have access to scores and stuff when evaluating rules
+	public static GameRules instance;
 
-	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
 	//const int POINTS_TEXT_POOL_AMOUNT = 8;
 	//constants for positioning the points text above the player and fading out
 	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
+	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
 	Queue<TextMesh> activePointsTexts = new Queue<TextMesh>();
 
-	List<GameRule> rulesList = new List<GameRule>();
+	public List<GameRule> rulesList = new List<GameRule>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
 
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public List<Text> teamTexts;
 	public List<int> teamScores;
-	//so that we have access to scores and stuff when evaluating rules
-	public static GameRules instance;
 
 	public void Start() {
 		instance = this;

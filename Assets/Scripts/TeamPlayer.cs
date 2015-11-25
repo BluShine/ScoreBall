@@ -301,6 +301,8 @@ public class TeamPlayer : SportsObject {
 
     void OnCollisionStay(Collision collision)
     {
+		//right now continued collisions shouln't do anything
+		/*
         if (checkBallCollision(collision.gameObject))
         {
             //should probably send a message about this to the rules manager
@@ -309,6 +311,7 @@ public class TeamPlayer : SportsObject {
         {
             //also send the rules manager a message about this
         }
+		*/
     }
 
     void tackle(Vector3 launch, float duration)
