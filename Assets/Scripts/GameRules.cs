@@ -10,6 +10,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject pointsTextPrefab;
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
+	public GameObject floor;
 	//so that we have access to scores and stuff when evaluating rules
 	public static GameRules instance;
 

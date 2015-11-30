@@ -116,6 +116,20 @@ public class GameRuleDizzyActionAction : GameRuleActionAction {
 	}
 }
 
+public class GameRuleBounceActionAction : GameRuleActionAction {
+	public static string[] bounceConjugates = new string[] {"bounce ", "bounces "};
+	public float timeBouncy;
+	public GameRuleBounceActionAction(float tb) {
+		timeBouncy = tb;
+	}
+	public override void takeAction(SportsObject source, SportsObject target) {
+		target.StartBouncing(timeBouncy);
+	}
+	public override string ToString(int conjugate) {
+		return bounceConjugates[conjugate] + "for " + timeBouncy.ToString("F1") + " seconds";
+	}
+}
+
 ////////////////Wait timers for actions that don't happen until an event////////////////
 public class GameRuleActionWaitTimer {
 	public GameRuleEventHappenedCondition condition;

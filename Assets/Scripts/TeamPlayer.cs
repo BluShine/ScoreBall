@@ -9,7 +9,6 @@ public class TeamPlayer : SportsObject {
     public float moveAccel = 1; //1 = reach full speed in 1 second. 10 = reach full speed in 1/10th of a second. Applies to move, dash, and strafe.
     public float strafeSpeed = 500; //"strafing" speed in pixels/sec
 	public float dashSpeed = 1000; //dashing speed in pixels/sec (not additive with move/strafe)
-    public float jumpSpeed = 10; //velocity when you jump
 	public float dashDuration = .7f; //duration of dash in seconds
 	float dashTimer = 0;
 	public float dashCooldownDuration = 2; //cooldown time between dashes in seconds
@@ -87,8 +86,6 @@ public class TeamPlayer : SportsObject {
         {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
-        //check if we're on the ground
-        bool isOnGround = Physics.Raycast(transform.position, -transform.up, .5f);
 		//dash input
 		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
 			(dashWhileCarrying || carriedBall == null)) {
@@ -140,7 +137,7 @@ public class TeamPlayer : SportsObject {
             if (isOnGround && Input.GetButtonDown(hopButton))
             {
                 Debug.Log("hop");
-                body.AddForce(jumpSpeed * transform.up, ForceMode.VelocityChange);
+				Jump();
             }
             //apply force to stop when there's no input.
             Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
