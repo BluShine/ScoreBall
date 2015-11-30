@@ -130,7 +130,7 @@ public class GameRules : MonoBehaviour {
 		if (pointsTextPool.Count == 0) {
 			//for (int i = POINTS_TEXT_POOL_AMOUNT; i > 0; i--) {
 				pointsTextObject = GameObject.Instantiate(GameRules.instance.pointsTextPrefab);
-				pointsTextObject.GetComponent<MeshRenderer>().enabled = false;
+				pointsTextObject.SetActive(false);
 				pointsText = pointsTextObject.GetComponent<TextMesh>();
 				pointsTextPool.Push(pointsText);
 			//}
@@ -139,7 +139,7 @@ public class GameRules : MonoBehaviour {
 		//get one from the pool
 		pointsText = pointsTextPool.Pop();
 		pointsTextObject = pointsText.gameObject;
-		pointsTextObject.GetComponent<MeshRenderer>().enabled = true;
+		pointsTextObject.SetActive(true);
 		activePointsTexts.Enqueue(pointsText);
 
 		//reposition
@@ -187,7 +187,7 @@ public class GameRules : MonoBehaviour {
 		//hide all the texts that are invisible
 		while (activePointsTexts.Count > 0 && activePointsTexts.Peek().color.a <= 0.0f) {
 			TextMesh pointsText = activePointsTexts.Dequeue();
-			pointsText.gameObject.GetComponent<MeshRenderer>().enabled = false;
+			pointsText.gameObject.SetActive(false);
 			pointsTextPool.Push(pointsText);
 		}
 	}
@@ -217,18 +217,33 @@ public class GameRules : MonoBehaviour {
 
 ////////////////Represents a single game rule////////////////
 public class GameRule {
+	const float RULE_FLASH_FADE_SECONDS = 1.5f;
+	const float RULE_FLASH_MAX_ALPHA = 0.875f;
+
 	public GameRuleCondition condition;
 	public GameRuleAction action;
 	public GameObject ruleDisplay;
-	public GameObject flashDisplay;
+	public Image flashImage;
 	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject rd) {
 		condition = c;
 		action = a;
 		ruleDisplay = rd;
-		flashDisplay = rd.transform.FindChild("Flash").gameObject;
+		flashImage = rd.transform.FindChild("Flash").gameObject.GetComponent<Image>();
+		RectTransform flashSize = ((RectTransform)(flashImage.transform));
+		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
+		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
 	}
 	public void update() {
 		checkCondition();
+
+		//update the flash
+		if (flashImage.gameObject.activeSelf) {
+			Color flashColor = flashImage.color;
+			flashColor.a -= Time.deltaTime / RULE_FLASH_FADE_SECONDS;
+			flashImage.color = flashColor;
+			if (flashColor.a <= 0.0f)
+				flashImage.gameObject.SetActive(false);
+		}
 	}
 	public void checkCondition() {
 		//receive a list of all players that triggered the condition
@@ -248,13 +263,7 @@ public class GameRule {
 		}
 	}
 	public void startFlash() {
-		Image flashImage = flashDisplay.GetComponent<Image>();
-		//this is apparently the way to reset a CrossFadeAlpha
-		flashImage.CrossFadeAlpha(0.75f, 0.0f, false);
-		flashImage.CrossFadeAlpha(0.0f, 1.0f, false);
-		flashImage.enabled = true;
-		RectTransform flashSize = ((RectTransform)(flashImage.transform));
-		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
-		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
+		flashImage.gameObject.SetActive(true);
+		flashImage.color = new Color(1.0f, 1.0f, 1.0f, RULE_FLASH_MAX_ALPHA);
 	}
 }

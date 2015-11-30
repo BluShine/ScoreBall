@@ -3,15 +3,21 @@ using System.Collections.Generic;
 
 //this is for any restrictions in game rule generation
 public enum GameRuleRestriction {
-	NeedsPointsAction,
-	NeedsEventHappenedCondition,
-	NeedsPlayerTargetSelector,
-	OnlyPositivePointAmounts
+	//restrict what options can get be choices at all
+	OnlyPointsActions,
+	OnlyEventHappenedConditions,
+	OnlyPlayerTargetSelectors,
+	OnlyPositivePointAmounts,
+	OnlyPlayerBallInteractionEvents,
+	OnlyBallFieldObjectInteractionEvents,
+
+	//restrict what options can remain choices
+	NoYouPlayerTargetSelectors,
+	NoOpponentPlayerTargetSelectors,
+	NoPlayerFreezeUntilConditions
 };
 
 public class GameRuleGenerator {
-	private static List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
-	private static GameRuleCondition condition;
 	private static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> eventTypesList = buildEventTypesList();
@@ -29,15 +35,19 @@ public class GameRuleGenerator {
 		return values;
 	}
 
+	private static List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
+	private static GameRuleCondition ruleCondition;
+	private static GameRuleSelector ruleActionSelector;
+
 	//generate a completely new random rule
 	public static GameRule GenerateNewRule(GameObject display) {
 		populateInitialRestrictions();
-		condition = randomCondition();
-		bool isComparison = condition is GameRuleComparisonCondition;
+		ruleCondition = randomCondition();
+		bool isComparison = ruleCondition is GameRuleComparisonCondition;
 		bool ballCondition = false;
-		if (!isComparison && ((GameRuleEventHappenedCondition)(condition)).eventType >= GameRuleEventType.BallEventTypeStart)
+		if (!isComparison && ((GameRuleEventHappenedCondition)(ruleCondition)).eventType >= GameRuleEventType.BallEventTypeStart)
 			ballCondition = true;
-		return new GameRule(condition, randomAction(isComparison, ballCondition), display);
+		return new GameRule(ruleCondition, randomAction(isComparison, ballCondition), display);
 	}
 	//add any restrictions that can be determined before any generation has happened
 	public static void populateInitialRestrictions() {
@@ -55,18 +65,26 @@ public class GameRuleGenerator {
 			}
 		}
 		if (needsPointsRule) {
-			restrictions.Add(GameRuleRestriction.NeedsEventHappenedCondition);
-			restrictions.Add(GameRuleRestriction.NeedsPlayerTargetSelector);
-			restrictions.Add(GameRuleRestriction.NeedsPointsAction);
+			restrictions.Add(GameRuleRestriction.OnlyEventHappenedConditions);
+			restrictions.Add(GameRuleRestriction.OnlyPlayerTargetSelectors);
+			restrictions.Add(GameRuleRestriction.OnlyPointsActions);
 			restrictions.Add(GameRuleRestriction.OnlyPositivePointAmounts);
 		}
+	}
+	//return whether the restriction is present and remove it if it is
+	public static bool hasRestriction(GameRuleRestriction restriction) {
+		if (restrictions.Contains(restriction)) {
+			restrictions.RemoveAll((GameRuleRestriction otherRestriction) => (otherRestriction == restriction));
+			return true;
+		}
+		return false;
 	}
 
 	////////////////GameRuleCondition generation////////////////
 	//generate a random rule condition
 	public static GameRuleCondition randomCondition() {
 		//restrictions require the condition to only happen on an event
-		if (restrictions.Contains(GameRuleRestriction.NeedsEventHappenedCondition))
+		if (hasRestriction(GameRuleRestriction.OnlyEventHappenedConditions))
 			return randomEventHappenedCondition();
 
 		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
@@ -118,9 +136,21 @@ public class GameRuleGenerator {
 	}
 	//generate a random EventHappenedCondition for a player event source
 	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
-		List<GameRuleEventType> acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
+		//build the list of acceptable event types, taking restrictions into account
+		List<GameRuleEventType> acceptableEventTypes;
+		if (hasRestriction(GameRuleRestriction.OnlyPlayerBallInteractionEvents))
+			acceptableEventTypes = new List<GameRuleEventType>(new GameRuleEventType[] {
+				GameRuleEventType.PlayerShootBall,
+				GameRuleEventType.PlayerGrabBall,
+				GameRuleEventType.PlayerTouchBall
+			});
+		else
+			acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
+		//players bumping into each other shouldn't cause them to indefinitely freeze
+		if (eventType == GameRuleEventType.PlayerHitPlayer)
+			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
 		string param = null;
 		if (eventType == GameRuleEventType.PlayerHitFieldObject)
 			param = randomFieldObjectType();
@@ -128,7 +158,14 @@ acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 	}
 	//generate a random EventHappenedCondition for a ball event source
 	public static GameRuleEventHappenedCondition randomBallEventHappenedCondition(GameRuleSelector selector) {
-		List<GameRuleEventType> acceptableEventTypes = new List<GameRuleEventType>(ballEventTypesList);
+		//build the list of acceptable event types, taking restrictions into account
+		List<GameRuleEventType> acceptableEventTypes;
+		if (hasRestriction(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents))
+			acceptableEventTypes = new List<GameRuleEventType>(new GameRuleEventType[] {
+				GameRuleEventType.BallHitFieldObject
+			});
+		else
+			acceptableEventTypes = new List<GameRuleEventType>(ballEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
 		string param = null;
@@ -148,8 +185,8 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	////////////////GameRuleAction generation////////////////
 	//generate a random action based on the given condition information
 	public static GameRuleAction randomAction(bool isComparison, bool ballCondition) {
-		GameRuleSelector sourceToTarget = randomSelectorForSource(ballCondition);
-		return new GameRuleAction(sourceToTarget, randomActionActionForTarget(sourceToTarget, ballCondition));
+		ruleActionSelector = randomSelectorForSource(ballCondition);
+		return new GameRuleAction(ruleActionSelector, randomActionActionForTarget(ruleActionSelector, ballCondition));
 	}
 	//generate a random action to happen to the target of the selector
 	//pass along whether the original condition was a ball event-happened condition in case the action needs to know
@@ -163,26 +200,62 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	public static GameRuleActionAction randomPlayerActionAction(bool isComparison, bool ballCondition) {
 isComparison = false;
 		//build the list of acceptable action types, taking restrictions into account
-		System.Type[] acceptableActionTypes;
-		if (restrictions.Contains(GameRuleRestriction.NeedsPointsAction))
-			acceptableActionTypes = new System.Type[] {typeof(GameRulePointsPlayerActionAction)};
+		List<System.Type> acceptableActionTypes;
+		if (hasRestriction(GameRuleRestriction.OnlyPointsActions))
+			acceptableActionTypes = new List<System.Type>(new System.Type[] {
+				typeof(GameRulePointsPlayerActionAction)
+			});
 		else
-			acceptableActionTypes = new System.Type[] {
+			acceptableActionTypes = new List<System.Type>(new System.Type[] {
 				typeof(GameRulePointsPlayerActionAction),
 				typeof(GameRuleFreezeActionAction),
 				typeof(GameRuleDuplicateActionAction),
 				typeof(GameRuleFreezeUntilConditionActionAction)
-			};
+			});
+		if (hasRestriction(GameRuleRestriction.NoPlayerFreezeUntilConditions))
+			acceptableActionTypes.Remove(typeof(GameRuleFreezeUntilConditionActionAction));
 
 		//pick one of the action types
-		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Length)];
+		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Count)];
 		if (chosenType == typeof(GameRulePointsPlayerActionAction)) {
-			int minPoints = restrictions.Contains(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5;
+			int minPoints = hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5;
 			int points = Random.Range(minPoints, 10);
 			if (points >= 0)
 				points++;
 			return new GameRulePointsPlayerActionAction(points);
 		} else if (chosenType == typeof(GameRuleFreezeActionAction))
+			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+		else if (chosenType == typeof(GameRuleDuplicateActionAction))
+			return new GameRuleDuplicateActionAction();
+		else if (chosenType == typeof(GameRuleFreezeUntilConditionActionAction)) {
+			//make sure the condition doesn't require the frozen player to do anything
+			if (ruleActionSelector is GameRulePlayerSelector || ruleActionSelector is GameRuleBallShooterSelector)
+				restrictions.Add(GameRuleRestriction.NoYouPlayerTargetSelectors);
+			else if (ruleActionSelector is GameRuleOpponentSelector || ruleActionSelector is GameRuleBallShooterOpponentSelector)
+				restrictions.Add(GameRuleRestriction.NoOpponentPlayerTargetSelectors);
+
+			GameRuleSelector sourceToTrigger = randomSelectorForSource(ballCondition);
+
+			restrictions.Add(GameRuleRestriction.OnlyPlayerBallInteractionEvents);
+			restrictions.Add(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents);
+			return new GameRuleFreezeUntilConditionActionAction(
+				randomEventHappenedConditionForTarget(
+					sourceToTrigger));
+		} else
+			throw new System.Exception("Bug: Invalid action type!");
+	}
+	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
+		//build the list of acceptable action types, taking restrictions into account
+		System.Type[] acceptableActionTypes = new System.Type[] {
+			//balls getting frozen hasn't made for fun gameplay yet
+			//typeof(GameRuleFreezeActionAction),
+			typeof(GameRuleDuplicateActionAction)
+			//typeof(GameRuleFreezeUntilConditionActionAction)
+		};
+
+		//pick one of the action types
+		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Length)];
+		if (chosenType == typeof(GameRuleFreezeActionAction))
 			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
 		else if (chosenType == typeof(GameRuleDuplicateActionAction))
 			return new GameRuleDuplicateActionAction();
@@ -192,18 +265,6 @@ isComparison = false;
 					randomSelectorForSource(ballCondition)));
 		else
 			throw new System.Exception("Bug: Invalid action type!");
-	}
-	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
-		int rand = Random.Range(0, 3);
-		if (rand == 0)
-			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
-		else if (rand == 1)
-			return new GameRuleDuplicateActionAction();
-		else {
-			return new GameRuleFreezeUntilConditionActionAction(
-				randomEventHappenedConditionForTarget(
-					randomSelectorForSource(ballCondition)));
-		}
 	}
 
 	////////////////GameRuleSelectors for actions and conditions////////////////
@@ -216,29 +277,41 @@ isComparison = false;
 	}
 	//generate a selector based on a condition for events caused by players
 	public static GameRuleSelector randomPlayerSourceSelector() {
-		if (Random.Range(0, 2) == 0)
-			return GameRulePlayerSelector.instance;
-		else
-			return GameRuleOpponentSelector.instance;
+		//build selectors list, taking restrictions into account
+		List<GameRuleSelector> acceptableSelectors = new List<GameRuleSelector>(new GameRuleSelector[] {
+			GameRulePlayerSelector.instance,
+			GameRuleOpponentSelector.instance
+		});
+		if (hasRestriction(GameRuleRestriction.NoYouPlayerTargetSelectors))
+			acceptableSelectors.Remove(GameRulePlayerSelector.instance);
+		if (hasRestriction(GameRuleRestriction.NoOpponentPlayerTargetSelectors))
+			acceptableSelectors.Remove(GameRuleOpponentSelector.instance);
+
+		//pick a selector
+		return acceptableSelectors[Random.Range(0, acceptableSelectors.Count)];
 	}
 	//generate a selector based on a condition for events caused by balls
 	public static GameRuleSelector randomBallSourceSelector() {
 		//build selectors list, taking restrictions into account
-		GameRuleSelector[] acceptableSelectors;
-		if (restrictions.Contains(GameRuleRestriction.NeedsPlayerTargetSelector))
-			acceptableSelectors = new GameRuleSelector[] {
+		List<GameRuleSelector> acceptableSelectors;
+		if (hasRestriction(GameRuleRestriction.OnlyPlayerTargetSelectors))
+			acceptableSelectors = new List<GameRuleSelector>(new GameRuleSelector[] {
 				GameRuleBallShooterSelector.instance,
 				GameRuleBallShooterOpponentSelector.instance
-			};
+			});
 		else
-			acceptableSelectors = new GameRuleSelector[] {
+			acceptableSelectors = new List<GameRuleSelector>(new GameRuleSelector[] {
 				GameRuleBallSelector.instance,
 				GameRuleBallShooterSelector.instance,
 				GameRuleBallShooterOpponentSelector.instance
-			};
+			});
+		if (hasRestriction(GameRuleRestriction.NoYouPlayerTargetSelectors))
+			acceptableSelectors.Remove(GameRuleBallShooterSelector.instance);
+		if (hasRestriction(GameRuleRestriction.NoOpponentPlayerTargetSelectors))
+			acceptableSelectors.Remove(GameRuleBallShooterOpponentSelector.instance);
 
 
 		//pick a selector
-		return acceptableSelectors[Random.Range(0, acceptableSelectors.Length)];
+		return acceptableSelectors[Random.Range(0, acceptableSelectors.Count)];
 	}
 }
