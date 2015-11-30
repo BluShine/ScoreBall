@@ -14,10 +14,10 @@ TagManager:
   - 
   - 
   - Players
-  - Balls
+  - SportsObjects
   - Triggers
   - Floor
-  - 
+  - BoundaryWalls
   - 
   - 
   - 

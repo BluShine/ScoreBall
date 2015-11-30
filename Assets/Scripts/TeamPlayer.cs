@@ -311,7 +311,7 @@ public class TeamPlayer : SportsObject {
         }
     }
 
-    void tackle(Vector3 launch, float duration)
+    public void tackle(Vector3 launch, float duration)
     {
         body.constraints = RigidbodyConstraints.None;
         body.velocity = launch;
