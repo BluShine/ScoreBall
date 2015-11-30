@@ -23,14 +23,16 @@ public class spriteSorter : MonoBehaviour {
             {
                 Debug.LogError("No SpriteRenderer attached.");
             }
-        } else
+        }
+#endif
+        if (parentObject == null)
         {
+            spr.sortingOrder = Mathf.RoundToInt(-transform.position.z * 100);
+        }
+        else
+        { 
             spr.sortingOrder = Mathf.RoundToInt(-transform.localPosition.z * 1000) + 
                 Mathf.RoundToInt(-parentObject.transform.position.z * 100);
-            spr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
         }
-#else
-        spr.sortingOrder = Mathf.RoundToInt(transform.position.z * 1000);
-#endif
     }
 }
