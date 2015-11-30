@@ -161,6 +161,10 @@ public class SportsObject : FieldObject {
 		freezeTime = 0.0f;
 	}
 
+	public virtual void BeDizzy(float duration) {
+		dizzyTime = Mathf.Max(duration, dizzyTime);
+	}
+
 	//collision handling
 	void OnCollisionEnter(Collision collision) {
 		handleCollision(collision.gameObject);

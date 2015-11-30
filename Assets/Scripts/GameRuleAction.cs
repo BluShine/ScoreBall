@@ -102,6 +102,20 @@ public class GameRuleFreezeUntilConditionActionAction : GameRuleUntilConditionAc
 	}
 }
 
+public class GameRuleDizzyActionAction : GameRuleActionAction {
+	public static string[] dizzyConjugates = new string[] {"become ", "becomes "};
+	public float timeDizzy;
+	public GameRuleDizzyActionAction(float td) {
+		timeDizzy = td;
+	}
+	public override void takeAction(SportsObject source, SportsObject target) {
+		target.BeDizzy(timeDizzy);
+	}
+	public override string ToString(int conjugate) {
+		return dizzyConjugates[conjugate] + "dizzy for " + timeDizzy.ToString("F1") + " seconds";
+	}
+}
+
 ////////////////Wait timers for actions that don't happen until an event////////////////
 public class GameRuleActionWaitTimer {
 	public GameRuleEventHappenedCondition condition;

@@ -210,7 +210,8 @@ isComparison = false;
 				typeof(GameRulePointsPlayerActionAction),
 				typeof(GameRuleFreezeActionAction),
 				typeof(GameRuleDuplicateActionAction),
-				typeof(GameRuleFreezeUntilConditionActionAction)
+				typeof(GameRuleFreezeUntilConditionActionAction),
+				typeof(GameRuleDizzyActionAction)
 			});
 		if (hasRestriction(GameRuleRestriction.NoPlayerFreezeUntilConditions))
 			acceptableActionTypes.Remove(typeof(GameRuleFreezeUntilConditionActionAction));
@@ -241,7 +242,9 @@ isComparison = false;
 			return new GameRuleFreezeUntilConditionActionAction(
 				randomEventHappenedConditionForTarget(
 					sourceToTrigger));
-		} else
+		} else if (chosenType == typeof(GameRuleDizzyActionAction))
+			return new GameRuleDizzyActionAction(Random.Range(2.0f, 12.0f));
+		else
 			throw new System.Exception("Bug: Invalid action type!");
 	}
 	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
