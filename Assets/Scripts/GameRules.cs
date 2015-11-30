@@ -218,7 +218,7 @@ public class GameRules : MonoBehaviour {
 ////////////////Represents a single game rule////////////////
 public class GameRule {
 	const float RULE_FLASH_FADE_SECONDS = 1.5f;
-	const float RULE_FLASH_MAX_ALPHA = 0.875f;
+	const float RULE_FLASH_MAX_ALPHA = 15.0f / 16.0f;
 
 	public GameRuleCondition condition;
 	public GameRuleAction action;
