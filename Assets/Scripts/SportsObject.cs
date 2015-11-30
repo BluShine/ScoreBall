@@ -189,10 +189,6 @@ public class SportsObject : FieldObject {
         else if (checkFieldCollision(gameObject))
         {
         }
-        else
-        {
-            return;
-        }
     }
 
 	public bool checkPlayerCollision(GameObject gameObject) {
@@ -216,7 +212,7 @@ public class SportsObject : FieldObject {
 	}
 
 	public bool checkSportsCollision(GameObject gameObject) {
-		//check if the collision is with a sports object other than a ball
+		//check if the collision is with a sports object other than a ball or player
 		SportsObject sObject = gameObject.GetComponent<SportsObject>();
 		if (sObject != null) {
 			handleSportsCollision(sObject);
