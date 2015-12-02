@@ -187,7 +187,9 @@ public class SportsObject : FieldObject {
 		//make sure we're not already trying to jump
 		if (!preJump) {
 			Debug.Log("bounce " + bounceTime);
-			body.AddForce(jumpSpeed * Vector3.up, ForceMode.VelocityChange);
+			Vector3 velocity = body.velocity;
+			velocity.y = Mathf.Max(velocity.y, jumpSpeed);
+			body.velocity = velocity;
 			preJump = true;
 		}
 	}
