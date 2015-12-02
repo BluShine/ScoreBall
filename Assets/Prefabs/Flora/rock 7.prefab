@@ -44,13 +44,13 @@ MonoBehaviour:
   colorGradient:
     key0:
       serializedVersion: 2
-      rgba: 4280685345
+      rgba: 4283847253
     key1:
       serializedVersion: 2
       rgba: 4291153076
     key2:
       serializedVersion: 2
-      rgba: 3950673
+      rgba: 6713206
     key3:
       serializedVersion: 2
       rgba: 12562610
@@ -84,6 +84,7 @@ MonoBehaviour:
     atime7: 0
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
+  fliprandomly: 1
 --- !u!114 &11426976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -136,6 +137,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.w
       value: .953716934
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fliprandomly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.key0.rgba
+      value: 4283847253
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.key2.rgba
+      value: 6713206
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

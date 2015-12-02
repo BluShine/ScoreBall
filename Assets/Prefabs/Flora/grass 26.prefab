@@ -56,7 +56,7 @@ MonoBehaviour:
   colorGradient:
     key0:
       serializedVersion: 2
-      rgba: 4284660769
+      rgba: 4290703514
     key1:
       serializedVersion: 2
       rgba: 4287226801
@@ -79,9 +79,9 @@ MonoBehaviour:
       serializedVersion: 2
       rgba: 0
     ctime0: 0
-    ctime1: 18311
-    ctime2: 34502
-    ctime3: 48573
+    ctime1: 65535
+    ctime2: 34117
+    ctime3: 48188
     ctime4: 65535
     ctime5: 0
     ctime6: 0
@@ -94,8 +94,9 @@ MonoBehaviour:
     atime5: 0
     atime6: 0
     atime7: 0
-    m_NumColorKeys: 5
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
+  fliprandomly: 1
 --- !u!212 &21282414
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -136,6 +137,34 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.w
       value: .953716934
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fliprandomly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.m_NumColorKeys
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.ctime3
+      value: 48188
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.ctime2
+      value: 34117
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.ctime1
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.key1.rgba
+      value: 4287226801
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorGradient.key0.rgba
+      value: 4290703514
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
