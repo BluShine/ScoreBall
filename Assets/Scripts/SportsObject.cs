@@ -19,6 +19,7 @@ public class SportsObject : FieldObject {
     static int MAXDUPLICATES = 100;
     static float DUPLICATIONCOOLDOWN = .15f;
     float dupeCoolTimer = .15f;
+    public float jumpSpeed = 10; //velocity when you jump
 
     static float DUPELICATELIFETIME = 20;
     public float lifeTime = 0;
@@ -37,6 +38,11 @@ public class SportsObject : FieldObject {
     public float dizzyTime { get; private set; }
     bool usesDizzy = true;
     static Vector3 DIZZYSPINVECTOR = new Vector3(0, 30, 0);
+
+	[HideInInspector]
+	public float bounceTime { get; private set; }
+	protected bool isOnGround = false;
+	protected bool preJump = false; //indicates the time between starting a jump and leaving the ground
 
     //sound
     public List<AudioClip> hitSounds;
@@ -96,6 +102,14 @@ public class SportsObject : FieldObject {
         {
             body.AddTorque(DIZZYSPINVECTOR, ForceMode.Acceleration);
         }
+
+		bounceTime = Mathf.Max(0, bounceTime - Time.fixedDeltaTime);
+		//not on ground, reset pre-jump
+		if (!isOnGround)
+			preJump = false;
+		//object is on the ground and is bouncing
+		else if (bounceTime > 0)
+			Jump();
 	}
 
     public virtual void Respawn()
@@ -161,6 +175,23 @@ public class SportsObject : FieldObject {
 		freezeTime = 0.0f;
 	}
 
+	public virtual void BeDizzy(float duration) {
+		dizzyTime = Mathf.Max(duration, dizzyTime);
+	}
+
+	public virtual void StartBouncing(float duration) {
+		bounceTime = Mathf.Max(duration, bounceTime);
+	}
+
+	public virtual void Jump() {
+		//make sure we're not already trying to jump
+		if (!preJump) {
+			Debug.Log("bounce " + bounceTime);
+			body.AddForce(jumpSpeed * Vector3.up, ForceMode.VelocityChange);
+			preJump = true;
+		}
+	}
+
 	//collision handling
 	void OnCollisionEnter(Collision collision) {
 		handleCollision(collision.gameObject);
@@ -177,17 +208,12 @@ public class SportsObject : FieldObject {
 	}
 
 	void handleCollision(GameObject gameObject) {
-        if (checkBallCollision(gameObject))
-        {
-        }
-        else if (checkPlayerCollision(gameObject))
-        {
-        }
-        else if (checkSportsCollision(gameObject))
-        {
-        }
-        else if (checkFieldCollision(gameObject))
-        {
+		if (gameObject == gameRules.floor) {
+			isOnGround = true;
+		} else if (checkBallCollision(gameObject)) {
+        } else if (checkPlayerCollision(gameObject)) {
+        } else if (checkSportsCollision(gameObject)) {
+        } else if (checkFieldCollision(gameObject)) {
         }
     }
 
@@ -235,4 +261,17 @@ public class SportsObject : FieldObject {
 	public virtual void handleBallCollision(Ball hitBall) {}
 	public virtual void handleSportsCollision(SportsObject sObject) {}
 	public virtual void handleFieldCollision(FieldObject fObject) {}
+
+	void OnCollisionExit(Collision collision) {
+		handleCollisionExit(collision.gameObject);
+	}
+
+	void OnTriggerExit(Collider collider) {
+		handleCollisionExit(collider.gameObject);
+	}
+
+	void handleCollisionExit(GameObject gameObject) {
+		if (gameObject == gameRules.floor)
+			isOnGround = false;
+	}
 }
