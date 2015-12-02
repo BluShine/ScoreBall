@@ -1,0 +1,145 @@
+fileFormatVersion: 2
+guid: c4c53879eb1b50e45ab3c31a32406772
+timeCreated: 1448916739
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: treeslines_0
+    21300002: treeslines_1
+    21300004: treeslines_2
+    21300006: treeslines_3
+    21300008: treeslines_4
+    21300010: treeslines_5
+    21300012: treeslines_8
+    21300014: treeslines_9
+    21300016: treeslines_13
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: treeslines_1
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 1693
+        width: 2490
+        height: 1461
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_2
+      rect:
+        serializedVersion: 2
+        x: 2920
+        y: 2097
+        width: 392
+        height: 1121
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_3
+      rect:
+        serializedVersion: 2
+        x: 3445
+        y: 2055
+        width: 403
+        height: 1188
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_4
+      rect:
+        serializedVersion: 2
+        x: 4007
+        y: 1955
+        width: 292
+        height: 1266
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_5
+      rect:
+        serializedVersion: 2
+        x: 4451
+        y: 1915
+        width: 471
+        height: 1320
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_8
+      rect:
+        serializedVersion: 2
+        x: 1875
+        y: 72
+        width: 718
+        height: 1610
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_9
+      rect:
+        serializedVersion: 2
+        x: 958
+        y: 24
+        width: 701
+        height: 1616
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: treeslines_13
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 45
+        width: 633
+        height: 1539
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

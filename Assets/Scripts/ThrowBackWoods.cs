@@ -23,4 +23,20 @@ public class ThrowBackWoods : MonoBehaviour {
             sportsObj.body.velocity = (target - sportsObj.transform.position).normalized * throwVelocity;
         }
     }
+
+    void OnTriggerStay(Collider collision)
+    {
+        GameObject obj = collision.gameObject;
+        TeamPlayer tPlayer = obj.GetComponent<TeamPlayer>();
+        if (tPlayer != null && tPlayer.body.velocity.sqrMagnitude < 1)
+        {
+            tPlayer.tackle(throwVelocity * (target - tPlayer.transform.position).normalized, playerTackleTime);
+            return;
+        }
+        SportsObject sportsObj = obj.GetComponent<SportsObject>();
+        if (sportsObj != null && sportsObj.body.velocity.sqrMagnitude < 1)
+        {
+            sportsObj.body.velocity = (target - sportsObj.transform.position).normalized * throwVelocity;
+        }
+    }
 }
