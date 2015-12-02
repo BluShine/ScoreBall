@@ -1,0 +1,122 @@
+fileFormatVersion: 2
+guid: 420d655033455bc4f9eb5ba0fd312a42
+timeCreated: 1449078544
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: UIarrows_0
+    21300002: UIarrows_1
+    21300004: UIarrows_2
+    21300006: UIarrows_3
+    21300008: UIarrows_4
+    21300010: UIarrows_5
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: UIarrows_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 37
+        width: 65
+        height: 119
+      alignment: 9
+      pivot: {x: .478502482, y: .519570589}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: UIarrows_1
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 36
+        width: 62
+        height: 128
+      alignment: 9
+      pivot: {x: .537562847, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: UIarrows_2
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 45
+        width: 71
+        height: 126
+      alignment: 9
+      pivot: {x: .480319172, y: .463033408}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: UIarrows_3
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 44
+        width: 55
+        height: 134
+      alignment: 9
+      pivot: {x: .474593848, y: .447860539}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: UIarrows_4
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 43
+        width: 52
+        height: 134
+      alignment: 9
+      pivot: {x: .499999404, y: .444384575}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: UIarrows_5
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 49
+        width: 59
+        height: 127
+      alignment: 9
+      pivot: {x: .547366917, y: .430316478}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
