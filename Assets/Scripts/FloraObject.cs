@@ -15,7 +15,7 @@ public class FloraObject : MonoBehaviour {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 	}
 
-#if (UNITY_EDITOR)
+/*#if (UNITY_EDITOR)
     // Update is called once per frame
     void Update() {
         if (!Application.isPlaying)
@@ -26,5 +26,5 @@ public class FloraObject : MonoBehaviour {
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
     }
-#endif
+#endif*/
 }
