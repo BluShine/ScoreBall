@@ -8,6 +8,7 @@ public class PlayerAnimation : MonoBehaviour {
     float turnTime = 0;
     static float TURNMINTIME = 0.1f;
     public Vector3 offset = new Vector3(0,0,0.5f);
+    public Vector3 shadowOffset = new Vector3(0, .01f, .5f);
 
     enum Direction { NW, SW, NE, SE}
     Direction lastDirection;
@@ -36,7 +37,7 @@ public class PlayerAnimation : MonoBehaviour {
         turnTime = Mathf.Max(0, turnTime);
         RaycastHit ray;
         Physics.Raycast(transform.position, Vector3.down, out ray);
-        shadow.transform.position = ray.point + new Vector3(0, .01f, 0);
+        shadow.transform.position = ray.point + shadowOffset;
 	}
 
     public void UpdateMotion(Vector2 motion)

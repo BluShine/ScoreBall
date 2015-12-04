@@ -6,6 +6,7 @@ public class spriteSorter : MonoBehaviour {
 
     SpriteRenderer spr;
     public GameObject parentObject;
+    public int offset = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -27,12 +28,13 @@ public class spriteSorter : MonoBehaviour {
 #endif
         if (parentObject == null)
         {
-            spr.sortingOrder = Mathf.RoundToInt(-transform.position.z * 100);
+            spr.sortingOrder = Mathf.RoundToInt(-transform.position.z * 100) + offset;
         }
         else
-        { 
-            spr.sortingOrder = Mathf.RoundToInt(-transform.localPosition.z * 1000) + 
-                Mathf.RoundToInt(-parentObject.transform.position.z * 100);
+        {
+            spr.sortingOrder = Mathf.RoundToInt(-transform.localPosition.z * 1000) +
+                Mathf.RoundToInt(-parentObject.transform.position.z * 100) +
+                offset;
         }
     }
 }
