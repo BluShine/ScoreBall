@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 4b21154e9c6e0244290f5c83b96dd33e
-timeCreated: 1449514807
+timeCreated: 1449520160
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -76,7 +76,7 @@ TextureImporter:
         width: 78
         height: 84
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_1
       rect:
@@ -86,7 +86,7 @@ TextureImporter:
         width: 79
         height: 86
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_2
       rect:
@@ -96,7 +96,7 @@ TextureImporter:
         width: 77
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_3
       rect:
@@ -106,7 +106,7 @@ TextureImporter:
         width: 73
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_4
       rect:
@@ -116,7 +116,7 @@ TextureImporter:
         width: 89
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_6
       rect:
@@ -156,7 +156,7 @@ TextureImporter:
         width: 111
         height: 66
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_15
       rect:
@@ -166,7 +166,7 @@ TextureImporter:
         width: 114
         height: 65
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_16
       rect:
@@ -176,7 +176,7 @@ TextureImporter:
         width: 60
         height: 63
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_17
       rect:
@@ -186,15 +186,15 @@ TextureImporter:
         width: 64
         height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_18
       rect:
         serializedVersion: 2
-        x: 720
-        y: 260
-        width: 113
-        height: 102
+        x: 735
+        y: 261
+        width: 97
+        height: 41
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,7 +216,7 @@ TextureImporter:
         width: 145
         height: 74
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_28
       rect:
@@ -226,7 +226,7 @@ TextureImporter:
         width: 146
         height: 76
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_29
       rect:
@@ -236,7 +236,7 @@ TextureImporter:
         width: 5
         height: 5
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: buttons_30
       rect:
@@ -246,7 +246,7 @@ TextureImporter:
         width: 154
         height: 62
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
