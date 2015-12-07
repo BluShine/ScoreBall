@@ -191,6 +191,10 @@ public class GameRules : MonoBehaviour {
 			pointsText.gameObject.SetActive(false);
 			pointsTextPool.Push(pointsText);
 		}
+
+		//ensure we always have at least 1 rule
+		if (rulesList.Count == 0)
+			GenerateNewRule();
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		foreach (GameRule rule in rulesList) {
