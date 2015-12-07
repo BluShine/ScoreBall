@@ -1,50 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &164744
+--- !u!1 &113308
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 465892}
-  - 33: {fileID: 3377134}
-  - 135: {fileID: 13554524}
-  - 23: {fileID: 2315652}
-  - 54: {fileID: 5429726}
-  - 114: {fileID: 11450262}
-  - 108: {fileID: 10812390}
-  - 82: {fileID: 8240302}
+  - 4: {fileID: 480270}
+  - 33: {fileID: 3376678}
+  - 135: {fileID: 13572278}
+  - 23: {fileID: 2381756}
+  - 54: {fileID: 5456098}
+  - 114: {fileID: 11487848}
+  - 108: {fileID: 10857082}
+  - 82: {fileID: 8207624}
   m_Layer: 9
-  m_Name: BigBall
+  m_Name: UltimateBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &465892
+--- !u!4 &480270
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.73000002, z: 3.85226822}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 1.75999999, z: -4.0140295}
+  m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!23 &2315652
+--- !u!23 &2381756
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 65a27ab57887be848adbd2656bc18134, type: 2}
+  - {fileID: 2100000, guid: 8c60be95f8fd32b4589cfb5c4a52aad3, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -52,27 +52,25 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!33 &3377134
+--- !u!33 &3376678
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &5429726
+--- !u!54 &5456098
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -82,12 +80,12 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!82 &8240302
+--- !u!82 &8207624
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
@@ -152,18 +150,18 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
---- !u!108 &10812390
+--- !u!108 &10857082
 Light:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 2
-  m_Color: {r: .360294104, g: 1, b: .549999952, a: 1}
+  m_Color: {r: 1, g: .389705896, b: .907403529, a: 1}
   m_Intensity: .300000012
-  m_Range: 6.99473572
+  m_Range: 7
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -184,18 +182,18 @@ Light:
   m_ShadowRadius: 0
   m_ShadowAngle: 0
   m_AreaSize: {x: 1, y: 1}
---- !u!114 &11450262
+--- !u!114 &11487848
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: beach ball
+  sportName: ultimate ball
   team: 0
   body: {fileID: 0}
   jumpSpeed: 10
@@ -211,25 +209,25 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cb65c3ef2f631884fbf53b8c0e798f4d, type: 3}
   soundSource: {fileID: 0}
   noTakebacksCooldown: .400000006
-  carryRadius: 1
+  carryRadius: .300000012
   tackleDuration: .200000003
-  holdable: 0
-  ultimate: 0
+  holdable: 1
+  ultimate: 1
   currentPlayer: {fileID: 0}
   previousPlayer: {fileID: 0}
-  stuns: 0
+  stuns: 1
   kickSounds:
   - {fileID: 8300000, guid: 9045bcfaa4267db43a190ad66f44e4bc, type: 3}
   - {fileID: 8300000, guid: 6085ec7e4816b3445af36e8d8f41380a, type: 3}
   catchSounds:
   - {fileID: 8300000, guid: 2ddf64a76629850489039de0af92a58c, type: 3}
   - {fileID: 8300000, guid: ae13098bdf91c9e44a09281a1b3966c0, type: 3}
---- !u!135 &13554524
+--- !u!135 &13572278
 SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 164744}
+  m_GameObject: {fileID: 113308}
   m_Material: {fileID: 13400000, guid: e0de2b7af37efb04987b214961466f9f, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
@@ -244,18 +242,26 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
-      propertyPath: stuns
-      value: 0
+      propertyPath: ultimate
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: sportName
-      value: beach ball
+      value: ultimate ball
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: jumpSpeed
-      value: 10
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.g
+      value: .389705896
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.b
+      value: .907403529
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 164744}
+  m_RootGameObject: {fileID: 113308}
   m_IsPrefabParent: 1

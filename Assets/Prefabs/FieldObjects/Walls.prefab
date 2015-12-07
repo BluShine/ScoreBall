@@ -392,7 +392,7 @@ Transform:
   m_GameObject: {fileID: 109874}
   m_LocalRotation: {x: 0, y: 0, z: -.30070582, w: .953716934}
   m_LocalPosition: {x: 39, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 40}
+  m_LocalScale: {x: 20, y: 20, z: 60}
   m_Children: []
   m_Father: {fileID: 491312}
   m_RootOrder: 11
@@ -441,7 +441,7 @@ Transform:
   m_GameObject: {fileID: 139798}
   m_LocalRotation: {x: 0, y: 0, z: .30070582, w: .953716934}
   m_LocalPosition: {x: -39, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 40}
+  m_LocalScale: {x: 20, y: 20, z: 60}
   m_Children: []
   m_Father: {fileID: 491312}
   m_RootOrder: 12
@@ -1380,8 +1380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
-  team: 0
+  sportName: goalline
+  team: 2
 --- !u!114 &11416590
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1440,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
+  sportName: edgeline
   team: 0
 --- !u!114 &11438894
 MonoBehaviour:
@@ -1466,8 +1466,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
-  team: 0
+  sportName: goalline
+  team: 1
 --- !u!114 &11448712
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
+  sportName: edgeline
   team: 0
 --- !u!114 &11468854
 MonoBehaviour:
