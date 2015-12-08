@@ -121,9 +121,9 @@ public class GameRules : MonoBehaviour {
 					((GameRuleUntilConditionActionAction)(innerAction)).untilCondition;
 				//loop through all the wait timers and cancel their actions if they have this rule
 				for (int j = waitTimers.Count - 1; j >= 0; j--) {
-					if (waitTimers[i].condition == untilCondition) {
-						waitTimers[i].cancelAction();
-						waitTimers.RemoveAt(i);
+					if (waitTimers[j].condition == untilCondition) {
+						waitTimers[j].cancelAction();
+						waitTimers.RemoveAt(j);
 					}
 				}
 			}
