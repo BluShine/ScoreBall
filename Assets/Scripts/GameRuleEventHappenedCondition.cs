@@ -1,4 +1,6 @@
-﻿//GameRuleCondition class definition in GameRuleComparisonCondition.cs
+﻿using System.Collections.Generic;
+
+//GameRuleCondition class definition in GameRuleComparisonCondition.cs
 
 ////////////////Game events////////////////
 public enum GameRuleEventType : int {
@@ -117,5 +119,24 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	}
 	public override string ToString() {
 		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType, selector.conjugate == 1) + param;
+	}
+	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
+		//any event involving a ball needs a ball
+		if ((eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) ||
+			eventType == GameRuleEventType.PlayerShootBall ||
+			eventType == GameRuleEventType.PlayerGrabBall ||
+			eventType == GameRuleEventType.PlayerStealBall ||
+			eventType == GameRuleEventType.PlayerHitInTheFaceByBall ||
+			eventType == GameRuleEventType.PlayerTouchBall)
+			requiredObjectsList.Add(GameRuleRequiredObject.Ball);
+
+		//ball-ball collision needs a second ball
+		if (eventType == GameRuleEventType.BallHitBall)
+			requiredObjectsList.Add(GameRuleRequiredObject.SecondBall);
+
+		//if the field object is a goal we need a goal
+		if ((eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject) &&
+			param == "footgoal")
+			requiredObjectsList.Add(GameRuleRequiredObject.Goal);
 	}
 }

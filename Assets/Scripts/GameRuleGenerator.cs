@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 //this is for any restrictions in game rule generation
 public enum GameRuleRestriction {
-	//restrict what options can get be choices at all
+	//restrict what options can be choices at all
 	OnlyPointsActions,
 	OnlyEventHappenedConditions,
 	OnlyPlayerTargetSelectors,
@@ -177,7 +177,7 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	public static string randomFieldObjectType() {
 		int rand = Random.Range(0, 2);
 		if (rand == 0)
-			return "goal";
+			return "footgoal";
 		else
 			return "wall";
 	}

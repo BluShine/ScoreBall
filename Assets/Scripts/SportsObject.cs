@@ -232,7 +232,7 @@ public class SportsObject : FieldObject {
 	public bool checkBallCollision(GameObject gameObject) {
 		//check if the collision is with a ball
 		Ball hitBall = gameObject.GetComponent<Ball>();
-		if(hitBall != null) {
+		if (hitBall != null) {
 			handleBallCollision(hitBall);
 			return true;
 		}

@@ -1,33 +1,47 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public enum GameRuleRequiredObject {
+	Ball,
+	Goal,
+	SecondBall
+};
+
 ////////////////Master rules handler object////////////////
 public class GameRules : MonoBehaviour {
+	//so that we have access to scores and stuff when evaluating rules
+	public static GameRules instance;
+
+	//prefabs for spawning objects
+	public GameObject ballPrefab;
+	public GameObject bigBallPrefab;
+	public GameObject goalPrefab;
+	public Material[] teamMaterials;
+	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
+
+	//access to interacting with the game world
 	public GameObject ruleDisplayPrefab;
 	public GameObject pointsTextPrefab;
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
-	//so that we have access to scores and stuff when evaluating rules
-	public static GameRules instance;
+	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
+	public Text[] teamTexts;
+	public int[] teamScores;
 
-	//const int POINTS_TEXT_POOL_AMOUNT = 8;
 	//constants for positioning the points text above the player and fading out
+	//const int POINTS_TEXT_POOL_AMOUNT = 8;
 	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
 	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
 	Queue<TextMesh> activePointsTexts = new Queue<TextMesh>();
 
+	//active rules
 	public List<GameRule> rulesList = new List<GameRule>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
-
-	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
-	public List<Text> teamTexts;
-	public List<int> teamScores;
 
 	public void Start() {
 		instance = this;
@@ -44,14 +58,13 @@ public class GameRules : MonoBehaviour {
 		allPlayers[tp.team].Add(tp);
 	}
 	public void UpdateScore() {
-		foreach(List<TeamPlayer> teamPlayerList in allPlayers)
-		{
+		foreach (List<TeamPlayer> teamPlayerList in allPlayers) {
 			//in case the team numbers are not consecutive
 			if (teamPlayerList == null)
 				continue;
 
 			int totalscore = 0;
-			foreach(TeamPlayer p in teamPlayerList)
+			foreach (TeamPlayer p in teamPlayerList)
 				totalscore += p.score;
 			int team = teamPlayerList[0].team;
 			teamTexts[team].text = "Score: " + totalscore;
@@ -84,6 +97,8 @@ public class GameRules : MonoBehaviour {
 		Transform t = display.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
+
+		addRequiredObjects();
 	}
 	public void DeleteRule(Button button) {
 		RectTransform ruleTransform = (RectTransform)(button.transform.parent);
@@ -114,15 +129,113 @@ public class GameRules : MonoBehaviour {
 			}
 		}
 		Destroy(ruleDisplay);
+		deleteRequiredObjects();
 	}
     public void deleteAllRules()
     {
-        for(int i = rulesList.Count - 1; i >= 0; i--)
+        for (int i = rulesList.Count - 1; i >= 0; i--)
         {
 			DeleteRule(getButtonFromRuleDisplay(rulesList[i].ruleDisplay));
         }
         rulesList.Clear();
     }
+	public void addRequiredObjects() {
+		List<GameRuleRequiredObject> requiredObjectsList = buildRequiredObjectsList();
+		for (int i = requiredObjectsList.Count - 1; i >= 0; i--) {
+			GameRuleRequiredObject requiredObject = requiredObjectsList[i];
+			GameObject prefab = getPrefabForRequiredObject(requiredObject);
+
+			//check to see if the object is present
+			bool missingObject = true;
+			foreach (KeyValuePair<GameObject, GameObject> spawnedObjectPrefab in spawnedObjectPrefabMap) {
+				if (spawnedObjectPrefab.Value == prefab) {
+					missingObject = false;
+					break;
+				}
+			}
+
+			//we don't have the object, spawn it
+			if (missingObject) {
+				GameObject spawnedObject = (GameObject)Instantiate(prefab);
+				spawnedObjectPrefabMap.Add(spawnedObject, prefab);
+
+				//these need multiple objects that get assigned to teams
+				if (requiredObject == GameRuleRequiredObject.Goal) {
+					spawnedObject.GetComponent<MeshRenderer>().material = teamMaterials[1];
+					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
+					fo.team = 1;
+
+					//make another one
+					spawnedObject = (GameObject)Instantiate(prefab);
+					spawnedObjectPrefabMap.Add(spawnedObject, prefab);
+					spawnedObject.GetComponent<MeshRenderer>().material = teamMaterials[2];
+					fo = spawnedObject.GetComponent<FieldObject>();
+					fo.team = 2;
+
+					//put it on the other side of the field facing the other way
+					Transform t = spawnedObject.transform;
+					Vector3 v = t.position;
+					v.x = -v.x;
+					t.position = v;
+					Quaternion q = t.rotation;
+					q.y = 180.0f;
+					t.rotation = q;
+				}
+			}
+		}
+	}
+	public void deleteRequiredObjects() {
+		List<GameRuleRequiredObject> requiredObjectsList = buildRequiredObjectsList();
+		List<GameObject> gameObjectsToRemove = new List<GameObject>();
+		foreach (KeyValuePair<GameObject, GameObject> spawnedObjectPrefab in spawnedObjectPrefabMap) {
+			GameRuleRequiredObject requiredObject = getRequiredObjectForPrefab(spawnedObjectPrefab.Value);
+
+			//go through the required objects list and see if we need this one
+			bool objectNotRequired = true;
+			foreach (GameRuleRequiredObject otherRequiredObject in requiredObjectsList) {
+				if (otherRequiredObject == requiredObject) {
+					objectNotRequired = false;
+					break;
+				}
+			}
+
+			//none of the rules require this object, we'll delete it
+			if (objectNotRequired)
+				gameObjectsToRemove.Add(spawnedObjectPrefab.Key);
+		}
+
+		//go through the list of objects to remove and remove them
+		foreach (GameObject objectToRemove in gameObjectsToRemove) {
+			spawnedObjectPrefabMap.Remove(objectToRemove);
+			Destroy(objectToRemove);
+		}
+	}
+	public List<GameRuleRequiredObject> buildRequiredObjectsList() {
+		List<GameRuleRequiredObject> requiredObjectsList = new List<GameRuleRequiredObject>();
+		foreach (GameRule gameRule in rulesList)
+			gameRule.addRequiredObjects(requiredObjectsList);
+		return requiredObjectsList;
+	}
+	public GameObject getPrefabForRequiredObject(GameRuleRequiredObject requiredObject) {
+		if (requiredObject == GameRuleRequiredObject.Ball)
+			return ballPrefab;
+		else if (requiredObject == GameRuleRequiredObject.Goal)
+			return goalPrefab;
+		else if (requiredObject == GameRuleRequiredObject.SecondBall)
+			return bigBallPrefab;
+		else
+			throw new System.Exception("Invalid required object");
+	}
+	public GameRuleRequiredObject getRequiredObjectForPrefab(GameObject prefab) {
+		if (prefab == ballPrefab)
+			return GameRuleRequiredObject.Ball;
+		else if (prefab == goalPrefab)
+			return GameRuleRequiredObject.Goal;
+		else if (prefab == bigBallPrefab)
+			return GameRuleRequiredObject.SecondBall;
+		else
+			throw new System.Exception("Invalid prefab");
+	}
 
 	public void spawnPointsText(int pointsGiven, TeamPlayer target) {
 		TextMesh pointsText;
@@ -270,5 +383,10 @@ public class GameRule {
 	public void startFlash() {
 		flashImage.gameObject.SetActive(true);
 		flashImage.color = new Color(1.0f, 1.0f, 1.0f, RULE_FLASH_MAX_ALPHA);
+	}
+	public void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
+		//only conditions generate required objects but an action may have an inner until-condition action
+		condition.addRequiredObjects(requiredObjectsList);
+		action.innerAction.addRequiredObjects(requiredObjectsList);
 	}
 }

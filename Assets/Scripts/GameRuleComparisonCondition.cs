@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public abstract class GameRuleCondition {
 	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
 	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
+	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 }
 
 ////////////////Conditions that trigger actions when checked////////////////

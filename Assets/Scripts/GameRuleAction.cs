@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 ////////////////Rule consequences////////////////
 public class GameRuleAction {
@@ -23,6 +24,7 @@ public class GameRuleAction {
 public abstract class GameRuleActionAction {
 	public abstract void takeAction(SportsObject source, SportsObject target);
 	public abstract string ToString(int conjugate);
+	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 }
 
 public abstract class GameRuleUntilConditionActionAction : GameRuleActionAction {
@@ -35,6 +37,9 @@ public abstract class GameRuleUntilConditionActionAction : GameRuleActionAction 
 	}
 	public override string ToString(int conjugate) {
 		return getConjugate(conjugate) + "until " + untilCondition.ToString();
+	}
+	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
+		untilCondition.addRequiredObjects(requiredObjectsList);
 	}
 	public abstract void cancelAction(SportsObject so);
 	public abstract string getConjugate(int conjugate);
