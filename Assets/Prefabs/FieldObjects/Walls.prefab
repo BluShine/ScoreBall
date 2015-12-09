@@ -551,7 +551,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 134668}
   m_LocalRotation: {x: .30070582, y: 0, z: 0, w: .953716934}
-  m_LocalPosition: {x: 0, y: 0, z: 31}
+  m_LocalPosition: {x: 0, y: 0, z: 32}
   m_LocalScale: {x: 100, y: 20, z: 20}
   m_Children: []
   m_Father: {fileID: 491312}
@@ -1392,8 +1392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
-  team: 0
+  sportName: goalline
+  team: 2
 --- !u!114 &11411144
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1478,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
+  sportName: sideboundary
   team: 0
 --- !u!114 &11448030
 MonoBehaviour:
@@ -1579,8 +1579,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
-  team: 0
+  sportName: goalline
+  team: 1
 --- !u!114 &11491966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1603,7 +1603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6fed13069003349aa010759e2eaa11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: wall
+  sportName: sideboundary
   team: 0
 --- !u!114 &11496372
 MonoBehaviour:
