@@ -136,7 +136,7 @@ public class TeamPlayer : SportsObject {
             //jumping
             if (isOnGround && Input.GetButtonDown(hopButton))
             {
-                Debug.Log("hop");
+                Debug.Log("hop still");
 				Jump();
             }
             //apply force to stop when there's no input.
@@ -225,7 +225,8 @@ public class TeamPlayer : SportsObject {
             //jumping
             if(isOnGround && Input.GetButtonDown(hopButton))
             {
-                body.AddForce(jumpSpeed * transform.up, ForceMode.VelocityChange);
+				Debug.Log("hop moving");
+				Jump();
             }
         }
 

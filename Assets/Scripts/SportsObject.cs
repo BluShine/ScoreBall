@@ -42,9 +42,7 @@ public class SportsObject : FieldObject {
 	[HideInInspector]
 	public float bounceTime { get; private set; }
 	protected bool isOnGround = false;
-
-    float hopCooldown = 0;
-    float HOPPINGCOOLDOWNTIME = .15f;
+	protected bool preJump = false; //indicates the time between starting a jump and leaving the ground
 
     //sound
     public List<AudioClip> hitSounds;
@@ -106,9 +104,11 @@ public class SportsObject : FieldObject {
         }
 
 		bounceTime = Mathf.Max(0, bounceTime - Time.fixedDeltaTime);
-        hopCooldown = Mathf.Max(0, hopCooldown - Time.fixedDeltaTime);
+		//not on ground, reset pre-jump
+		if (!isOnGround)
+			preJump = false;
 		//object is on the ground and is bouncing
-		if (bounceTime > 0) 
+		else if (bounceTime > 0)
 			Jump();
 	}
 
@@ -185,13 +185,12 @@ public class SportsObject : FieldObject {
 
 	public virtual void Jump() {
 		//make sure we're not already trying to jump
-		if (isOnGround && hopCooldown == 0) {
+		if (!preJump) {
 			Debug.Log("bounce " + bounceTime);
 			Vector3 velocity = body.velocity;
 			velocity.y = Mathf.Max(velocity.y, jumpSpeed);
 			body.velocity = velocity;
-            isOnGround = false;
-            hopCooldown = HOPPINGCOOLDOWNTIME;
+			preJump = true;
 		}
 	}
 
