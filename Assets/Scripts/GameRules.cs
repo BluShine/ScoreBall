@@ -382,8 +382,8 @@ public class GameRule {
 	}
 	public void startFlash() {
 		flashImage.gameObject.SetActive(true);
-		flashImage.color = new Color(1.0f, 1.0f, 1.0f, RULE_FLASH_MAX_ALPHA);
-	}
+        flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 1f);
+    }
 	public void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		//only conditions generate required objects but an action may have an inner until-condition action
 		condition.addRequiredObjects(requiredObjectsList);
