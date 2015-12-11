@@ -116,14 +116,17 @@ public class GameRules : MonoBehaviour {
 
 			//cancel any wait timers associated with this rule
 			GameRuleActionAction innerAction = gameRule.action.innerAction;
-			if (innerAction is GameRuleUntilConditionActionAction) {
-				GameRuleEventHappenedCondition untilCondition =
-					((GameRuleUntilConditionActionAction)(innerAction)).untilCondition;
-				//loop through all the wait timers and cancel their actions if they have this rule
-				for (int j = waitTimers.Count - 1; j >= 0; j--) {
-					if (waitTimers[j].condition == untilCondition) {
-						waitTimers[j].cancelAction();
-						waitTimers.RemoveAt(j);
+			if (innerAction is GameRuleDurationActionAction) {
+				GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
+				if (duration is GameRuleActionUntilConditionDuration) {
+					GameRuleEventHappenedCondition untilCondition =
+						((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
+					//loop through all the wait timers and cancel their actions if they have this rule
+					for (int j = waitTimers.Count - 1; j >= 0; j--) {
+						if (waitTimers[j].condition == untilCondition) {
+							waitTimers[j].cancelAction();
+							waitTimers.RemoveAt(j);
+						}
 					}
 				}
 			}

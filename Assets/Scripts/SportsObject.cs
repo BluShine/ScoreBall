@@ -179,8 +179,16 @@ public class SportsObject : FieldObject {
 		dizzyTime = Mathf.Max(duration, dizzyTime);
 	}
 
+	public virtual void StopBeingDizzy() {
+		dizzyTime = 0.0f;
+	}
+
 	public virtual void StartBouncing(float duration) {
 		bounceTime = Mathf.Max(duration, bounceTime);
+	}
+
+	public virtual void StopBouncing() {
+		bounceTime = 0.0f;
 	}
 
 	public virtual void Jump() {

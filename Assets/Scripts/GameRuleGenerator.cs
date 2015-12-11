@@ -14,10 +14,16 @@ public enum GameRuleRestriction {
 	//restrict what options can remain choices
 	NoYouPlayerTargetSelectors,
 	NoOpponentPlayerTargetSelectors,
-	NoPlayerFreezeUntilConditions
+	NoPlayerFreezeUntilConditions,
+	NoUntilConditionDurations,
+
+	//tell another function to look for restrictions
+	CheckFreezeUntilConditionRestrictions
 };
 
 public class GameRuleGenerator {
+	const int ACTION_DURATION_SECONDS_SHORTEST = 4;
+	const int ACTION_DURATION_SECONDS_LONGEST = 15;
 	private static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> eventTypesList = buildEventTypesList();
@@ -210,12 +216,9 @@ isComparison = false;
 				typeof(GameRulePointsPlayerActionAction),
 				typeof(GameRuleFreezeActionAction),
 				typeof(GameRuleDuplicateActionAction),
-				typeof(GameRuleFreezeUntilConditionActionAction),
 				typeof(GameRuleDizzyActionAction),
 				typeof(GameRuleBounceActionAction)
 			});
-		if (hasRestriction(GameRuleRestriction.NoPlayerFreezeUntilConditions))
-			acceptableActionTypes.Remove(typeof(GameRuleFreezeUntilConditionActionAction));
 
 		//pick one of the action types
 		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Count)];
@@ -225,30 +228,21 @@ isComparison = false;
 			if (points >= 0)
 				points++;
 			return new GameRulePointsPlayerActionAction(points);
-		} else if (chosenType == typeof(GameRuleFreezeActionAction))
-			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
-		else if (chosenType == typeof(GameRuleDuplicateActionAction))
+		} else if (chosenType == typeof(GameRuleFreezeActionAction)) {
+			if (hasRestriction(GameRuleRestriction.NoPlayerFreezeUntilConditions))
+				restrictions.Add(GameRuleRestriction.NoUntilConditionDurations);
+			//freeze conditions are allowed, but we need to make sure not to make anything game-breaking if we pick it
+			else
+				restrictions.Add(GameRuleRestriction.CheckFreezeUntilConditionRestrictions);
+			return new GameRuleFreezeActionAction(randomActionDuration(ballCondition));
+		} else if (chosenType == typeof(GameRuleDuplicateActionAction))
 			return new GameRuleDuplicateActionAction();
-		else if (chosenType == typeof(GameRuleFreezeUntilConditionActionAction)) {
-			//make sure the condition doesn't require the frozen player to do anything
-			if (ruleActionSelector is GameRulePlayerSelector || ruleActionSelector is GameRuleBallShooterSelector)
-				restrictions.Add(GameRuleRestriction.NoYouPlayerTargetSelectors);
-			else if (ruleActionSelector is GameRuleOpponentSelector || ruleActionSelector is GameRuleBallShooterOpponentSelector)
-				restrictions.Add(GameRuleRestriction.NoOpponentPlayerTargetSelectors);
-
-			GameRuleSelector sourceToTrigger = randomSelectorForSource(ballCondition);
-
-			restrictions.Add(GameRuleRestriction.OnlyPlayerBallInteractionEvents);
-			restrictions.Add(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents);
-			return new GameRuleFreezeUntilConditionActionAction(
-				randomEventHappenedConditionForTarget(
-					sourceToTrigger));
-		} else if (chosenType == typeof(GameRuleDizzyActionAction))
-			return new GameRuleDizzyActionAction(Random.Range(2.0f, 12.0f));
+		else if (chosenType == typeof(GameRuleDizzyActionAction))
+			return new GameRuleDizzyActionAction(randomActionDuration(ballCondition));
 		else if (chosenType == typeof(GameRuleBounceActionAction))
-			return new GameRuleBounceActionAction(Random.Range(2.0f, 12.0f));
+			return new GameRuleBounceActionAction(randomActionDuration(ballCondition));
 		else
-			throw new System.Exception("Bug: Invalid action type!");
+			throw new System.Exception("Bug: Invalid player action type!");
 	}
 	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
 		//build the list of acceptable action types, taking restrictions into account
@@ -256,24 +250,64 @@ isComparison = false;
 			//balls getting frozen hasn't made for fun gameplay yet
 			//typeof(GameRuleFreezeActionAction),
 			typeof(GameRuleDuplicateActionAction),
-			//typeof(GameRuleFreezeUntilConditionActionAction)
 			typeof(GameRuleBounceActionAction)
 		};
 
 		//pick one of the action types
 		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Length)];
 		if (chosenType == typeof(GameRuleFreezeActionAction))
-			return new GameRuleFreezeActionAction(Random.Range(0.25f, 4.0f));
+			return new GameRuleFreezeActionAction(randomActionDuration(ballCondition));
 		else if (chosenType == typeof(GameRuleDuplicateActionAction))
 			return new GameRuleDuplicateActionAction();
-		else if (chosenType == typeof(GameRuleFreezeUntilConditionActionAction))
-			return new GameRuleFreezeUntilConditionActionAction(
-				randomEventHappenedConditionForTarget(
-					randomSelectorForSource(ballCondition)));
 		else if (chosenType == typeof(GameRuleBounceActionAction))
-			return new GameRuleBounceActionAction(Random.Range(2.0f, 12.0f));
+			return new GameRuleBounceActionAction(randomActionDuration(ballCondition));
 		else
-			throw new System.Exception("Bug: Invalid action type!");
+			throw new System.Exception("Bug: Invalid ball action type!");
+	}
+
+	////////////////GameRuleActionDurations for actions that last for a duration////////////////
+	public static GameRuleActionDuration randomActionDuration(bool ballCondition) {
+		//build the list of acceptable action types, taking restrictions into account
+		List<System.Type> acceptableDurationTypes;
+		acceptableDurationTypes = new List<System.Type>(new System.Type[] {
+			typeof(GameRuleActionFixedDuration),
+			typeof(GameRuleActionUntilConditionDuration)
+		});
+		if (hasRestriction(GameRuleRestriction.NoUntilConditionDurations))
+			acceptableDurationTypes.Remove(typeof(GameRuleActionUntilConditionDuration));
+
+		//pick one of the action types
+		System.Type chosenType = acceptableDurationTypes[Random.Range(0, acceptableDurationTypes.Count)];
+		//just a duration
+		if (chosenType == typeof(GameRuleActionFixedDuration))
+			return new GameRuleActionFixedDuration(
+				Random.Range(ACTION_DURATION_SECONDS_SHORTEST, ACTION_DURATION_SECONDS_LONGEST + 1));
+		//duration until an event happens- some things will restrict what this can do
+		else if (chosenType == typeof(GameRuleActionUntilConditionDuration)) {
+			bool restrictFreezeUntilConditions =
+				hasRestriction(GameRuleRestriction.CheckFreezeUntilConditionRestrictions);
+
+			//if the player freezes until an event, make sure the event is not on that player
+			if (restrictFreezeUntilConditions) {
+				if (ruleActionSelector is GameRulePlayerSelector || ruleActionSelector is GameRuleBallShooterSelector)
+					restrictions.Add(GameRuleRestriction.NoYouPlayerTargetSelectors);
+				else if (ruleActionSelector is GameRuleOpponentSelector || ruleActionSelector is GameRuleBallShooterOpponentSelector)
+					restrictions.Add(GameRuleRestriction.NoOpponentPlayerTargetSelectors);
+			}
+
+			GameRuleSelector sourceToTrigger = randomSelectorForSource(ballCondition);
+
+			//restrict which kinds of events can be picked
+			if (restrictFreezeUntilConditions) {
+				restrictions.Add(GameRuleRestriction.OnlyPlayerBallInteractionEvents);
+				restrictions.Add(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents);
+			}
+
+			return new GameRuleActionUntilConditionDuration(
+				randomEventHappenedConditionForTarget(
+					sourceToTrigger));
+		} else
+			throw new System.Exception("Bug: Invalid duration type!");
 	}
 
 	////////////////GameRuleSelectors for actions and conditions////////////////
