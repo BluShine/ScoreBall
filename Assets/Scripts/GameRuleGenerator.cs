@@ -153,10 +153,18 @@ public class GameRuleGenerator {
 		else
 			acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
+
 		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
 		//players bumping into each other shouldn't cause them to indefinitely freeze
-		if (eventType == GameRuleEventType.PlayerHitPlayer)
+		if (eventType == GameRuleEventType.PlayerHitPlayer) {
 			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
+
+			//don't use an opponent selector for this event
+			if (selector is GameRuleOpponentSelector)
+				selector = GameRulePlayerSelector.instance;
+			else if (selector is GameRuleBallShooterOpponentSelector)
+				selector = GameRuleBallShooterSelector.instance;
+		}
 		string param = null;
 		if (eventType == GameRuleEventType.PlayerHitFieldObject)
 			param = randomFieldObjectType();
