@@ -318,8 +318,22 @@ public class GameRules : MonoBehaviour {
 		}
 
 		//check wait timers and remove any if they happen
+		//also if both players are frozen, unfreeze players on the team that was frozen longer
+		int frozenTeam = 0;
 		for (int i = waitTimers.Count - 1; i >= 0; i--) {
-			if (waitTimers[i].conditionHappened(gre))
+			GameRuleActionWaitTimer waitTimer = waitTimers[i];
+			if (waitTimer.action is GameRuleFreezeActionAction) {
+				//this is the most recent team frozen, it will stay frozen
+				if (frozenTeam == 0)
+					frozenTeam = waitTimer.target.team;
+				//unfreeze all players from the other team(s)
+				else if (frozenTeam != waitTimer.target.team) {
+					waitTimer.cancelAction();
+					waitTimers.RemoveAt(i);
+					continue;
+				}
+			}
+			if (waitTimer.conditionHappened(gre))
 				waitTimers.RemoveAt(i);
 		}
 	}
