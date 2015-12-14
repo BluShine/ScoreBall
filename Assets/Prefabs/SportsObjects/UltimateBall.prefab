@@ -13,7 +13,6 @@ GameObject:
   - 23: {fileID: 2381756}
   - 54: {fileID: 5456098}
   - 114: {fileID: 11487848}
-  - 108: {fileID: 10857082}
   - 82: {fileID: 8207624}
   m_Layer: 9
   m_Name: UltimateBall
@@ -150,38 +149,6 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
---- !u!108 &10857082
-Light:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 113308}
-  m_Enabled: 1
-  serializedVersion: 6
-  m_Type: 2
-  m_Color: {r: 1, g: .389705896, b: .907403529, a: 1}
-  m_Intensity: .300000012
-  m_Range: 7
-  m_SpotAngle: 30
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 0
-    m_Resolution: -1
-    m_Strength: 1
-    m_Bias: .0500000007
-    m_NormalBias: .400000006
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 1
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_Lightmapping: 4
-  m_BounceIntensity: 1
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
-  m_AreaSize: {x: 1, y: 1}
 --- !u!114 &11487848
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -202,11 +169,11 @@ MonoBehaviour:
   gameRules: {fileID: 0}
   spawned: 0
   hitSounds:
-  - {fileID: 8300000, guid: 682386428b305f245b43e617f9dc4ec2, type: 3}
-  - {fileID: 8300000, guid: 34062eefdc5c6bd4282ba694cebd52f2, type: 3}
-  - {fileID: 8300000, guid: 3303a94cd14759549bb75ce498e0db37, type: 3}
-  - {fileID: 8300000, guid: 34e454129ebd1f34e91c7485fe22d66c, type: 3}
-  - {fileID: 8300000, guid: cb65c3ef2f631884fbf53b8c0e798f4d, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   soundSource: {fileID: 0}
   noTakebacksCooldown: .400000006
   carryRadius: .300000012
@@ -217,11 +184,11 @@ MonoBehaviour:
   previousPlayer: {fileID: 0}
   stuns: 1
   kickSounds:
-  - {fileID: 8300000, guid: 9045bcfaa4267db43a190ad66f44e4bc, type: 3}
-  - {fileID: 8300000, guid: 6085ec7e4816b3445af36e8d8f41380a, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   catchSounds:
-  - {fileID: 8300000, guid: 2ddf64a76629850489039de0af92a58c, type: 3}
-  - {fileID: 8300000, guid: ae13098bdf91c9e44a09281a1b3966c0, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!135 &13572278
 SphereCollider:
   m_ObjectHideFlags: 1
