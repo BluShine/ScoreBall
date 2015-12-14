@@ -49,8 +49,10 @@ public class SportsObject : FieldObject {
     [HideInInspector]
     public AudioSource soundSource;
 
+    private RigidbodyConstraints startingConstraints;
+
     // Use this for initialization
-    public void Start () {
+    public virtual void Start () {
         if (!spawned)
         {
             spawnPosition = transform.position;
@@ -64,6 +66,7 @@ public class SportsObject : FieldObject {
         body = GetComponent<Rigidbody>();
         gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
         soundSource = GetComponent<AudioSource>();
+        startingConstraints = body.constraints;
     }
 
     public void useDefaultFreezing(bool useDefFreeze)
@@ -94,7 +97,7 @@ public class SportsObject : FieldObject {
             }
             else
             {
-                body.constraints = RigidbodyConstraints.None;
+                body.constraints = startingConstraints;
             }
         }
         dizzyTime = Mathf.Max(0, dizzyTime - Time.fixedDeltaTime); 
@@ -203,7 +206,7 @@ public class SportsObject : FieldObject {
 	}
 
 	//collision handling
-	void OnCollisionEnter(Collision collision) {
+	protected virtual void OnCollisionEnter(Collision collision) {
 		handleCollision(collision.gameObject);
         //play a sound if we aren't already playing a more important sound
         if (!soundSource.isPlaying)
@@ -217,7 +220,7 @@ public class SportsObject : FieldObject {
         handleCollision(collider.gameObject);
 	}
 
-	void handleCollision(GameObject gameObject) {
+	protected void handleCollision(GameObject gameObject) {
 		if (gameObject == gameRules.floor) {
 			isOnGround = true;
 		} else if (checkBallCollision(gameObject)) {
