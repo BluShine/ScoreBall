@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public enum GameRuleRequiredObject {
 	Ball,
-	Goal,
+	FootGoal,
+	GoalPosts,
+	BackboardHoop,
 	SecondBall
 };
 
@@ -18,6 +20,8 @@ public class GameRules : MonoBehaviour {
 	public GameObject ballPrefab;
 	public GameObject bigBallPrefab;
 	public GameObject goalPrefab;
+	public GameObject goalPrefab2;
+	public GameObject goalPrefab3;
 
 	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
 
@@ -204,7 +208,7 @@ public class GameRules : MonoBehaviour {
 				spawnedObjectPrefabMap.Add(spawnedObject, prefab);
 
 				//these need multiple objects that get assigned to teams
-				if (requiredObject == GameRuleRequiredObject.Goal) {
+				if (requiredObject == GameRuleRequiredObject.FootGoal || requiredObject == GameRuleRequiredObject.GoalPosts || requiredObject == GameRuleRequiredObject.BackboardHoop) {
                     spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 2;
@@ -222,7 +226,7 @@ public class GameRules : MonoBehaviour {
 					v.x = -v.x;
 					t.position = v;
 					Quaternion q = t.rotation;
-					q.y = 180.0f;
+					q *= Quaternion.Euler(Vector3.up * 180);
 					t.rotation = q;
 				}
 			}
@@ -263,8 +267,12 @@ public class GameRules : MonoBehaviour {
 	public GameObject getPrefabForRequiredObject(GameRuleRequiredObject requiredObject) {
 		if (requiredObject == GameRuleRequiredObject.Ball)
 			return ballPrefab;
-		else if (requiredObject == GameRuleRequiredObject.Goal)
+		else if (requiredObject == GameRuleRequiredObject.FootGoal)
 			return goalPrefab;
+		else if (requiredObject == GameRuleRequiredObject.GoalPosts)
+			return goalPrefab2;
+		else if (requiredObject == GameRuleRequiredObject.BackboardHoop)
+			return goalPrefab3;
 		else if (requiredObject == GameRuleRequiredObject.SecondBall)
 			return bigBallPrefab;
 		else
@@ -274,7 +282,11 @@ public class GameRules : MonoBehaviour {
 		if (prefab == ballPrefab)
 			return GameRuleRequiredObject.Ball;
 		else if (prefab == goalPrefab)
-			return GameRuleRequiredObject.Goal;
+			return GameRuleRequiredObject.FootGoal;
+		else if (prefab == goalPrefab2)
+			return GameRuleRequiredObject.GoalPosts;
+		else if (prefab == goalPrefab3)
+			return GameRuleRequiredObject.BackboardHoop;
 		else if (prefab == bigBallPrefab)
 			return GameRuleRequiredObject.SecondBall;
 		else

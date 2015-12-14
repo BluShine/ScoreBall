@@ -135,8 +135,13 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			requiredObjectsList.Add(GameRuleRequiredObject.SecondBall);
 
 		//if the field object is a goal we need a goal
-		if ((eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject) &&
-			param == "footgoal")
-			requiredObjectsList.Add(GameRuleRequiredObject.Goal);
+		if (eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject) {
+			if (param == "footgoal")
+				requiredObjectsList.Add(GameRuleRequiredObject.FootGoal);
+			else if (param == "goalposts")
+				requiredObjectsList.Add(GameRuleRequiredObject.GoalPosts);
+			else if (param == "backboardhoop")
+				requiredObjectsList.Add(GameRuleRequiredObject.BackboardHoop);
+		}
 	}
 }
