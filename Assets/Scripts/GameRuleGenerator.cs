@@ -193,7 +193,7 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 		if (rand == 0)
 			return "footgoal";
 		else
-			return "wall";
+			return "boundary";
 	}
 
 	////////////////GameRuleAction generation////////////////
