@@ -1315,6 +1315,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f473cddf3d5a20c40bcd63c6831c76d7, type: 3}
   jumpSounds:
   - {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+  pointGainSounds:
+  - {fileID: 8300000, guid: cf9ef6d3db95e7b4397918b6673c0ff6, type: 3}
+  - {fileID: 8300000, guid: 0b0d7e516166fa540b6d8beb7877abfa, type: 3}
+  - {fileID: 8300000, guid: 4addbffad0191c94fba15511d64459e6, type: 3}
+  - {fileID: 8300000, guid: 37e73963d18d0be41a3aceda15acc7f6, type: 3}
+  - {fileID: 8300000, guid: 55d3ae0034d01414faf7efc25214395a, type: 3}
+  - {fileID: 8300000, guid: d29f3278b04f3d244827505c22a950f4, type: 3}
+  - {fileID: 8300000, guid: 419d10831fbf1a54d92dc1cb18641572, type: 3}
+  - {fileID: 8300000, guid: 2c0f1de16a24088469aabf6cc43adb9e, type: 3}
+  - {fileID: 8300000, guid: eca405fbfa628a04681b802ab401da8d, type: 3}
+  - {fileID: 8300000, guid: 6e04db0c72f881246910df62f02b3a5c, type: 3}
   score: 0
   BALLMASK:
     serializedVersion: 2
@@ -3151,6 +3162,10 @@ Prefab:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 0}
+      propertyPath: pointGainSounds.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -3282,6 +3297,14 @@ Prefab:
       propertyPath: jumpSounds.Array.data[0]
       value: 
       objectReference: {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+    - target: {fileID: 0}
+      propertyPath: pointGainSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: cf9ef6d3db95e7b4397918b6673c0ff6, type: 3}
+    - target: {fileID: 0}
+      propertyPath: pointGainSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0b0d7e516166fa540b6d8beb7877abfa, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121544}

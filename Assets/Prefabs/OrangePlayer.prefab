@@ -1460,6 +1460,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f473cddf3d5a20c40bcd63c6831c76d7, type: 3}
   jumpSounds:
   - {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+  pointGainSounds:
+  - {fileID: 8300000, guid: 555ba5bf23c0d2e47a2a890d6fa1b798, type: 3}
+  - {fileID: 8300000, guid: 3c12e860e8304f44485428862646ac4d, type: 3}
+  - {fileID: 8300000, guid: 935374839c5fecc47b6f6c042ef6d125, type: 3}
+  - {fileID: 8300000, guid: 66ce53dafa55c5545aedde071286865f, type: 3}
+  - {fileID: 8300000, guid: 7a6ee37492ed0ce4bba006127c6e2bd7, type: 3}
+  - {fileID: 8300000, guid: 1df9875196aeea34883ee3c045a641d6, type: 3}
+  - {fileID: 8300000, guid: f61a72b0dfd0925479e13b1474887443, type: 3}
+  - {fileID: 8300000, guid: be84bfd441220a74d8a718816b58beb2, type: 3}
+  - {fileID: 8300000, guid: 13011e705735ceb499939989d0d65d16, type: 3}
+  - {fileID: 8300000, guid: 92223b4fe736634469d29af9d7e7c07c, type: 3}
   score: 0
   BALLMASK:
     serializedVersion: 2

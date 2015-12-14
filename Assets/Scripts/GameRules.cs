@@ -18,7 +18,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject ballPrefab;
 	public GameObject bigBallPrefab;
 	public GameObject goalPrefab;
-	public Color[] teamColors;
+
 	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
 
 	//access to interacting with the game world
@@ -31,9 +31,18 @@ public class GameRules : MonoBehaviour {
 	public Text[] teamTexts;
 	public int[] teamScores;
 
-	//constants for positioning the points text above the player and fading out
-	//const int POINTS_TEXT_POOL_AMOUNT = 8;
-	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
+    //colors
+    public Color[] teamColors;
+
+    //sounds
+    public AudioClip addRuleSound;
+    public AudioClip removeRuleSound;
+
+    AudioSource soundSource;
+
+    //constants for positioning the points text above the player and fading out
+    //const int POINTS_TEXT_POOL_AMOUNT = 8;
+    const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
 	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
@@ -44,6 +53,7 @@ public class GameRules : MonoBehaviour {
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
 
 	public void Start() {
+        soundSource = GetComponent<AudioSource>();
 		instance = this;
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
@@ -76,6 +86,9 @@ public class GameRules : MonoBehaviour {
 		if (rulesList.Count >= 3)
 			return;
 
+        soundSource.clip = addRuleSound;
+        soundSource.Play();
+
 		//shift the current rules left
 		float widthoffset = ((RectTransform)(ruleDisplayPrefab.transform)).rect.width * -0.5f;
 		foreach (GameRule gameRule in rulesList) {
@@ -101,7 +114,11 @@ public class GameRules : MonoBehaviour {
 		addRequiredObjects();
 	}
 	public void DeleteRule(Button button) {
-		RectTransform ruleTransform = (RectTransform)(button.transform.parent);
+
+        soundSource.clip = removeRuleSound;
+        soundSource.Play();
+
+        RectTransform ruleTransform = (RectTransform)(button.transform.parent);
 		float widthoffset = ruleTransform.rect.width * 0.5f;
 		GameObject ruleDisplay = ruleTransform.gameObject;
 		for (int i = 0; i < rulesList.Count;) {

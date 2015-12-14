@@ -48,6 +48,7 @@ public class TeamPlayer : SportsObject {
     public List<AudioClip> shootSounds;
     public List<AudioClip> lobSounds;
     public List<AudioClip> jumpSounds;
+    public List<AudioClip> pointGainSounds;
 
     //game state
     Ball carriedBall;
@@ -72,6 +73,43 @@ public class TeamPlayer : SportsObject {
     {
         score += points;
         gameRules.UpdateScore();
+        switch(points)
+        {
+            case 1:
+                soundSource.clip = pointGainSounds[0];
+                break;
+            case 2:
+                soundSource.clip = pointGainSounds[1];
+                break;
+            case 3:
+                soundSource.clip = pointGainSounds[2];
+                break;
+            case 4:
+                soundSource.clip = pointGainSounds[3];
+                break;
+            case 5:
+                soundSource.clip = pointGainSounds[4];
+                break;
+            case 6:
+                soundSource.clip = pointGainSounds[5];
+                break;
+            case 7:
+                soundSource.clip = pointGainSounds[6];
+                break;
+            case 8:
+                soundSource.clip = pointGainSounds[7];
+                break;
+            case 9:
+                soundSource.clip = pointGainSounds[8];
+                break;
+            case 10:
+                soundSource.clip = pointGainSounds[9];
+                break;
+            default:
+                soundSource.clip = pointGainSounds[0];
+                break;
+        }
+        soundSource.Play();
     }
 	
 	// FixedUpdate is called at a fixed rate
