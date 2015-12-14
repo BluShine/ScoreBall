@@ -169,7 +169,7 @@ MonoBehaviour:
   gameRules: {fileID: 0}
   spawned: 0
   hitSounds:
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 572d2293dc3999b469e405535f0309e4, type: 3}
   soundSource: {fileID: 0}
   fish: {fileID: 0}
   accelleration: 30
@@ -238,6 +238,10 @@ Prefab:
       propertyPath: sportName
       value: cat
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 572d2293dc3999b469e405535f0309e4, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 134920}
