@@ -40,6 +40,8 @@ public class GameRules : MonoBehaviour {
 
     AudioSource soundSource;
 
+    public MusicPlayer musicPlayer;
+
     //constants for positioning the points text above the player and fading out
     //const int POINTS_TEXT_POOL_AMOUNT = 8;
     const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
@@ -85,7 +87,7 @@ public class GameRules : MonoBehaviour {
 		//only 3 rules for now
 		if (rulesList.Count >= 3)
 			return;
-
+        //play sound
         soundSource.clip = addRuleSound;
         soundSource.Play();
 
@@ -112,52 +114,74 @@ public class GameRules : MonoBehaviour {
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
 
 		addRequiredObjects();
-	}
-	public void DeleteRule(Button button) {
 
+        //update music
+        musicPlayer.setTrackCount(rulesList.Count);
+    }
+    public void DeleteRule(Button button)
+    {
+        //play sound
         soundSource.clip = removeRuleSound;
         soundSource.Play();
 
         RectTransform ruleTransform = (RectTransform)(button.transform.parent);
-		float widthoffset = ruleTransform.rect.width * 0.5f;
-		GameObject ruleDisplay = ruleTransform.gameObject;
-		for (int i = 0; i < rulesList.Count;) {
-			GameRule gameRule = rulesList[i];
-			if (gameRule.ruleDisplay == ruleDisplay) {
-				widthoffset = -widthoffset;
-				rulesList.RemoveAt(i);
-			} else {
-				offsetRuleDisplayX(gameRule, widthoffset);
-				i++;
-			}
+        float widthoffset = ruleTransform.rect.width * 0.5f;
+        GameObject ruleDisplay = ruleTransform.gameObject;
+        for (int i = 0; i < rulesList.Count;)
+        {
+            GameRule gameRule = rulesList[i];
+            if (gameRule.ruleDisplay == ruleDisplay)
+            {
+                widthoffset = -widthoffset;
+                rulesList.RemoveAt(i);
+            }
+            else
+            {
+                offsetRuleDisplayX(gameRule, widthoffset);
+                i++;
+            }
 
-			//cancel any wait timers associated with this rule
-			GameRuleActionAction innerAction = gameRule.action.innerAction;
-			if (innerAction is GameRuleDurationActionAction) {
-				GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
-				if (duration is GameRuleActionUntilConditionDuration) {
-					GameRuleEventHappenedCondition untilCondition =
-						((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
-					//loop through all the wait timers and cancel their actions if they have this rule
-					for (int j = waitTimers.Count - 1; j >= 0; j--) {
-						if (waitTimers[j].condition == untilCondition) {
-							waitTimers[j].cancelAction();
-							waitTimers.RemoveAt(j);
-						}
-					}
-				}
-			}
-		}
-		Destroy(ruleDisplay);
-		deleteRequiredObjects();
-	}
+            //cancel any wait timers associated with this rule
+            GameRuleActionAction innerAction = gameRule.action.innerAction;
+            if (innerAction is GameRuleDurationActionAction)
+            {
+                GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
+                if (duration is GameRuleActionUntilConditionDuration)
+                {
+                    GameRuleEventHappenedCondition untilCondition =
+                        ((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
+                    //loop through all the wait timers and cancel their actions if they have this rule
+                    for (int j = waitTimers.Count - 1; j >= 0; j--)
+                    {
+                        if (waitTimers[j].condition == untilCondition)
+                        {
+                            waitTimers[j].cancelAction();
+                            waitTimers.RemoveAt(j);
+                        }
+                    }
+                }
+            }
+        }
+        Destroy(ruleDisplay);
+        deleteRequiredObjects();
+
+        //update music
+        musicPlayer.setTrackCount(rulesList.Count);
+    }
     public void deleteAllRules()
     {
+        //play sound
+        soundSource.clip = removeRuleSound;
+        soundSource.Play();
+
         for (int i = rulesList.Count - 1; i >= 0; i--)
         {
-			DeleteRule(getButtonFromRuleDisplay(rulesList[i].ruleDisplay));
+            DeleteRule(getButtonFromRuleDisplay(rulesList[i].ruleDisplay));
         }
         rulesList.Clear();
+
+        //update music
+        musicPlayer.setTrackCount(rulesList.Count);
     }
 	public void addRequiredObjects() {
 		List<GameRuleRequiredObject> requiredObjectsList = buildRequiredObjectsList();
