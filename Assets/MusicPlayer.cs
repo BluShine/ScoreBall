@@ -79,8 +79,6 @@ public class MusicPlayer : MonoBehaviour {
         tracks[shuffleIndexA] = tracks[shuffleIndexB];
         tracks[shuffleIndexB] = tempAudio;
 
-        Debug.Log(count);
-
         //enable or disable tracks
         while (count > playingCount)
         {
