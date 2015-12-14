@@ -16,5 +16,13 @@ public class FieldObject : MonoBehaviour {
         {
             sprite.material.color = color;
         }
+        foreach (MeshRenderer mesh in GetComponentsInChildren<MeshRenderer>())
+        {
+            mesh.material.color = color;
+        }
+        foreach (SpriteRenderer sprite in GetComponentsInChildren<SpriteRenderer>())
+        {
+            sprite.material.color = color;
+        }
     }
 }
