@@ -164,16 +164,16 @@ public class GameRules : MonoBehaviour {
 
 				//these need multiple objects that get assigned to teams
 				if (requiredObject == GameRuleRequiredObject.Goal) {
-                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
+                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
-					fo.team = 1;
+					fo.team = 2;
 
 					//make another one
 					spawnedObject = (GameObject)Instantiate(prefab);
 					spawnedObjectPrefabMap.Add(spawnedObject, prefab);
-                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
+                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
                     fo = spawnedObject.GetComponent<FieldObject>();
-					fo.team = 2;
+					fo.team = 1;
 
 					//put it on the other side of the field facing the other way
 					Transform t = spawnedObject.transform;
