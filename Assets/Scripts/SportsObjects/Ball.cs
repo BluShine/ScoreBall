@@ -28,7 +28,7 @@ public class Ball : SportsObject {
     }
 	
 	// FixedUpdate is called at a fixed rate
-	void FixedUpdate () {
+	protected override void FixedUpdate () {
         base.FixedUpdate();
         takeTimer -= Time.fixedDeltaTime;
         takeTimer = Mathf.Max(0, takeTimer);

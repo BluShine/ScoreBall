@@ -17,7 +17,7 @@ public class SportsCat : SportsObject {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	protected override void FixedUpdate () {
 	    if(fish != null)
         {
             //sparodically target the fish because cats are silly like that.

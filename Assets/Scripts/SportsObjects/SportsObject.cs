@@ -80,7 +80,7 @@ public class SportsObject : FieldObject {
     }
 	
 	// Update is called once per frame
-	public virtual void FixedUpdate () {
+	protected virtual void FixedUpdate () {
         dupeCoolTimer = Mathf.Max(0, dupeCoolTimer - Time.fixedDeltaTime);
         lifeTime = Mathf.Max(0, lifeTime - Time.fixedDeltaTime);
         if(expires && lifeTime == 0)

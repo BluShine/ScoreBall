@@ -4,7 +4,7 @@ using System.Collections;
 public class SportsBanana : SportsObject {
 
     // Use this for initialization
-    void OnCollisionEnter(Collision collision)
+    protected override void OnCollisionEnter(Collision collision)
     {
         TeamPlayer tPlayer = collision.gameObject.GetComponent<TeamPlayer>();
         if (tPlayer != null)

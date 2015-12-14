@@ -75,7 +75,7 @@ public class TeamPlayer : SportsObject {
     }
 	
 	// FixedUpdate is called at a fixed rate
-	void FixedUpdate () {
+	protected override void FixedUpdate () {
         base.FixedUpdate();
         	
 		//MOVEMENT--------------------------------------------------------------------
