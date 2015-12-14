@@ -51,6 +51,8 @@ public class SportsObject : FieldObject {
 
     private RigidbodyConstraints startingConstraints;
 
+    bool started = false;
+
     // Use this for initialization
     public virtual void Start () {
         if (!spawned)
@@ -67,6 +69,7 @@ public class SportsObject : FieldObject {
         gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
         soundSource = GetComponent<AudioSource>();
         startingConstraints = body.constraints;
+        started = true;
     }
 
     public void useDefaultFreezing(bool useDefFreeze)
@@ -207,6 +210,7 @@ public class SportsObject : FieldObject {
 
 	//collision handling
 	protected virtual void OnCollisionEnter(Collision collision) {
+        if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.
 		handleCollision(collision.gameObject);
         //play a sound if we aren't already playing a more important sound
         if (!soundSource.isPlaying)
@@ -217,6 +221,7 @@ public class SportsObject : FieldObject {
     }
 
 	void OnTriggerEnter(Collider collider) {
+        if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.
         handleCollision(collider.gameObject);
 	}
 
@@ -276,11 +281,13 @@ public class SportsObject : FieldObject {
 	public virtual void handleFieldCollision(FieldObject fObject) {}
 
 	void OnCollisionExit(Collision collision) {
-		handleCollisionExit(collision.gameObject);
+        if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.
+        handleCollisionExit(collision.gameObject);
 	}
 
 	void OnTriggerExit(Collider collider) {
-		handleCollisionExit(collider.gameObject);
+        if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.
+        handleCollisionExit(collider.gameObject);
 	}
 
 	void handleCollisionExit(GameObject gameObject) {
