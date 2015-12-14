@@ -7,7 +7,7 @@ Shader "Sports/Cutout Transparent" {
 Properties {
 	_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 	_Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
-	_TintColor("Tint Color", Color) = (0.5,0.5,0.5,0.5)
+	_Color("Color", Color) = (0.5,0.5,0.5,0.5)
 }
 SubShader {
 	Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
@@ -23,7 +23,7 @@ SubShader {
 			
 			#include "UnityCG.cginc"
 
-			fixed4 _TintColor;
+			fixed4 _Color;
 
 			struct appdata_t {
 				float4 vertex : POSITION;
@@ -51,7 +51,7 @@ SubShader {
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex, i.texcoord) * _TintColor;
+				fixed4 col = tex2D(_MainTex, i.texcoord) * _Color;
 				clip((col.a - _Cutoff));
 				UNITY_APPLY_FOG(i.fogCoord, col);
 				return col;

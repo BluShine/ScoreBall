@@ -18,7 +18,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject ballPrefab;
 	public GameObject bigBallPrefab;
 	public GameObject goalPrefab;
-	public Material[] teamMaterials;
+	public Color[] teamColors;
 	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
 
 	//access to interacting with the game world
@@ -164,15 +164,15 @@ public class GameRules : MonoBehaviour {
 
 				//these need multiple objects that get assigned to teams
 				if (requiredObject == GameRuleRequiredObject.Goal) {
-					spawnedObject.GetComponent<MeshRenderer>().material = teamMaterials[1];
+                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 1;
 
 					//make another one
 					spawnedObject = (GameObject)Instantiate(prefab);
 					spawnedObjectPrefabMap.Add(spawnedObject, prefab);
-					spawnedObject.GetComponent<MeshRenderer>().material = teamMaterials[2];
-					fo = spawnedObject.GetComponent<FieldObject>();
+                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
+                    fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 2;
 
 					//put it on the other side of the field facing the other way
