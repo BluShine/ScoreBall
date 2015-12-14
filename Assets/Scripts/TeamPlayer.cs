@@ -172,10 +172,6 @@ public class TeamPlayer : SportsObject {
             //effect
             line.enabled = true;
         }
-        else if (carriedBall != null && carriedBall.ultimate)
-        {
-            //don't move if the ball is "ultimate"
-        }
         else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0 && dizzyTime == 0)
         {
             //jumping
@@ -259,8 +255,15 @@ public class TeamPlayer : SportsObject {
                     movingVel = movingVel.magnitude * -tDir;
                 }
             }
-            //Add movement force
-            body.AddForce(movingVel * moveAccel, ForceMode.Acceleration);
+            //Add movement force if our ball isn't ultimate
+            if (carriedBall != null && carriedBall.ultimate)
+            {
+
+            }
+            else
+            {
+                body.AddForce(movingVel * moveAccel, ForceMode.Acceleration);
+            }
             //limit horizontal movement speed
             Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
             if(horizontalVelocity.magnitude > moveSpeed + strafeSpeed)
