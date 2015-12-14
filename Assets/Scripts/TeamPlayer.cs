@@ -44,6 +44,10 @@ public class TeamPlayer : SportsObject {
 
     //sound
     public List<AudioClip> tackleSounds;
+    public List<AudioClip> dashSounds;
+    public List<AudioClip> shootSounds;
+    public List<AudioClip> lobSounds;
+    public List<AudioClip> jumpSounds;
 
     //game state
     Ball carriedBall;
@@ -91,7 +95,10 @@ public class TeamPlayer : SportsObject {
 			(dashWhileCarrying || carriedBall == null)) {
 			dashTimer = dashDuration;
 			dashCooldownTimer = dashCooldownDuration;
-		}
+            //play sound
+            soundSource.clip = dashSounds[Random.Range(0, dashSounds.Count)];
+            soundSource.Play();
+        }
         bool dashing = dashTimer > 0;
         //normal movement if we aren't dashing.
         if (stunned)
@@ -136,8 +143,10 @@ public class TeamPlayer : SportsObject {
             //jumping
             if (isOnGround && Input.GetButtonDown(hopButton))
             {
-                Debug.Log("hop still");
 				Jump();
+                //play sound
+                soundSource.clip = jumpSounds[Random.Range(0, jumpSounds.Count)];
+                soundSource.Play();
             }
             //apply force to stop when there's no input.
             Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
@@ -225,8 +234,10 @@ public class TeamPlayer : SportsObject {
             //jumping
             if(isOnGround && Input.GetButtonDown(hopButton))
             {
-				Debug.Log("hop moving");
 				Jump();
+                //play sound
+                soundSource.clip = jumpSounds[Random.Range(0, jumpSounds.Count)];
+                soundSource.Play();
             }
         }
 
@@ -279,6 +290,9 @@ public class TeamPlayer : SportsObject {
                 {
                     dashCooldownTimer = dashCooldownDuration;
                 }
+                //play sound
+                soundSource.clip = shootSounds[Random.Range(0, shootSounds.Count)];
+                soundSource.Play();
             }
             else if (Input.GetButtonDown(lobButton))
             {
@@ -287,6 +301,9 @@ public class TeamPlayer : SportsObject {
                 {
                     dashCooldownTimer = dashCooldownDuration;
                 }
+                //play sound
+                soundSource.clip = lobSounds[Random.Range(0, lobSounds.Count)];
+                soundSource.Play();
             }
 
         }

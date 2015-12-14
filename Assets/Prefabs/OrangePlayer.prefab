@@ -773,7 +773,7 @@ AudioSource:
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
-  BypassListenerEffects: 0
+  BypassListenerEffects: 1
   BypassReverbZones: 0
   rolloffCustomCurve:
     serializedVersion: 2
@@ -1405,7 +1405,11 @@ MonoBehaviour:
   gameRules: {fileID: 0}
   spawned: 0
   hitSounds:
-  - {fileID: 8300000, guid: dc9e998603bc4bc4eb3e63ba03f7318b, type: 3}
+  - {fileID: 8300000, guid: 96c2428086c332142ba0a22240e75f02, type: 3}
+  - {fileID: 8300000, guid: c8432a52058d94c4db90bec0338b090f, type: 3}
+  - {fileID: 8300000, guid: a4596b895cbf77542b12a3693143491e, type: 3}
+  - {fileID: 8300000, guid: 120c1a3dcb17de0499d16e80c817b97d, type: 3}
+  - {fileID: 8300000, guid: 8d5f07cfefdac45488727f02d87b474b, type: 3}
   soundSource: {fileID: 0}
   moveSpeed: 0
   moveAccel: 20
@@ -1434,7 +1438,10 @@ MonoBehaviour:
   hopButton: Hop2
   lobButton: Lob2
   tackleSounds:
-  - {fileID: 8300000, guid: bfd39c2dc14118940a68cd59970b9eda, type: 3}
+  - {fileID: 8300000, guid: 572d2293dc3999b469e405535f0309e4, type: 3}
+  - {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
+  - {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+  - {fileID: 8300000, guid: 381f3637f2151fa4fae2dc95175efc64, type: 3}
   score: 0
   BALLMASK:
     serializedVersion: 2
@@ -3102,6 +3109,14 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: hitSounds.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: tackleSounds.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -3137,6 +3152,46 @@ Prefab:
       propertyPath: shadowOffset.z
       value: -.5
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: BypassListenerEffects
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 96c2428086c332142ba0a22240e75f02, type: 3}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: c8432a52058d94c4db90bec0338b090f, type: 3}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: a4596b895cbf77542b12a3693143491e, type: 3}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 120c1a3dcb17de0499d16e80c817b97d, type: 3}
+    - target: {fileID: 0}
+      propertyPath: hitSounds.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 8d5f07cfefdac45488727f02d87b474b, type: 3}
+    - target: {fileID: 0}
+      propertyPath: tackleSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 572d2293dc3999b469e405535f0309e4, type: 3}
+    - target: {fileID: 0}
+      propertyPath: tackleSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
+    - target: {fileID: 0}
+      propertyPath: tackleSounds.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+    - target: {fileID: 0}
+      propertyPath: tackleSounds.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 381f3637f2151fa4fae2dc95175efc64, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 164914}
