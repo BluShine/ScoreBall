@@ -138,6 +138,7 @@ public class TeamPlayer : SportsObject {
             soundSource.Play();
         }
         bool dashing = dashTimer > 0;
+        Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
         //normal movement if we aren't dashing.
         if (stunned)
         {
@@ -197,7 +198,6 @@ public class TeamPlayer : SportsObject {
         {
             line.enabled = false;
             //get input vector from joystick/keys
-            Vector2 input = new Vector2(Input.GetAxis(xAxis), Input.GetAxis(yAxis));
             if (input.magnitude > 1)
             {
                 input.Normalize();
@@ -215,8 +215,7 @@ public class TeamPlayer : SportsObject {
                     Quaternion.Euler(0, 90 - Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg, 0),
                     Mathf.Min(1, inputMag / turnThreashold) * turnSpeed * Time.fixedDeltaTime);
             }
-            //update anim
-            playerAnim.UpdateMotion(new Vector2(transform.forward.x, transform.forward.z));
+            //Debug.Log(new Vector2(transform.forward.x, transform.forward.z));
             //movement
             Vector3 movingVel = Vector3.zero;
             //strafing
@@ -281,6 +280,10 @@ public class TeamPlayer : SportsObject {
                 soundSource.Play();
             }
         }
+
+        //update anim
+        Debug.Log(input);
+        playerAnim.UpdateMotion(input);
 
         //BALL HANDLING---------------------------------------------------------
         if (carriedBall != null)

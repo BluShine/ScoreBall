@@ -42,12 +42,12 @@ public class PlayerAnimation : MonoBehaviour {
 
     public void UpdateMotion(Vector2 motion)
     {
-        if (turnTime > 0 || motion.sqrMagnitude == 0)
-            return;
+        //if (turnTime > 0)
+        //    return;
 
 
         //going horizontal or vertical
-        if(motion.y > 0 && motion.x != 0) //running "North" aka "away from the camera"
+        if(motion.y > 0) //running "North" aka "away from the camera"
         {
             //going right or left?
             if(motion.x > 0)
@@ -72,7 +72,7 @@ public class PlayerAnimation : MonoBehaviour {
                     anim.SetTrigger("run_b");
                 }
             }
-        } else if (motion.y < 0 && motion.x != 0)
+        } else if (motion.y <= 0)
         {
             //going right or left?
             if (motion.x > 0)
@@ -87,7 +87,7 @@ public class PlayerAnimation : MonoBehaviour {
                     anim.SetTrigger("run");
                 }
             }
-            else
+            else if (motion.x < 0 || motion.y != 0)
             {
                 if (lastDirection != Direction.SE)
                 {
@@ -97,6 +97,9 @@ public class PlayerAnimation : MonoBehaviour {
                     turnTime = TURNMINTIME;
                     anim.SetTrigger("run");
                 }
+            } else
+            {
+                anim.SetTrigger("idle");
             }
         } else if (motion.y == 0 && motion.x == 0)
         {
