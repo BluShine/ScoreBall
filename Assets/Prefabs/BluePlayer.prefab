@@ -1278,7 +1278,7 @@ MonoBehaviour:
   tackleDuration: 2.35640001
   tacklePower: 9.34000015
   tackleLaunchPower: 13.1199999
-  ballHoldDistance: 1.10000002
+  ballHoldDistance: .699999988
   ballShootPower: 15
   ballLobPower: 13
   butterFingers: 1
@@ -3305,6 +3305,10 @@ Prefab:
       propertyPath: pointGainSounds.Array.data[1]
       value: 
       objectReference: {fileID: 8300000, guid: 0b0d7e516166fa540b6d8beb7877abfa, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ballHoldDistance
+      value: .699999988
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121544}

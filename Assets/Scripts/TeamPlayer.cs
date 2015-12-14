@@ -306,7 +306,7 @@ public class TeamPlayer : SportsObject {
             }
 
             //move the ball with us
-            carriedBall.transform.position = transform.position + transform.forward * ballHoldDistance;
+            carriedBall.transform.position = transform.position + transform.forward * (ballHoldDistance + carriedBall.carryRadius);
             //make sure that the ball is not getting stuck in the ground
             RaycastHit ballDownCast;
             Ray ballDownRay = new Ray(carriedBall.transform.position, Vector3.down);

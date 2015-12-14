@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SportsFish : SportsObject {
+public class SportsFish : Ball {
 	
 }
