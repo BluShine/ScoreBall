@@ -23,7 +23,7 @@ public enum GameRuleRestriction {
 
 public class GameRuleGenerator {
 	const int ACTION_DURATION_SECONDS_SHORTEST = 4;
-	const int ACTION_DURATION_SECONDS_LONGEST = 15;
+	const int ACTION_DURATION_SECONDS_LONGEST = 10;
 	private static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
 	private static List<GameRuleEventType> eventTypesList = buildEventTypesList();

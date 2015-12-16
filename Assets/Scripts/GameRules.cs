@@ -406,7 +406,6 @@ public class GameRules : MonoBehaviour {
 ////////////////Represents a single game rule////////////////
 public class GameRule {
 	const float RULE_FLASH_FADE_SECONDS = 1.5f;
-	const float RULE_FLASH_MAX_ALPHA = 15.0f / 16.0f;
 
 	public GameRuleCondition condition;
 	public GameRuleAction action;
@@ -441,18 +440,22 @@ public class GameRule {
 			foreach (TeamPlayer tp in triggeringPlayers) {
 				action.takeAction(tp);
 			}
-			startFlash();
+			startFlash(triggeringPlayers[0]);
 		}
 	}
 	public void sendEvent(GameRuleEvent gre) {
 		if (condition.conditionHappened(gre)) {
-			action.takeAction(gre.getEventSource());
-			startFlash();
+			SportsObject source = gre.getEventSource();
+			action.takeAction(source);
+			SportsObject target = action.selector.target(source);
+			if (target != null)
+				startFlash(target);
 		}
 	}
-	public void startFlash() {
+	public void startFlash(SportsObject so) {
 		flashImage.gameObject.SetActive(true);
-        flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 1f);
+		Color targetColor = GameRules.instance.teamColors[so.team];
+		flashImage.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1.0f);
     }
 	public void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		//only conditions generate required objects but an action may have an inner until-condition action
