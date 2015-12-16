@@ -42,6 +42,11 @@ public class TeamPlayer : SportsObject {
     public string hopButton = "Fire";
     public string lobButton = "Fire";
 
+    bool shootPressed = false;
+    bool dashPressed = false;
+    bool hopPressed = false;
+    bool lobPressed = false;
+
     //sound
     public List<AudioClip> tackleSounds;
     public List<AudioClip> dashSounds;
@@ -112,6 +117,15 @@ public class TeamPlayer : SportsObject {
         soundSource.Play();
     }
 	
+    protected void Update()
+    {
+        //update button inputs in here instead of fixedupdate
+        shootPressed = shootPressed || Input.GetButtonDown(shootButton);
+        dashPressed = dashPressed || Input.GetButtonDown(dashButton);
+        hopPressed = hopPressed || Input.GetButtonDown(hopButton);
+        lobPressed = lobPressed || Input.GetButtonDown(lobButton);
+    }
+
 	// FixedUpdate is called at a fixed rate
 	protected override void FixedUpdate () {
         base.FixedUpdate();
@@ -129,7 +143,7 @@ public class TeamPlayer : SportsObject {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
 		//dash input
-		if(dashCooldownTimer == 0 && Input.GetButtonDown(dashButton) &&
+		if(dashCooldownTimer == 0 && dashPressed &&
 			(dashWhileCarrying || carriedBall == null)) {
 			dashTimer = dashDuration;
 			dashCooldownTimer = dashCooldownDuration;
@@ -176,7 +190,7 @@ public class TeamPlayer : SportsObject {
         else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0 && dizzyTime == 0)
         {
             //jumping
-            if (isOnGround && Input.GetButtonDown(hopButton))
+            if (isOnGround && hopPressed)
             {
 				Jump();
                 //play sound
@@ -272,7 +286,7 @@ public class TeamPlayer : SportsObject {
             }
             
             //jumping
-            if(isOnGround && Input.GetButtonDown(hopButton))
+            if(isOnGround && hopPressed)
             {
 				Jump();
                 //play sound
@@ -282,7 +296,6 @@ public class TeamPlayer : SportsObject {
         }
 
         //update anim
-        Debug.Log(input);
         playerAnim.UpdateMotion(input);
 
         //BALL HANDLING---------------------------------------------------------
@@ -327,7 +340,7 @@ public class TeamPlayer : SportsObject {
             {
                 carriedBall.shoot((transform.forward + transform.up * .5f).normalized * ballShootPower * .5f);
             }
-            else if (Input.GetButtonDown(shootButton))
+            else if (shootPressed)
             {
                 carriedBall.shoot(transform.forward * ballShootPower + body.velocity);
                 if (shootButton == dashButton)
@@ -338,7 +351,7 @@ public class TeamPlayer : SportsObject {
                 soundSource.clip = shootSounds[Random.Range(0, shootSounds.Count)];
                 soundSource.Play();
             }
-            else if (Input.GetButtonDown(lobButton))
+            else if (lobPressed)
             {
                 carriedBall.shoot((transform.forward + transform.up * 1.5f).normalized * ballLobPower + body.velocity);
                 if(lobButton == dashButton)
@@ -351,7 +364,13 @@ public class TeamPlayer : SportsObject {
             }
 
         }
-	}
+
+        //clear button inputs
+        shootPressed = false;
+        dashPressed = false;
+        hopPressed = false;
+        lobPressed = false;
+    }
 
 	public override void Unfreeze() {
 		base.Unfreeze();
