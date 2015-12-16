@@ -189,14 +189,17 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	}
 	//generate a random field object type for a field object collision event
 	public static string randomFieldObjectType() {
-		int rand = Random.Range(0, 3);
+		int rand = Random.Range(0, 6);
 		if (rand == 0)
 			return "footgoal";
 		else if (rand == 1)
 			return "goalposts";
 		else if (rand == 2)
 			return "backboardhoop";
-		//currently unreachable
+		else if (rand == 3)
+			return "smallwall";
+		else if (rand == 4)
+			return "fullgoalwall";
 		else
 			return "boundary";
 	}

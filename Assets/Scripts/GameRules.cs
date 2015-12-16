@@ -5,10 +5,15 @@ using UnityEngine.UI;
 
 public enum GameRuleRequiredObject {
 	Ball,
+	SecondBall,
+
+	GoalRequiredObjectStart,
 	FootGoal,
 	GoalPosts,
 	BackboardHoop,
-	SecondBall
+	SmallWall,
+	FullGoalWall,
+	GoalRequiredObjectEnd
 };
 
 ////////////////Master rules handler object////////////////
@@ -22,6 +27,8 @@ public class GameRules : MonoBehaviour {
 	public GameObject goalPrefab;
 	public GameObject goalPrefab2;
 	public GameObject goalPrefab3;
+	public GameObject goalPrefab4;
+	public GameObject goalPrefab5;
 
 	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
 
@@ -208,7 +215,7 @@ public class GameRules : MonoBehaviour {
 				spawnedObjectPrefabMap.Add(spawnedObject, prefab);
 
 				//these need multiple objects that get assigned to teams
-				if (requiredObject == GameRuleRequiredObject.FootGoal || requiredObject == GameRuleRequiredObject.GoalPosts || requiredObject == GameRuleRequiredObject.BackboardHoop) {
+				if (requiredObject > GameRuleRequiredObject.GoalRequiredObjectStart && requiredObject < GameRuleRequiredObject.GoalRequiredObjectEnd) {
                     spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 2;
@@ -267,30 +274,38 @@ public class GameRules : MonoBehaviour {
 	public GameObject getPrefabForRequiredObject(GameRuleRequiredObject requiredObject) {
 		if (requiredObject == GameRuleRequiredObject.Ball)
 			return ballPrefab;
+		else if (requiredObject == GameRuleRequiredObject.SecondBall)
+			return bigBallPrefab;
 		else if (requiredObject == GameRuleRequiredObject.FootGoal)
 			return goalPrefab;
 		else if (requiredObject == GameRuleRequiredObject.GoalPosts)
 			return goalPrefab2;
 		else if (requiredObject == GameRuleRequiredObject.BackboardHoop)
 			return goalPrefab3;
-		else if (requiredObject == GameRuleRequiredObject.SecondBall)
-			return bigBallPrefab;
+		else if (requiredObject == GameRuleRequiredObject.SmallWall)
+			return goalPrefab4;
+		else if (requiredObject == GameRuleRequiredObject.FullGoalWall)
+			return goalPrefab5;
 		else
-			throw new System.Exception("Invalid required object");
+			throw new System.Exception("Bug: Invalid required object");
 	}
 	public GameRuleRequiredObject getRequiredObjectForPrefab(GameObject prefab) {
 		if (prefab == ballPrefab)
 			return GameRuleRequiredObject.Ball;
+		else if (prefab == bigBallPrefab)
+			return GameRuleRequiredObject.SecondBall;
 		else if (prefab == goalPrefab)
 			return GameRuleRequiredObject.FootGoal;
 		else if (prefab == goalPrefab2)
 			return GameRuleRequiredObject.GoalPosts;
 		else if (prefab == goalPrefab3)
 			return GameRuleRequiredObject.BackboardHoop;
-		else if (prefab == bigBallPrefab)
-			return GameRuleRequiredObject.SecondBall;
+		else if (prefab == goalPrefab4)
+			return GameRuleRequiredObject.SmallWall;
+		else if (prefab == goalPrefab5)
+			return GameRuleRequiredObject.FullGoalWall;
 		else
-			throw new System.Exception("Invalid prefab");
+			throw new System.Exception("Bug: Invalid prefab");
 	}
 
 	public void spawnPointsText(int pointsGiven, TeamPlayer target) {

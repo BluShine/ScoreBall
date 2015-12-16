@@ -704,6 +704,8 @@ MonoBehaviour:
   goalPrefab: {fileID: 157804, guid: b3c365657726c674799621af6ecee79c, type: 2}
   goalPrefab2: {fileID: 179854, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2, type: 2}
   goalPrefab3: {fileID: 194232, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
+  goalPrefab4: {fileID: 116454, guid: e7b80022780a33448b0c94819b71e769, type: 2}
+  goalPrefab5: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
   ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
   pointsTextPrefab: {fileID: 175400, guid: af5d39570a81ca247bd3de468f5ab89b, type: 2}
   uiCanvas: {fileID: 0}
@@ -768,6 +770,14 @@ Prefab:
       propertyPath: removeRuleSound
       value: 
       objectReference: {fileID: 8300000, guid: ef244e610525b1b4c9dd6f54b5c4c27e, type: 3}
+    - target: {fileID: 0}
+      propertyPath: goalPrefab4
+      value: 
+      objectReference: {fileID: 116454, guid: e7b80022780a33448b0c94819b71e769, type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalPrefab5
+      value: 
+      objectReference: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 195328}

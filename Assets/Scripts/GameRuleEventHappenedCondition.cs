@@ -6,7 +6,7 @@
 public enum GameRuleEventType : int {
 	NoEventType = -1,
 
-	PlayerEventTypeStart = 0,
+	PlayerEventTypeStart,
 	PlayerShootBall,
 	PlayerGrabBall,
 	PlayerTacklePlayer,
@@ -16,13 +16,13 @@ public enum GameRuleEventType : int {
 	PlayerStealBall,
 	PlayerHitInTheFaceByBall,
 	PlayerTouchBall,
-	PlayerEventTypeEnd = 999,
+	PlayerEventTypeEnd,
 
-	BallEventTypeStart = 1000,
+	BallEventTypeStart,
 	BallHitSportsObject,
 	BallHitFieldObject,
 	BallHitBall,
-	BallEventTypeEnd = 1999
+	BallEventTypeEnd
 }
 
 public class GameRuleEvent {
@@ -142,6 +142,12 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 				requiredObjectsList.Add(GameRuleRequiredObject.GoalPosts);
 			else if (param == "backboardhoop")
 				requiredObjectsList.Add(GameRuleRequiredObject.BackboardHoop);
+			else if (param == "smallwall")
+				requiredObjectsList.Add(GameRuleRequiredObject.SmallWall);
+			else if (param == "fullgoalwall")
+				requiredObjectsList.Add(GameRuleRequiredObject.FullGoalWall);
+			else if (param != "boundary")
+				throw new System.Exception("Bug: could not determine object required");
 		}
 	}
 }
