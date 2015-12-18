@@ -53,9 +53,9 @@ public class GameRules : MonoBehaviour {
 
     public MusicPlayer musicPlayer;
 
-    //constants for positioning the points text above the player and fading out
-    //const int POINTS_TEXT_POOL_AMOUNT = 8;
-    const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
+	//constants for positioning the points text above the player and fading out
+	//const int POINTS_TEXT_POOL_AMOUNT = 8;
+	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
 	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
@@ -64,6 +64,8 @@ public class GameRules : MonoBehaviour {
 	//active rules
 	public List<GameRule> rulesList = new List<GameRule>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
+	const float NEW_RULE_WAIT_TIME = 3.0f; //keep this at least as big as the complete new rule animation
+	public float lastRuleChange = -NEW_RULE_WAIT_TIME; //so that we can immediately generate a new rule
 
 	public void Start() {
         soundSource = GetComponent<AudioSource>();
@@ -95,31 +97,26 @@ public class GameRules : MonoBehaviour {
 		}
 	}
 	public void GenerateNewRule() {
+		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
-		if (rulesList.Count >= 3)
+		if (ruleChangeIsOnCooldown() || rulesList.Count >= 3)
 			return;
+
+		lastRuleChange = Time.realtimeSinceStartup;
+
         //play sound
         soundSource.clip = addRuleSound;
         soundSource.Play();
 
-		//shift the current rules left
-		float widthoffset = ((RectTransform)(ruleDisplayPrefab.transform)).rect.width * -0.5f;
-		foreach (GameRule gameRule in rulesList) {
-			offsetRuleDisplayX(gameRule, widthoffset);
-		}
-
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
-		display.transform.localPosition = ruleDisplayPrefab.transform.localPosition;
-		display.transform.localScale = ruleDisplayPrefab.transform.localScale;
-
-		//unity has no good way of giving us the button we clicked, so we have to remember it here
-		Button deleteButton = getButtonFromRuleDisplay(display);
-		deleteButton.onClick.AddListener(() => {this.DeleteRule(deleteButton);});
 
 		GameRule rule = GameRuleGenerator.GenerateNewRule(display);
 		rulesList.Add(rule);
-		offsetRuleDisplayX(rule, -widthoffset * (rulesList.Count - 1));
+
+		//unity has no good way of giving us what we clicked on, so we have to remember it here
+		getButtonFromRuleDisplay(display).onClick.AddListener(() => {this.DeleteRule(rule);});
+
 		Transform t = display.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
@@ -128,68 +125,71 @@ public class GameRules : MonoBehaviour {
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
-    }
-    public void DeleteRule(Button button)
-    {
+	}
+	public void DeleteRule(GameRule ruleToDelete) {
+		//don't delete a rule if the rules were recently changed
+		if (ruleChangeIsOnCooldown())
+			return;
+
         //play sound
         soundSource.clip = removeRuleSound;
         soundSource.Play();
 
-        RectTransform ruleTransform = (RectTransform)(button.transform.parent);
-        float widthoffset = ruleTransform.rect.width * 0.5f;
-        GameObject ruleDisplay = ruleTransform.gameObject;
-        for (int i = 0; i < rulesList.Count;)
-        {
-            GameRule gameRule = rulesList[i];
-            if (gameRule.ruleDisplay == ruleDisplay)
-            {
-                widthoffset = -widthoffset;
-                rulesList.RemoveAt(i);
-            }
-            else
-            {
-                offsetRuleDisplayX(gameRule, widthoffset);
-                i++;
-            }
+		float widthoffset = ((RectTransform)(ruleDisplayPrefab.transform)).rect.width * 0.5f;
+		for (int i = 0; i < rulesList.Count;) {
+			GameRule gameRule = rulesList[i];
+			if (gameRule == ruleToDelete) {
+				widthoffset = -widthoffset;
+				rulesList.RemoveAt(i);
+			} else {
+				gameRule.animationStartTime = Time.realtimeSinceStartup;
+				gameRule.animationState = 4;
+				gameRule.targetPosition = (gameRule.startPosition = gameRule.ruleDisplay.transform.localPosition);
+				gameRule.targetPosition.x += widthoffset;
+				i++;
+			}
 
-            //cancel any wait timers associated with this rule
-            GameRuleActionAction innerAction = gameRule.action.innerAction;
-            if (innerAction is GameRuleDurationActionAction)
-            {
-                GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
-                if (duration is GameRuleActionUntilConditionDuration)
-                {
-                    GameRuleEventHappenedCondition untilCondition =
-                        ((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
-                    //loop through all the wait timers and cancel their actions if they have this rule
-                    for (int j = waitTimers.Count - 1; j >= 0; j--)
-                    {
-                        if (waitTimers[j].condition == untilCondition)
-                        {
-                            waitTimers[j].cancelAction();
-                            waitTimers.RemoveAt(j);
-                        }
-                    }
-                }
-            }
-        }
-        Destroy(ruleDisplay);
-        deleteRequiredObjects();
+			//cancel any wait timers associated with this rule
+			GameRuleActionAction innerAction = gameRule.action.innerAction;
+			if (innerAction is GameRuleDurationActionAction) {
+				GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
+				if (duration is GameRuleActionUntilConditionDuration) {
+					GameRuleEventHappenedCondition untilCondition =
+						((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
+					//loop through all the wait timers and cancel their actions if they have this rule
+					for (int j = waitTimers.Count - 1; j >= 0; j--) {
+						if (waitTimers[j].condition == untilCondition) {
+							waitTimers[j].cancelAction();
+							waitTimers.RemoveAt(j);
+						}
+					}
+				}
+			}
+		}
+		Destroy(ruleToDelete.ruleDisplay);
+		deleteRequiredObjects();
+		lastRuleChange = Time.realtimeSinceStartup;
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
-    }
-    public void deleteAllRules()
-    {
+	}
+	public void deleteAllRules() {
+		//don't delete the rules if the rules were recently changed
+		if (ruleChangeIsOnCooldown())
+			return;
+
         //play sound
         soundSource.clip = removeRuleSound;
         soundSource.Play();
 
-        for (int i = rulesList.Count - 1; i >= 0; i--)
-        {
-            DeleteRule(getButtonFromRuleDisplay(rulesList[i].ruleDisplay));
-        }
-        rulesList.Clear();
+		for (int i = rulesList.Count - 1; i >= 0; i--) {
+			DeleteRule(rulesList[i]);
+
+			//reset the time so that we can delete all the rules
+			//after this, a new rule will get generated and set it to normal
+			lastRuleChange = -NEW_RULE_WAIT_TIME;
+		}
+		rulesList.Clear();
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
@@ -224,7 +224,7 @@ public class GameRules : MonoBehaviour {
 					spawnedObject = (GameObject)Instantiate(prefab);
 					spawnedObjectPrefabMap.Add(spawnedObject, prefab);
                     spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
-                    fo = spawnedObject.GetComponent<FieldObject>();
+					fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 1;
 
 					//put it on the other side of the field facing the other way
@@ -307,6 +307,9 @@ public class GameRules : MonoBehaviour {
 		else
 			throw new System.Exception("Bug: Invalid prefab");
 	}
+	public bool ruleChangeIsOnCooldown() {
+		return Time.realtimeSinceStartup - lastRuleChange < NEW_RULE_WAIT_TIME;
+	}
 
 	public void spawnPointsText(int pointsGiven, TeamPlayer target) {
 		TextMesh pointsText;
@@ -346,8 +349,27 @@ public class GameRules : MonoBehaviour {
 
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
+		bool animateRules = false;
 		foreach (GameRule rule in rulesList) {
 			rule.update();
+			if (rule.animationState == 2)
+				animateRules = true;
+		}
+		//we have a new rule, we need to tell all panels to slide left and tell the new rule to slide into place
+		if (animateRules) {
+			RectTransform prefabTransform = (RectTransform)(ruleDisplayPrefab.transform);
+			float halfRuleDisplayWidth = prefabTransform.rect.width * 0.5f;
+			foreach (GameRule rule in rulesList) {
+				rule.animationStartTime = Time.realtimeSinceStartup;
+				if (rule.animationState == 2) {
+					rule.animationState = 3;
+					rule.targetPosition = new Vector3(halfRuleDisplayWidth * (rulesList.Count - 1), prefabTransform.position.y);
+				} else {
+					rule.animationState = 4;
+					rule.targetPosition = (rule.startPosition = rule.ruleDisplay.transform.localPosition);
+					rule.targetPosition.x -= halfRuleDisplayWidth;
+				}
+			}
 		}
 
         if(Input.GetButtonDown("Submit"))
@@ -377,8 +399,12 @@ public class GameRules : MonoBehaviour {
 		}
 
 		//ensure we always have at least 1 rule
-		if (rulesList.Count == 0)
+		if (rulesList.Count == 0) {
+			//reset the cooldown
+			lastRuleChange = -NEW_RULE_WAIT_TIME;
+
 			GenerateNewRule();
+		}
 	}
 	public void SendEvent(GameRuleEvent gre) {
 		foreach (GameRule rule in rulesList) {
@@ -410,12 +436,6 @@ public class GameRules : MonoBehaviour {
 	public static Button getButtonFromRuleDisplay(GameObject ruleDisplay) {
 		return ruleDisplay.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
 	}
-	public static void offsetRuleDisplayX(GameRule gameRule, float widthoffset) {
-		Transform t = gameRule.ruleDisplay.transform;
-		Vector3 position = t.localPosition;
-		position.x += widthoffset;
-		t.localPosition = position;
-	}
 }
 
 ////////////////Represents a single game rule////////////////
@@ -426,6 +446,22 @@ public class GameRule {
 	public GameRuleAction action;
 	public GameObject ruleDisplay;
 	public Image flashImage;
+
+	//for rule animations
+	const float NEW_RULE_BIG_DISPLAY_SECONDS = 1.5f;
+	const float NEW_RULE_TWEEN_SECONDS = 1.5f;
+	//0: rule is stationary in its spot on the bottom
+	//1: rule is big and new in the middle
+	//2: signal for GameRules to advance this rule to 3 and all others to 4
+	//3: rule is moving from the middle to its target spot
+	//4: rule is sliding over to accomodate a new or deleted rule
+	public int animationState = 1;
+	public float animationStartTime;
+	public Vector3 targetPosition;
+	public Vector3 startPosition = new Vector3(0.0f, 0.0f);
+	public static Vector3 targetScale = new Vector3(1.0f, 1.0f);
+	public static Vector3 startScale = new Vector3(2.0f, 2.0f);
+
 	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject rd) {
 		condition = c;
 		action = a;
@@ -434,6 +470,9 @@ public class GameRule {
 		RectTransform flashSize = ((RectTransform)(flashImage.transform));
 		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
 		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
+		animationStartTime = Time.realtimeSinceStartup;
+		rd.transform.localPosition = startPosition;
+		rd.transform.localScale = startScale;
 	}
 	public void update() {
 		checkCondition();
@@ -445,6 +484,27 @@ public class GameRule {
 			flashImage.color = flashColor;
 			if (flashColor.a <= 0.0f)
 				flashImage.gameObject.SetActive(false);
+		}
+
+		//update the animation
+		if (animationState != 0) {
+			float timeAnimated = Time.realtimeSinceStartup - animationStartTime;
+			switch (animationState) {
+				case 1:
+					if (timeAnimated >= NEW_RULE_BIG_DISPLAY_SECONDS)
+						animationState = 2;
+					break;
+				case 3:
+					ruleDisplay.transform.localScale = Vector3.Lerp(startScale, targetScale, timeAnimated / NEW_RULE_TWEEN_SECONDS);
+					goto case 4;
+				case 4:
+					ruleDisplay.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, timeAnimated / NEW_RULE_TWEEN_SECONDS);
+					if (timeAnimated >= NEW_RULE_TWEEN_SECONDS)
+						animationState = 0;
+					break;
+				default:
+					throw new System.Exception("Bug: rule should never be in state " + animationState);
+			}
 		}
 	}
 	public void checkCondition() {
@@ -471,7 +531,7 @@ public class GameRule {
 		flashImage.gameObject.SetActive(true);
 		Color targetColor = GameRules.instance.teamColors[so.team];
 		flashImage.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1.0f);
-    }
+	}
 	public void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		//only conditions generate required objects but an action may have an inner until-condition action
 		condition.addRequiredObjects(requiredObjectsList);
