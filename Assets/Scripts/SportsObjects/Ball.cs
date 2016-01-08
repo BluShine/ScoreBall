@@ -15,7 +15,7 @@ public class Ball : SportsObject {
     public TeamPlayer currentPlayer; //player who most recently touched the ball, possibly still holding it
     public TeamPlayer previousPlayer; //player who last touched the ball before currentPlayer
     bool isHeld = false;
-    public bool stuns = true;
+    public bool stuns = false;
 
     //sound
     public List<AudioClip> kickSounds;
