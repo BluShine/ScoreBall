@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 
 //this is for any restrictions in game rule generation
 public enum GameRuleRestriction {
@@ -24,22 +25,6 @@ public enum GameRuleRestriction {
 public class GameRuleGenerator {
 	const int ACTION_DURATION_SECONDS_SHORTEST = 4;
 	const int ACTION_DURATION_SECONDS_LONGEST = 10;
-	private static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
-	private static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
-	private static List<GameRuleEventType> eventTypesList = buildEventTypesList();
-	private static List<GameRuleEventType> buildEventTypesList() {
-		List<GameRuleEventType> values = new List<GameRuleEventType>();
-		foreach (GameRuleEventType eventType in System.Enum.GetValues(typeof(GameRuleEventType))) {
-			if (eventType > GameRuleEventType.PlayerEventTypeStart && eventType < GameRuleEventType.PlayerEventTypeEnd) {
-				playerEventTypesList.Add(eventType);
-				values.Add(eventType);
-			} else if (eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) {
-				ballEventTypesList.Add(eventType);
-				values.Add(eventType);
-			}
-		}
-		return values;
-	}
 
 	private static List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
 	private static GameRuleCondition ruleCondition;
@@ -165,7 +150,7 @@ public class GameRuleGenerator {
 				GameRuleEventType.PlayerTouchBall
 			});
 		else
-			acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
+			acceptableEventTypes = new List<GameRuleEventType>(GameRuleEvent.playerEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 
 		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
@@ -193,7 +178,7 @@ acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 				GameRuleEventType.BallHitFieldObject
 			});
 		else
-			acceptableEventTypes = new List<GameRuleEventType>(ballEventTypesList);
+			acceptableEventTypes = new List<GameRuleEventType>(GameRuleEvent.ballEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
 		string param = null;
@@ -203,14 +188,7 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	}
 	//generate a random field object type for a field object collision event
 	public static string randomFieldObjectType() {
-		return GameRuleChances.pickFrom(new List<string>(new string[] {
-			"footgoal",
-			"goalposts",
-			"backboardhoop",
-			"smallwall",
-			"fullgoalwall",
-			"boundary"
-		}));
+		return GameRuleChances.pickFrom(FieldObject.standardFieldObjects);
 	}
 
 	////////////////GameRuleAction generation////////////////
@@ -381,5 +359,107 @@ isComparison = false;
 
 		//pick a selector
 		return GameRuleChances.pickFrom(acceptableSelectors);
+	}
+}
+
+////////////////Serialization and Deserialization of rules////////////////
+public class GameRuleSerializationBase {
+	public const int GAME_RULE_FORMAT_CURRENT_VERSION = 1;
+	public const int GAME_RULE_FORMAT_VERSION_BASE = 32;
+	public const int O_CHARACTER_BYTE_VALUE = 10 + 'O' - 'A';
+	//stores bits taken from the string/to be put into the string
+	protected int bits = 0;
+	//the count of how many bits are stored in the bits variable
+	protected int bitCount = 0;
+}
+
+////////////////Saving the rule to a string////////////////
+public class GameRuleSerializer : GameRuleSerializationBase {
+	private StringBuilder ruleString = new StringBuilder(":");
+
+	public GameRuleSerializer() {
+		//begin a new stringbuilder that we can add to
+		//put the version number in, the colon is already there
+		for (int i = GAME_RULE_FORMAT_CURRENT_VERSION; i > 0; i /= GAME_RULE_FORMAT_VERSION_BASE)
+			ruleString.Insert(0, i.ToString());
+	}
+	public static string packRuleToString(GameRule rule) {
+		GameRuleSerializer serializer = new GameRuleSerializer();
+		rule.packToString(serializer);
+		return serializer.getStringResult();
+	}
+	public static char byteToChar(byte b) {
+		if (b <= 9)
+			return (char)(b + '0');
+		//skip the O character since it looks too much like a 0
+		else if (b < O_CHARACTER_BYTE_VALUE)
+			return (char)(b - 10 + 'A');
+		else
+			return (char)(b - O_CHARACTER_BYTE_VALUE + 'P');
+	}
+	public void packToString<T>(T valueToPack, List<T> valueList) {
+		//pack the value's index in the list
+		for (byte i = (byte)(valueList.Count - 1); i >= 0; i--) {
+			if (valueList[i].Equals(valueToPack)) {
+				//determine how many bytes we need
+				byte bitSize = 0;
+				for (int j = valueList.Count; j > 0; j >>= 1)
+					bitSize++;
+				packByte(bitSize, (byte)(i));
+				return;
+			}
+		}
+		throw new System.Exception("Bug: could not find the value to serialize!");
+	}
+	public void packByte(byte bitSize, byte byteVal) {
+		bits |= byteVal << bitCount;
+		bitCount += bitSize;
+		while (bitCount >= 5) {
+			ruleString.Append(byteToChar((byte)(bits & 31)));
+			bits >>= 5;
+			bitCount -= 5;
+		}
+	}
+	public string getStringResult() {
+		if (bitCount > 0) {
+			ruleString.Append(byteToChar((byte)(bits)));
+			bitCount = 0;
+		}
+		return ruleString.ToString();
+	}
+}
+
+////////////////Loading the rule from a string////////////////
+public class GameRuleDeserializer : GameRuleSerializationBase {
+	private List<char> ruleBits = new List<char>();
+	private int version = 0;
+
+	public GameRuleDeserializer(string ruleString) {
+		//take the existing string and store it
+		//find the version number
+		int start = 0;
+		while (true) {
+			char c = ruleString[start];
+			if (c == ':')
+				break;
+			else
+				version = version * GameRuleSerializer.GAME_RULE_FORMAT_VERSION_BASE + charToByte(c);
+			start++;
+		}
+		//add the string to our list in reverse so we can take chars off the end of it
+		for (int i = ruleString.Length - 1; i > start; i--)
+			ruleBits.Add(ruleString[i]);
+	}
+	public static GameRule unpackStringToRule(string rule) {
+		return null;
+	}
+	public static byte charToByte(char c) {
+		if (c <= '9')
+			return (byte)(c - '0');
+		//there are no O characters so we have to handle that here
+		else if (c < 'O')
+			return (byte)(c + 10 - 'A');
+		else
+			return (byte)(c + O_CHARACTER_BYTE_VALUE - 'P');
 	}
 }

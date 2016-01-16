@@ -1,7 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class FieldObject : MonoBehaviour {
+	public static List<string> standardFieldObjects = new List<string>(new string[] {
+		"footgoal",
+		"goalposts",
+		"backboardhoop",
+		"smallwall",
+		"fullgoalwall",
+		"boundary"
+	});
 
     public string sportName = "object";
     public byte team = 0; //team 0 is neutral. 

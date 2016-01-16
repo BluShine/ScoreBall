@@ -3,6 +3,13 @@ public abstract class GameRuleSelector {
 	public int conjugate; //for verbs
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
+	//000=GameRulePlayerSelector
+	//001=GameRuleOpponentSelector
+	//010=GameRuleBallShooterSelector
+	//011=GameRuleBallShooterOpponentSelector
+	//100=GameRuleBallSelector
+	public const int GAME_RULE_SELECTOR_BIT_SIZE = 3;
+	public abstract void packToString(GameRuleSerializer serializer);
 }
 
 public abstract class GameRuleSourceSelector : GameRuleSelector {
@@ -23,6 +30,9 @@ public class GameRulePlayerSelector : GameRuleSourceSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 0);
+	}
 }
 
 public class GameRuleOpponentSelector : GameRuleSelector {
@@ -40,6 +50,9 @@ public class GameRuleOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 1);
+	}
 }
 
 public class GameRuleBallShooterSelector : GameRuleSelector {
@@ -55,6 +68,9 @@ public class GameRuleBallShooterSelector : GameRuleSelector {
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 2);
 	}
 }
 
@@ -73,6 +89,9 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 3);
+	}
 }
 
 public class GameRuleBallSelector : GameRuleSourceSelector {
@@ -85,5 +104,8 @@ public class GameRuleBallSelector : GameRuleSourceSelector {
 	}
 	public override System.Type targetType() {
 		return typeof(Ball);
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 4);
 	}
 }

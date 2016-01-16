@@ -19,12 +19,23 @@ public class GameRuleAction {
 		if (target != null)
 			innerAction.takeAction(source, target);
 	}
+	public void packToString(GameRuleSerializer serializer) {
+		selector.packToString(serializer);
+		innerAction.packToString(serializer);
+	}
 }
 
 public abstract class GameRuleActionAction {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void takeAction(SportsObject source, SportsObject target);
 	public abstract string ToString(int conjugate);
+	//000=GameRulePointsPlayerActionAction
+	//001=GameRuleDuplicateActionAction
+	//010=GameRuleFreezeActionAction
+	//011=GameRuleDizzyActionAction
+	//100=GameRuleBounceActionAction
+	public const int GAME_RULE_ACTION_ACTION_BIT_SIZE = 3;
+	public abstract void packToString(GameRuleSerializer serializer);
 }
 
 public abstract class GameRuleDurationActionAction : GameRuleActionAction {
@@ -41,6 +52,9 @@ public abstract class GameRuleDurationActionAction : GameRuleActionAction {
 	public virtual void cancelAction(SportsObject so) {}
 	//this class handles the full ToString, subclasses just need to return the verb
 	public abstract string getConjugate(int conjugate);
+	public override void packToString(GameRuleSerializer serializer) {
+		duration.packToString(serializer);
+	}
 }
 
 ////////////////The actual functionality to affect players and sports objects (one-off actions)////////////////
@@ -61,6 +75,11 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 			gainConjugates[conjugate] + pointsGiven.ToString() + pluralPointString :
 			loseConjugates[conjugate] + (-pointsGiven).ToString() + pluralPointString;
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 0);
+		//we'll just save 5 bits of the points, so -16 to 15 or another 32-value range
+		serializer.packByte(5, (byte)(pointsGiven & 31));
+	}
 }
 
 public class GameRuleDuplicateActionAction : GameRuleActionAction {
@@ -71,9 +90,12 @@ public class GameRuleDuplicateActionAction : GameRuleActionAction {
 	public override string ToString(int conjugate) {
 		return duplicateConjugates[conjugate] + "duplicated";
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 1);
+	}
 }
 
-////////////////The actual functionality for duration actions ////////////////
+////////////////The actual functionality to affect players and sports objects (duration actions)////////////////
 public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 	public static string[] freezeConjugates = new string[] {"freeze ", "freezes "};
 	public GameRuleFreezeActionAction(GameRuleActionDuration d) : base(d) {}
@@ -85,6 +107,10 @@ public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 	}
 	public override void cancelAction(SportsObject so) {
 		so.Unfreeze();
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 2);
+		base.packToString(serializer);
 	}
 }
 
@@ -100,6 +126,10 @@ public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
 	public override void cancelAction(SportsObject so) {
 		so.StopBeingDizzy();
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 3);
+		base.packToString(serializer);
+	}
 }
 
 public class GameRuleBounceActionAction : GameRuleDurationActionAction {
@@ -114,12 +144,20 @@ public class GameRuleBounceActionAction : GameRuleDurationActionAction {
 	public override void cancelAction(SportsObject so) {
 		so.StopBouncing();
 	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 4);
+		base.packToString(serializer);
+	}
 }
 
 ////////////////Functionality for rules that happen for a duration////////////////
 public abstract class GameRuleActionDuration {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract float startDuration(SportsObject source, SportsObject target, GameRuleDurationActionAction action);
+	//0=GameRuleActionFixedDuration
+	//1=GameRuleActionUntilConditionDuration
+	public const int GAME_RULE_ACTION_DURATION_BIT_SIZE = 1;
+	public abstract void packToString(GameRuleSerializer serializer);
 }
 
 public class GameRuleActionFixedDuration : GameRuleActionDuration {
@@ -132,6 +170,11 @@ public class GameRuleActionFixedDuration : GameRuleActionDuration {
 	}
 	public override string ToString() {
 		return "for " + duration + " seconds";
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 0);
+		//we'll just save 4 bits, so from 0 to 15
+		serializer.packByte(4, (byte)(duration & 15));
 	}
 }
 
@@ -149,6 +192,10 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	}
 	public override string ToString() {
 		return "until " + untilCondition.ToString();
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 1);
+		untilCondition.packToString(serializer);
 	}
 }
 

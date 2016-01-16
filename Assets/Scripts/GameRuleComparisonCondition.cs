@@ -6,6 +6,10 @@ public abstract class GameRuleCondition {
 	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
 	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
+	//0=GameRuleComparisonCondition
+	//1=GameRuleEventHappenedCondition
+	public const int GAME_RULE_CONDITION_BIT_SIZE = 1;
+	public abstract void packToString(GameRuleSerializer serializer);
 }
 
 ////////////////Conditions that trigger actions when checked////////////////
@@ -13,6 +17,10 @@ public class GameRuleComparisonCondition : GameRuleCondition {
 	public GameRuleConditionOperator conditionOperator;
 	public GameRuleComparisonCondition(GameRuleConditionOperator grco) {
 		conditionOperator = grco;
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 0);
+		throw new System.Exception("Rule serialization not yet supported for comparison conditions!");
 	}
 }
 

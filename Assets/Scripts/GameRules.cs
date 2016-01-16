@@ -120,6 +120,7 @@ public class GameRules : MonoBehaviour {
 		Transform t = display.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
+		t.GetChild(2).gameObject.GetComponent<Text>().text = GameRuleSerializer.packRuleToString(rule);
 
 		addRequiredObjects();
 
@@ -536,5 +537,9 @@ public class GameRule {
 		//only conditions generate required objects but an action may have an inner until-condition action
 		condition.addRequiredObjects(requiredObjectsList);
 		action.innerAction.addRequiredObjects(requiredObjectsList);
+	}
+	public void packToString(GameRuleSerializer serializer) {
+		condition.packToString(serializer);
+		action.packToString(serializer);
 	}
 }

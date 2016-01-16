@@ -26,6 +26,23 @@ public enum GameRuleEventType : int {
 }
 
 public class GameRuleEvent {
+	public static List<GameRuleEventType> playerEventTypesList = new List<GameRuleEventType>();
+	public static List<GameRuleEventType> ballEventTypesList = new List<GameRuleEventType>();
+	public static List<GameRuleEventType> eventTypesList = buildEventTypesList();
+	public static List<GameRuleEventType> buildEventTypesList() {
+		List<GameRuleEventType> values = new List<GameRuleEventType>();
+		foreach (GameRuleEventType eventType in System.Enum.GetValues(typeof(GameRuleEventType))) {
+			if (eventType > GameRuleEventType.PlayerEventTypeStart && eventType < GameRuleEventType.PlayerEventTypeEnd) {
+				playerEventTypesList.Add(eventType);
+				values.Add(eventType);
+			} else if (eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) {
+				ballEventTypesList.Add(eventType);
+				values.Add(eventType);
+			}
+		}
+		return values;
+	}
+
 	public TeamPlayer instigator;
 	public TeamPlayer victim;
 	public GameRuleEventType eventType;
@@ -149,5 +166,16 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			else if (param != "boundary")
 				throw new System.Exception("Bug: could not determine object required");
 		}
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		//pack the condition type
+		serializer.packByte(1, 1);
+		//pack the event type
+		serializer.packToString(eventType, GameRuleEvent.eventTypesList);
+		//pack the param if applicable
+		if (eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject)
+			serializer.packToString(param, FieldObject.standardFieldObjects);
+		//pack the selector type
+		selector.packToString(serializer);
 	}
 }
