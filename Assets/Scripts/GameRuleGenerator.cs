@@ -93,7 +93,16 @@ public class GameRuleGenerator {
 		if (hasRestriction(GameRuleRestriction.OnlyEventHappenedConditions))
 			return randomEventHappenedCondition();
 
-		return /*Random.Range(0, 2) == 0 ? randomComparisonCondition() :*/ randomEventHappenedCondition();
+		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(new System.Type[] {
+			typeof(GameRuleComparisonCondition),
+			typeof(GameRuleEventHappenedCondition)
+		}));
+		if (chosenType == typeof(GameRuleComparisonCondition))
+			return randomComparisonCondition();
+		else if (chosenType == typeof(GameRuleEventHappenedCondition))
+			return randomEventHappenedCondition();
+		else
+			throw new System.Exception("Bug: Invalid condition sub-type!");
 	}
 
 	////////////////GameRuleComparisonCondition generation////////////////
@@ -126,11 +135,16 @@ public class GameRuleGenerator {
 	////////////////GameRuleEventHappenedCondition generation////////////////
 	//generate a random EventHappenedCondition for a rule
 	public static GameRuleEventHappenedCondition randomEventHappenedCondition() {
-		//2/3 player, 1/3 ball
-		if (Random.Range(0, 3) < 2)
+		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(new System.Type[] {
+			typeof(RuleStubPlayerEventHappenedCondition),
+			typeof(RuleStubBallEventHappenedCondition)
+		}));
+		if (chosenType == typeof(RuleStubPlayerEventHappenedCondition))
 			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance);
-		else
+		else if (chosenType == typeof(RuleStubBallEventHappenedCondition))
 			return randomBallEventHappenedCondition(GameRuleBallSelector.instance);
+		else
+			throw new System.Exception("Bug: Invalid event-happened condition rule stub!");
 	}
 	//generate a random EventHappenedCondition for an until-condition action
 	//the given selector selects the object that triggers the end of the until-condition action
@@ -154,12 +168,12 @@ public class GameRuleGenerator {
 			acceptableEventTypes = new List<GameRuleEventType>(playerEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 
-		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
+		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
 		//players bumping into each other shouldn't cause them to indefinitely freeze
 		if (eventType == GameRuleEventType.PlayerHitPlayer) {
 			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
 
-			//don't use an opponent selector for this event
+			//both players get this, so for better wording use only player selectors
 			if (selector is GameRuleOpponentSelector)
 				selector = GameRulePlayerSelector.instance;
 			else if (selector is GameRuleBallShooterOpponentSelector)
@@ -181,7 +195,7 @@ acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
 		else
 			acceptableEventTypes = new List<GameRuleEventType>(ballEventTypesList);
 acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
-		GameRuleEventType eventType = acceptableEventTypes[Random.Range(0, acceptableEventTypes.Count)];
+		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
 		string param = null;
 		if (eventType == GameRuleEventType.BallHitFieldObject)
 			param = randomFieldObjectType();
@@ -189,19 +203,14 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	}
 	//generate a random field object type for a field object collision event
 	public static string randomFieldObjectType() {
-		int rand = Random.Range(0, 6);
-		if (rand == 0)
-			return "footgoal";
-		else if (rand == 1)
-			return "goalposts";
-		else if (rand == 2)
-			return "backboardhoop";
-		else if (rand == 3)
-			return "smallwall";
-		else if (rand == 4)
-			return "fullgoalwall";
-		else
-			return "boundary";
+		return GameRuleChances.pickFrom(new List<string>(new string[] {
+			"footgoal",
+			"goalposts",
+			"backboardhoop",
+			"smallwall",
+			"fullgoalwall",
+			"boundary"
+		}));
 	}
 
 	////////////////GameRuleAction generation////////////////
@@ -237,7 +246,7 @@ isComparison = false;
 			});
 
 		//pick one of the action types
-		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Count)];
+		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
 		if (chosenType == typeof(GameRulePointsPlayerActionAction)) {
 			int minPoints = hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5;
 			int points = Random.Range(minPoints, 10);
@@ -270,7 +279,7 @@ isComparison = false;
 		};
 
 		//pick one of the action types
-		System.Type chosenType = acceptableActionTypes[Random.Range(0, acceptableActionTypes.Length)];
+		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(acceptableActionTypes));
 		if (chosenType == typeof(GameRuleFreezeActionAction))
 			return new GameRuleFreezeActionAction(randomActionDuration(ballCondition));
 		else if (chosenType == typeof(GameRuleDuplicateActionAction))
@@ -293,7 +302,7 @@ isComparison = false;
 			acceptableDurationTypes.Remove(typeof(GameRuleActionUntilConditionDuration));
 
 		//pick one of the action types
-		System.Type chosenType = acceptableDurationTypes[Random.Range(0, acceptableDurationTypes.Count)];
+		System.Type chosenType = GameRuleChances.pickFrom(acceptableDurationTypes);
 		//just a duration
 		if (chosenType == typeof(GameRuleActionFixedDuration))
 			return new GameRuleActionFixedDuration(
@@ -347,7 +356,7 @@ isComparison = false;
 			acceptableSelectors.Remove(GameRuleOpponentSelector.instance);
 
 		//pick a selector
-		return acceptableSelectors[Random.Range(0, acceptableSelectors.Count)];
+		return GameRuleChances.pickFrom(acceptableSelectors);
 	}
 	//generate a selector based on a condition for events caused by balls
 	public static GameRuleSelector randomBallSourceSelector() {
@@ -371,6 +380,6 @@ isComparison = false;
 
 
 		//pick a selector
-		return acceptableSelectors[Random.Range(0, acceptableSelectors.Count)];
+		return GameRuleChances.pickFrom(acceptableSelectors);
 	}
 }
