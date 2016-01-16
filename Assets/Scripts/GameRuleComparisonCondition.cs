@@ -10,6 +10,15 @@ public abstract class GameRuleCondition {
 	//1=GameRuleEventHappenedCondition
 	public const int GAME_RULE_CONDITION_BIT_SIZE = 1;
 	public abstract void packToString(GameRuleSerializer serializer);
+	public static GameRuleCondition unpackFromString(GameRuleDeserializer deserializer) {
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_CONDITION_BIT_SIZE);
+		if (subclassByte == 0)
+			return GameRuleComparisonCondition.unpackFromString(deserializer);
+		else if (subclassByte == 1)
+			return GameRuleEventHappenedCondition.unpackFromString(deserializer);
+		else
+			throw new System.Exception("Invalid GameRuleCondition unpacked byte " + subclassByte);
+	}
 }
 
 ////////////////Conditions that trigger actions when checked////////////////
@@ -21,6 +30,9 @@ public class GameRuleComparisonCondition : GameRuleCondition {
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 0);
 		throw new System.Exception("Rule serialization not yet supported for comparison conditions!");
+	}
+	public static new GameRuleComparisonCondition unpackFromString(GameRuleDeserializer deserializer) {
+		throw new System.Exception("Rule deserialization not yet supported for comparison conditions!");
 	}
 }
 

@@ -169,7 +169,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		//pack the condition type
-		serializer.packByte(1, 1);
+		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 1);
 		//pack the event type
 		serializer.packToString(eventType, GameRuleEvent.eventTypesList);
 		//pack the param if applicable
@@ -177,5 +177,13 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			serializer.packToString(param, FieldObject.standardFieldObjects);
 		//pack the selector type
 		selector.packToString(serializer);
+	}
+	public static new GameRuleEventHappenedCondition unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleEventType et = deserializer.unpackFromString(GameRuleEvent.eventTypesList);
+		string p = null;
+		if (et == GameRuleEventType.PlayerHitFieldObject || et == GameRuleEventType.BallHitFieldObject)
+			p = deserializer.unpackFromString(FieldObject.standardFieldObjects);
+		GameRuleSelector s = GameRuleSelector.unpackFromString(deserializer);
+		return new GameRuleEventHappenedCondition(et, s, p);
 	}
 }

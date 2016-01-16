@@ -10,6 +10,21 @@ public abstract class GameRuleSelector {
 	//100=GameRuleBallSelector
 	public const int GAME_RULE_SELECTOR_BIT_SIZE = 3;
 	public abstract void packToString(GameRuleSerializer serializer);
+	public static GameRuleSelector unpackFromString(GameRuleDeserializer deserializer) {
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_SELECTOR_BIT_SIZE);
+		if (subclassByte == 0)
+			return GameRulePlayerSelector.instance;
+		else if (subclassByte == 1)
+			return GameRuleOpponentSelector.instance;
+		else if (subclassByte == 2)
+			return GameRuleBallShooterSelector.instance;
+		else if (subclassByte == 3)
+			return GameRuleBallShooterOpponentSelector.instance;
+		else if (subclassByte == 4)
+			return GameRuleBallSelector.instance;
+		else
+			throw new System.Exception("Invalid GameRuleSelector unpacked byte " + subclassByte);
+	}
 }
 
 public abstract class GameRuleSourceSelector : GameRuleSelector {
