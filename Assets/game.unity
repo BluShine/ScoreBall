@@ -3276,7 +3276,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2084299615}
-        m_MethodName: GenerateNewRule
+        m_MethodName: GenerateNewRuleFromButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

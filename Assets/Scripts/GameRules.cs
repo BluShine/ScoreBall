@@ -98,6 +98,9 @@ public class GameRules : MonoBehaviour {
 			teamScores[team] = totalscore;
 		}
 	}
+	public void GenerateNewRuleFromButton() {
+		GenerateNewRule();
+	}
 	public void GenerateNewRule(List<GameRuleRestriction> optionalRestrictions = null) {
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
@@ -189,7 +192,7 @@ public class GameRules : MonoBehaviour {
 
     public void deleteRuleByIndex(int index)
     {
-        if(index >= 0 && index < rulesList.Count && rulesList.Count > 0)
+        if(index >= 0 && index < rulesList.Count)
         {
             DeleteRule(rulesList[index]);
         }
