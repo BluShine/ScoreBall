@@ -419,7 +419,6 @@ public class TeamPlayer : SportsObject {
 			particles.Play();
 		} else if (collidedBall.stuns) {
 			//we didn't dodge the ball!
-			gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitInTheFaceByBall, tp:this, bl: collidedBall));
 			tackle(collidedBall.getTackleVector(), collidedBall.tackleDuration);
 			particles.Play();
 		}
