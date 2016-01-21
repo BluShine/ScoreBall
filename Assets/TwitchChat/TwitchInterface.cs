@@ -86,7 +86,10 @@ public class TwitchInterface : MonoBehaviour {
                 SendMessage("PONG " + splitData[2]);
                 break;
             case "PRIVMSG":
-                messageReciever(data.Split(':')[2]);
+                //find the second colon, get the string from after that
+                int colonIndex = data.IndexOf(':');
+                int secondColonIndex = data.IndexOf(':', colonIndex + 1);
+                messageReciever(data.Substring(secondColonIndex + 1));
                 break;
             case "001":
                 Write(("MODE " + username + " +B"));
