@@ -38,6 +38,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
+	public InputField ruleEntryField;
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public Text[] teamTexts;
 	public int[] teamScores;
@@ -65,6 +66,7 @@ public class GameRules : MonoBehaviour {
 	public List<GameRule> rulesList = new List<GameRule>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
 	const float NEW_RULE_WAIT_TIME = 3.0f; //keep this at least as big as the complete new rule animation
+	[HideInInspector]
 	public float lastRuleChange = -NEW_RULE_WAIT_TIME; //so that we can immediately generate a new rule
 
 	public void Start() {
@@ -110,14 +112,19 @@ public class GameRules : MonoBehaviour {
 
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
-
-		GameRule rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
+        GameRule rule;
+		//build a rule from the inputted string
+		if (ruleEntryField.text.Length > 0) {
+			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
+			ruleEntryField.text = "";
+		} else
+            rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
 		rulesList.Add(rule);
 
 		//unity has no good way of giving us what we clicked on, so we have to remember it here
-		getButtonFromRuleDisplay(display).onClick.AddListener(() => {this.DeleteRule(rule);});
+		getButtonFromRuleDisplay(rule.ruleDisplay).onClick.AddListener(() => {this.DeleteRule(rule);});
 
-		Transform t = display.transform;
+		Transform t = rule.ruleDisplay.transform;
 		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
 		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
 		t.GetChild(2).gameObject.GetComponent<Text>().text = GameRuleSerializer.packRuleToString(rule);
@@ -126,6 +133,11 @@ public class GameRules : MonoBehaviour {
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
+	}
+	public GameObject generateNewRuleDisplay() {
+		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
+		display.transform.SetParent(uiCanvas.transform);
+		return display;
 	}
 	public void DeleteRule(GameRule ruleToDelete) {
 		//don't delete a rule if the rules were recently changed
@@ -471,17 +483,17 @@ public class GameRule {
 	public static Vector3 targetScale = new Vector3(1.0f, 1.0f);
 	public static Vector3 startScale = new Vector3(2.0f, 2.0f);
 
-	public GameRule(GameRuleCondition c, GameRuleAction a, GameObject rd) {
+	public GameRule(GameRuleCondition c, GameRuleAction a) {
 		condition = c;
 		action = a;
-		ruleDisplay = rd;
-		flashImage = rd.transform.FindChild("Flash").gameObject.GetComponent<Image>();
+		ruleDisplay = GameRules.instance.generateNewRuleDisplay();
+		flashImage = ruleDisplay.transform.FindChild("Flash").gameObject.GetComponent<Image>();
 		RectTransform flashSize = ((RectTransform)(flashImage.transform));
 		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
 		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
 		animationStartTime = Time.realtimeSinceStartup;
-		rd.transform.localPosition = startPosition;
-		rd.transform.localScale = startScale;
+		ruleDisplay.transform.localPosition = startPosition;
+		ruleDisplay.transform.localScale = startScale;
 	}
 	public void update() {
 		checkCondition();
@@ -549,5 +561,10 @@ public class GameRule {
 	public void packToString(GameRuleSerializer serializer) {
 		condition.packToString(serializer);
 		action.packToString(serializer);
+	}
+	public static GameRule unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleCondition condition = GameRuleCondition.unpackFromString(deserializer);
+		GameRuleAction action = GameRuleAction.unpackFromString(deserializer);
+		return new GameRule(condition, action);
 	}
 }

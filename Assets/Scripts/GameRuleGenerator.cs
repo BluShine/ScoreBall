@@ -43,7 +43,7 @@ public class GameRuleGenerator {
 		bool ballCondition = false;
 		if (!isComparison && ((GameRuleEventHappenedCondition)(ruleCondition)).eventType >= GameRuleEventType.BallEventTypeStart)
 			ballCondition = true;
-		return new GameRule(ruleCondition, randomAction(isComparison, ballCondition), display);
+		return new GameRule(ruleCondition, randomAction(isComparison, ballCondition));
 	}
 	//add any restrictions that can be determined before any generation has happened
 	public static void populateInitialRestrictions() {
@@ -371,7 +371,6 @@ isComparison = false;
 		if (hasRestriction(GameRuleRestriction.NoOpponentPlayerTargetSelectors))
 			acceptableSelectors.Remove(GameRuleBallShooterOpponentSelector.instance);
 
-
 		//pick a selector
 		return GameRuleChances.pickFrom(acceptableSelectors);
 	}
@@ -379,13 +378,22 @@ isComparison = false;
 
 ////////////////Serialization and Deserialization of rules////////////////
 public class GameRuleSerializationBase {
-	public const int GAME_RULE_FORMAT_CURRENT_VERSION = 1;
-	public const int GAME_RULE_FORMAT_VERSION_BASE = 32;
-	public const int O_CHARACTER_BYTE_VALUE = 10 + 'O' - 'A';
+	public const byte GAME_RULE_FORMAT_CURRENT_VERSION = 1;
+	public const byte GAME_RULE_FORMAT_VERSION_BASE = 32;
+	public const byte GAME_RULE_FORMAT_BITS_PER_CHAR = 5;
+	public const byte GAME_RULE_FORMAT_CHAR_BIT_MASK = ~(-1 << GAME_RULE_FORMAT_BITS_PER_CHAR);
+	public const byte O_CHARACTER_BYTE_VALUE = 10 + 'O' - 'A';
 	//stores bits taken from the string/to be put into the string
 	protected int bits = 0;
 	//the count of how many bits are stored in the bits variable
 	protected int bitCount = 0;
+	//determine how many bits we need to store an index for this list
+	public static byte bitsForIndex<T>(List<T> valueList) {
+		byte bitSize = 0;
+		for (int j = valueList.Count; j > 0; j >>= 1)
+			bitSize++;
+		return bitSize;
+	}
 }
 
 ////////////////Saving the rule to a string////////////////
@@ -396,12 +404,21 @@ public class GameRuleSerializer : GameRuleSerializationBase {
 		//begin a new stringbuilder that we can add to
 		//put the version number in, the colon is already there
 		for (int i = GAME_RULE_FORMAT_CURRENT_VERSION; i > 0; i /= GAME_RULE_FORMAT_VERSION_BASE)
-			ruleString.Insert(0, i.ToString());
+			ruleString.Insert(0, byteToChar((byte)(i)));
 	}
 	public static string packRuleToString(GameRule rule) {
 		GameRuleSerializer serializer = new GameRuleSerializer();
 		rule.packToString(serializer);
 		return serializer.getStringResult();
+	}
+	public void packByte(byte bitSize, byte byteVal) {
+		bits |= byteVal << bitCount;
+		bitCount += bitSize;
+		while (bitCount >= GAME_RULE_FORMAT_BITS_PER_CHAR) {
+			ruleString.Append(byteToChar((byte)(bits & GAME_RULE_FORMAT_CHAR_BIT_MASK)));
+			bits >>= GAME_RULE_FORMAT_BITS_PER_CHAR;
+			bitCount -= GAME_RULE_FORMAT_BITS_PER_CHAR;
+		}
 	}
 	public static char byteToChar(byte b) {
 		if (b <= 9)
@@ -416,24 +433,11 @@ public class GameRuleSerializer : GameRuleSerializationBase {
 		//pack the value's index in the list
 		for (byte i = (byte)(valueList.Count - 1); i >= 0; i--) {
 			if (valueList[i].Equals(valueToPack)) {
-				//determine how many bytes we need
-				byte bitSize = 0;
-				for (int j = valueList.Count; j > 0; j >>= 1)
-					bitSize++;
-				packByte(bitSize, (byte)(i));
+				packByte(bitsForIndex(valueList), (byte)(i));
 				return;
 			}
 		}
 		throw new System.Exception("Bug: could not find the value to serialize!");
-	}
-	public void packByte(byte bitSize, byte byteVal) {
-		bits |= byteVal << bitCount;
-		bitCount += bitSize;
-		while (bitCount >= 5) {
-			ruleString.Append(byteToChar((byte)(bits & 31)));
-			bits >>= 5;
-			bitCount -= 5;
-		}
 	}
 	public string getStringResult() {
 		if (bitCount > 0) {
@@ -465,8 +469,20 @@ public class GameRuleDeserializer : GameRuleSerializationBase {
 		for (int i = ruleString.Length - 1; i > start; i--)
 			ruleBits.Add(ruleString[i]);
 	}
-	public static GameRule unpackStringToRule(string rule) {
-		return null;
+	public static GameRule unpackStringToRule(string ruleString) {
+		return GameRule.unpackFromString(new GameRuleDeserializer(ruleString.ToUpper()));
+	}
+	public byte unpackByte(byte bitSize) {
+		while (bitCount < bitSize) {
+			int lastIndex = ruleBits.Count - 1;
+			bits |= charToByte(ruleBits[lastIndex]) << bitCount;
+			bitCount += GAME_RULE_FORMAT_BITS_PER_CHAR;
+			ruleBits.RemoveAt(lastIndex);
+		}
+		byte b = (byte)(bits & ~(-1 << bitSize));
+		bits >>= bitSize;
+		bitCount -= bitSize;
+		return b;
 	}
 	public static byte charToByte(char c) {
 		if (c <= '9')
@@ -476,5 +492,8 @@ public class GameRuleDeserializer : GameRuleSerializationBase {
 			return (byte)(c + 10 - 'A');
 		else
 			return (byte)(c + O_CHARACTER_BYTE_VALUE - 'P');
+	}
+	public T unpackFromString<T>(List<T> valueList) {
+		return valueList[unpackByte(bitsForIndex(valueList))];
 	}
 }

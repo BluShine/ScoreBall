@@ -23,6 +23,11 @@ public class GameRuleAction {
 		selector.packToString(serializer);
 		innerAction.packToString(serializer);
 	}
+	public static GameRuleAction unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleSelector s = GameRuleSelector.unpackFromString(deserializer);
+		GameRuleActionAction ia = GameRuleActionAction.unpackFromString(deserializer);
+		return new GameRuleAction(s, ia);
+	}
 }
 
 public abstract class GameRuleActionAction {
@@ -36,6 +41,21 @@ public abstract class GameRuleActionAction {
 	//100=GameRuleBounceActionAction
 	public const int GAME_RULE_ACTION_ACTION_BIT_SIZE = 3;
 	public abstract void packToString(GameRuleSerializer serializer);
+	public static GameRuleActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_ACTION_ACTION_BIT_SIZE);
+		if (subclassByte == 0)
+			return GameRulePointsPlayerActionAction.unpackFromString(deserializer);
+		else if (subclassByte == 1)
+			return GameRuleDuplicateActionAction.unpackFromString(deserializer);
+		else if (subclassByte == 2)
+			return GameRuleFreezeActionAction.unpackFromString(deserializer);
+		else if (subclassByte == 3)
+			return GameRuleDizzyActionAction.unpackFromString(deserializer);
+		else if (subclassByte == 4)
+			return GameRuleBounceActionAction.unpackFromString(deserializer);
+		else
+			throw new System.Exception("Invalid GameRuleActionAction unpacked byte " + subclassByte);
+	}
 }
 
 public abstract class GameRuleDurationActionAction : GameRuleActionAction {
@@ -59,6 +79,9 @@ public abstract class GameRuleDurationActionAction : GameRuleActionAction {
 
 ////////////////The actual functionality to affect players and sports objects (one-off actions)////////////////
 public class GameRulePointsPlayerActionAction : GameRuleActionAction {
+	public const int POINTS_SERIALIZATION_BIT_COUNT = 5;
+	public const int POINTS_SERIALIZATION_MASK = ~(-1 << POINTS_SERIALIZATION_BIT_COUNT);
+	public const int POINTS_SERIALIZATION_MAX_VALUE = 20;
 	public static string[] gainConjugates = new string[] {"gain ", "gains "};
 	public static string[] loseConjugates = new string[] {"lose ", "loses "};
 	public int pointsGiven;
@@ -77,8 +100,15 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 0);
-		//we'll just save 5 bits of the points, so -16 to 15 or another 32-value range
-		serializer.packByte(5, (byte)(pointsGiven & 31));
+		//we'll just save N bits of the points, so one of the (2^N) consecutive values <= POINTS_SERIALIZATION_MAX_VALUE
+		serializer.packByte(POINTS_SERIALIZATION_BIT_COUNT, (byte)(pointsGiven & POINTS_SERIALIZATION_MASK));
+	}
+	public static new GameRulePointsPlayerActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		//if it's over the max value, it's actually the low bits of a negative number
+		int pg = deserializer.unpackByte(POINTS_SERIALIZATION_BIT_COUNT);
+		if (pg > POINTS_SERIALIZATION_MAX_VALUE)
+			pg |= ~POINTS_SERIALIZATION_MASK;
+		return new GameRulePointsPlayerActionAction(pg);
 	}
 }
 
@@ -92,6 +122,9 @@ public class GameRuleDuplicateActionAction : GameRuleActionAction {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 1);
+	}
+	public static new GameRuleDuplicateActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		return new GameRuleDuplicateActionAction();
 	}
 }
 
@@ -112,6 +145,10 @@ public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 2);
 		base.packToString(serializer);
 	}
+	public static new GameRuleFreezeActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
+		return new GameRuleFreezeActionAction(d);
+	}
 }
 
 public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
@@ -129,6 +166,10 @@ public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 3);
 		base.packToString(serializer);
+	}
+	public static new GameRuleDizzyActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
+		return new GameRuleDizzyActionAction(d);
 	}
 }
 
@@ -148,6 +189,10 @@ public class GameRuleBounceActionAction : GameRuleDurationActionAction {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 4);
 		base.packToString(serializer);
 	}
+	public static new GameRuleBounceActionAction unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
+		return new GameRuleBounceActionAction(d);
+	}
 }
 
 ////////////////Functionality for rules that happen for a duration////////////////
@@ -158,10 +203,21 @@ public abstract class GameRuleActionDuration {
 	//1=GameRuleActionUntilConditionDuration
 	public const int GAME_RULE_ACTION_DURATION_BIT_SIZE = 1;
 	public abstract void packToString(GameRuleSerializer serializer);
+	public static GameRuleActionDuration unpackFromString(GameRuleDeserializer deserializer) {
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_ACTION_DURATION_BIT_SIZE);
+		if (subclassByte == 0)
+			return GameRuleActionFixedDuration.unpackFromString(deserializer);
+		else if (subclassByte == 1)
+			return GameRuleActionUntilConditionDuration.unpackFromString(deserializer);
+		else
+			throw new System.Exception("Invalid GameRuleActionDuration unpacked byte " + subclassByte);
+	}
 }
 
 public class GameRuleActionFixedDuration : GameRuleActionDuration {
-	int duration;
+	public const int DURATION_SERIALIZATION_BIT_COUNT = 4;
+	public const int DURATION_SERIALIZATION_MASK = ~(-1 << DURATION_SERIALIZATION_BIT_COUNT);
+	public int duration;
 	public GameRuleActionFixedDuration(int d) {
 		duration = d;
 	}
@@ -173,8 +229,13 @@ public class GameRuleActionFixedDuration : GameRuleActionDuration {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 0);
-		//we'll just save 4 bits, so from 0 to 15
-		serializer.packByte(4, (byte)(duration & 15));
+		//we'll just save N bits, so from 0 to (2^N-1)
+		serializer.packByte(DURATION_SERIALIZATION_BIT_COUNT, (byte)(duration & DURATION_SERIALIZATION_MASK));
+	}
+	public static new GameRuleActionFixedDuration unpackFromString(GameRuleDeserializer deserializer) {
+		//we only store non-negative values
+		int d = deserializer.unpackByte(DURATION_SERIALIZATION_BIT_COUNT);
+		return new GameRuleActionFixedDuration(d);
 	}
 }
 
@@ -196,6 +257,10 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 1);
 		untilCondition.packToString(serializer);
+	}
+	public static new GameRuleActionUntilConditionDuration unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleEventHappenedCondition uc = GameRuleEventHappenedCondition.unpackFromString(deserializer);
+		return new GameRuleActionUntilConditionDuration(uc);
 	}
 }
 
