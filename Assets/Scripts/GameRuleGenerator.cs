@@ -9,8 +9,10 @@ public enum GameRuleRestriction {
 	OnlyEventHappenedConditions,
 	OnlyPlayerTargetSelectors,
 	OnlyPositivePointAmounts,
-	OnlyPlayerBallInteractionEvents,
+    OnlyNegativePointAmounts,
+    OnlyPlayerBallInteractionEvents,
 	OnlyBallFieldObjectInteractionEvents,
+    OnlyFunActions,
 
 	//restrict what options can remain choices
 	NoYouPlayerTargetSelectors,
@@ -31,8 +33,11 @@ public class GameRuleGenerator {
 	private static GameRuleSelector ruleActionSelector;
 
 	//generate a completely new random rule
-	public static GameRule GenerateNewRule(GameObject display) {
-		populateInitialRestrictions();
+	public static GameRule GenerateNewRule(GameObject display, List<GameRuleRestriction> ruleRestrictions = null) {
+        if (ruleRestrictions == null)
+            populateInitialRestrictions();
+        else
+            restrictions = ruleRestrictions;
 		ruleCondition = randomCondition();
 		bool isComparison = ruleCondition is GameRuleComparisonCondition;
 		bool ballCondition = false;
@@ -214,7 +219,14 @@ isComparison = false;
 			acceptableActionTypes = new List<System.Type>(new System.Type[] {
 				typeof(GameRulePointsPlayerActionAction)
 			});
-		else
+		else if (hasRestriction(GameRuleRestriction.OnlyFunActions))
+            acceptableActionTypes = new List<System.Type>(new System.Type[] {
+                typeof(GameRuleFreezeActionAction),
+                typeof(GameRuleDuplicateActionAction),
+                typeof(GameRuleDizzyActionAction),
+                typeof(GameRuleBounceActionAction)
+            });
+        else //all acceptable types
 			acceptableActionTypes = new List<System.Type>(new System.Type[] {
 				typeof(GameRulePointsPlayerActionAction),
 				typeof(GameRuleFreezeActionAction),
@@ -225,9 +237,12 @@ isComparison = false;
 
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
-		if (chosenType == typeof(GameRulePointsPlayerActionAction)) {
-			int minPoints = hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5;
-			int points = Random.Range(minPoints, 10);
+		if (chosenType == typeof(GameRulePointsPlayerActionAction)) { 
+            int minPoints = (hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5);
+            int maxPoints = (hasRestriction(GameRuleRestriction.OnlyNegativePointAmounts) ? -1 : 10);
+            if (maxPoints < minPoints) //just in case someone does something dumb, make a 1-point rule
+                maxPoints = minPoints = 1;
+            int points = Random.Range(minPoints, 10);
 			if (points >= 0)
 				points++;
 			return new GameRulePointsPlayerActionAction(points);

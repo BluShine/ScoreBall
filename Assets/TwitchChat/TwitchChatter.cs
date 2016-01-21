@@ -50,7 +50,23 @@ public class TwitchChatter : MonoBehaviour {
         {
             if (message.Contains("rule"))
             {
-                gameRules.GenerateNewRule();
+                List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
+                //result restrictions
+                if(message.Contains("scoring") || message.Contains("point") || 
+                    message.Contains("score") || message.Contains("positive"))
+                {
+                    restrictions.Add(GameRuleRestriction.OnlyPositivePointAmounts);
+                } else if (message.Contains("punishment") || message.Contains("foul") ||
+                    message.Contains("penalty") || message.Contains("negative"))
+                {
+                    restrictions.Add(GameRuleRestriction.OnlyNegativePointAmounts);
+                } else if (message.Contains("fun") || message.Contains("silly") ||
+                    message.Contains("weird") || message.Contains("good"))
+                {
+                    restrictions.Add(GameRuleRestriction.OnlyFunActions);
+                }
+                
+                gameRules.GenerateNewRule(restrictions);
             }
             else
             {
@@ -64,9 +80,16 @@ public class TwitchChatter : MonoBehaviour {
         }
         if(message.Contains("delete"))
         {
-            if (message.Contains("rule"))
+            if (message.Contains("rule") && message.Length > 12)
             {
-                gameRules.deleteAllRules();
+                int ruleIndex;
+                if(int.TryParse(message.Substring(12), out ruleIndex))
+                {
+                    gameRules.deleteRuleByIndex(ruleIndex - 1);
+                } else
+                {
+                    gameRules.deleteRuleByIndex(0);
+                }
             } else
             {
                 string key = message.Remove(0, 7);

@@ -96,7 +96,7 @@ public class GameRules : MonoBehaviour {
 			teamScores[team] = totalscore;
 		}
 	}
-	public void GenerateNewRule() {
+	public void GenerateNewRule(List<GameRuleRestriction> optionalRestrictions = null) {
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
 		if (ruleChangeIsOnCooldown() || rulesList.Count >= 3)
@@ -111,7 +111,7 @@ public class GameRules : MonoBehaviour {
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
 
-		GameRule rule = GameRuleGenerator.GenerateNewRule(display);
+		GameRule rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
 		rulesList.Add(rule);
 
 		//unity has no good way of giving us what we clicked on, so we have to remember it here
@@ -174,6 +174,14 @@ public class GameRules : MonoBehaviour {
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
 	}
+
+    public void deleteRuleByIndex(int index)
+    {
+        if(index >= 0 && index < rulesList.Count && rulesList.Count > 0)
+        {
+            DeleteRule(rulesList[index]);
+        }
+    }
 	public void deleteAllRules() {
 		//don't delete the rules if the rules were recently changed
 		if (ruleChangeIsOnCooldown())
