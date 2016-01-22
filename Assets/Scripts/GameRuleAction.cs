@@ -12,7 +12,7 @@ public class GameRuleAction {
 		innerAction = ia;
 	}
 	public override string ToString() {
-		return selector.ToString() + " " + innerAction.ToString(selector.conjugate);
+		return selector.ToString() + " " + innerAction.ToString();
 	}
 	public void takeAction(SportsObject source) {
 		SportsObject target = selector.target(source);
@@ -33,7 +33,6 @@ public class GameRuleAction {
 public abstract class GameRuleActionAction {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void takeAction(SportsObject source, SportsObject target);
-	public abstract string ToString(int conjugate);
 	//000=GameRulePointsPlayerActionAction
 	//001=GameRuleDuplicateActionAction
 	//010=GameRuleFreezeActionAction
@@ -66,12 +65,12 @@ public abstract class GameRuleDurationActionAction : GameRuleActionAction {
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		duration.addRequiredObjects(requiredObjectsList);
 	}
-	public override string ToString(int conjugate) {
-		return getConjugate(conjugate) + duration.ToString();
+	public override string ToString() {
+		return getVerb() + " " + duration.ToString();
 	}
-	public virtual void cancelAction(SportsObject so) {}
+	public abstract void cancelAction(SportsObject so);
 	//this class handles the full ToString, subclasses just need to return the verb
-	public abstract string getConjugate(int conjugate);
+	public abstract string getVerb();
 	public override void packToString(GameRuleSerializer serializer) {
 		duration.packToString(serializer);
 	}
@@ -82,8 +81,6 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 	public const int POINTS_SERIALIZATION_BIT_COUNT = 5;
 	public const int POINTS_SERIALIZATION_MASK = ~(-1 << POINTS_SERIALIZATION_BIT_COUNT);
 	public const int POINTS_SERIALIZATION_MAX_VALUE = 20;
-	public static string[] gainConjugates = new string[] {"gain ", "gains "};
-	public static string[] loseConjugates = new string[] {"lose ", "loses "};
 	public int pointsGiven;
 	public GameRulePointsPlayerActionAction(int pg) {
 		pointsGiven = pg;
@@ -92,11 +89,11 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 		((TeamPlayer)(target)).ScorePoints(pointsGiven);
 		GameRules.instance.spawnPointsText(pointsGiven, (TeamPlayer)(target));
 	}
-	public override string ToString(int conjugate) {
+	public override string ToString() {
 		string pluralPointString = Math.Abs(pointsGiven) == 1 ? " point" : " points";
 		return pointsGiven >= 0 ?
-			gainConjugates[conjugate] + pointsGiven.ToString() + pluralPointString :
-			loseConjugates[conjugate] + (-pointsGiven).ToString() + pluralPointString;
+			"gains " + pointsGiven.ToString() + pluralPointString :
+			"loses " + (-pointsGiven).ToString() + pluralPointString;
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 0);
@@ -113,12 +110,11 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 }
 
 public class GameRuleDuplicateActionAction : GameRuleActionAction {
-	public static string[] duplicateConjugates = new string[] {"get ", "gets "};
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.Duplicate(1);
 	}
-	public override string ToString(int conjugate) {
-		return duplicateConjugates[conjugate] + "duplicated";
+	public override string ToString() {
+		return "gets duplicated";
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 1);
@@ -130,13 +126,12 @@ public class GameRuleDuplicateActionAction : GameRuleActionAction {
 
 ////////////////The actual functionality to affect players and sports objects (duration actions)////////////////
 public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
-	public static string[] freezeConjugates = new string[] {"freeze ", "freezes "};
 	public GameRuleFreezeActionAction(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.Freeze(duration.startDuration(source, target, this));
 	}
-	public override string getConjugate(int conjugate) {
-		return freezeConjugates[conjugate];
+	public override string getVerb() {
+		return "freezes";
 	}
 	public override void cancelAction(SportsObject so) {
 		so.Unfreeze();
@@ -152,13 +147,12 @@ public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 }
 
 public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
-	public static string[] dizzyConjugates = new string[] {"become ", "becomes "};
 	public GameRuleDizzyActionAction(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.BeDizzy(duration.startDuration(source, target, this));
 	}
-	public override string getConjugate(int conjugate) {
-		return dizzyConjugates[conjugate] + "dizzy ";
+	public override string getVerb() {
+		return "becomes dizzy";
 	}
 	public override void cancelAction(SportsObject so) {
 		so.StopBeingDizzy();
@@ -174,13 +168,12 @@ public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
 }
 
 public class GameRuleBounceActionAction : GameRuleDurationActionAction {
-	public static string[] bounceConjugates = new string[] {"bounce ", "bounces "};
 	public GameRuleBounceActionAction(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.StartBouncing(duration.startDuration(source, target, this));
 	}
-	public override string getConjugate(int conjugate) {
-		return bounceConjugates[conjugate];
+	public override string getVerb() {
+		return "bounces";
 	}
 	public override void cancelAction(SportsObject so) {
 		so.StopBouncing();

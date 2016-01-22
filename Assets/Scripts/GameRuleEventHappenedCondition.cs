@@ -69,30 +69,30 @@ public class GameRuleEvent {
 		else
 			return instigator;
 	}
-	public static string getEventText(GameRuleEventType et, bool thirdperson) {
+	public static string getEventText(GameRuleEventType et) {
 		switch (et) {
 			case GameRuleEventType.PlayerShootBall:
-				return (thirdperson ? "shoots" : "shoot") + " the ball";
+				return "kicks ball";
 			case GameRuleEventType.PlayerGrabBall:
-				return (thirdperson ? "grabs" : "grab") + " the ball";
+				return "grabs ball";
 			case GameRuleEventType.PlayerTacklePlayer:
-				return (thirdperson ? "tackles" : "tackle") + " your opponent";
+				return "tackles opponent";
 			case GameRuleEventType.PlayerHitPlayer:
-				return (thirdperson ? "bumps" : "bump") + " into your opponent";
+				return "bumps into opponent";
 //			case GameRuleEventType.PlayerHitSportsObject:
 //				return (thirdperson ? "bumps" : "bump") + " into ????");
 			case GameRuleEventType.PlayerHitFieldObject:
-				return (thirdperson ? "hits" : "hit") + " a ";
+				return "hits ";
 			case GameRuleEventType.PlayerStealBall:
-				return (thirdperson ? "steals" : "steal") + " the ball";
+				return "steals ball";
 //			case GameRuleEventType.BallHitSportsObject:
 //				return "bumps into ????";
 			case GameRuleEventType.BallHitFieldObject:
-				return "hits a ";
+				return "hits ";
 			case GameRuleEventType.BallHitBall:
-				return "bumps into another ball";
+				return "bumps into ball";
 			default:
-				return "";
+				throw new System.Exception("Bug: tried to get event text for " + et);
 		}
 	}
 }
@@ -129,7 +129,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return conditionHappened(gre) && selector.target(triggerSource) == gre.getEventSource();
 	}
 	public override string ToString() {
-		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType, selector.conjugate == 1) + param;
+		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType) + param;
 	}
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		//any event involving a ball needs a ball

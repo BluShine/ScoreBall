@@ -56,10 +56,10 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		}
 	}
 	public override string ToString() {
-		return GameRulePlayerSelector.possessivePrefix +
+		return GameRulePlayerSelector.instance.ToString() + "'s" +
 			leftGRPV.ToString() +
 			conditionOperator.ToString() +
-			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentSelector.possessivePrefix : "") +
+			((rightGRV is GameRulePlayerValue) ? GameRuleOpponentSelector.instance.ToString() + "'s" : "") +
 			rightGRV.ToString();
 	}
 }

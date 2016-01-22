@@ -1,6 +1,5 @@
 ﻿////////////////Sports object selectors based on the source of an event////////////////
 public abstract class GameRuleSelector {
-	public int conjugate; //for verbs
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
 	//000=GameRulePlayerSelector
@@ -34,13 +33,9 @@ public abstract class GameRuleSourceSelector : GameRuleSelector {
 }
 
 public class GameRulePlayerSelector : GameRuleSourceSelector {
-	public static string possessivePrefix = "your ";
 	public static GameRulePlayerSelector instance = new GameRulePlayerSelector();
-	public GameRulePlayerSelector() {
-		conjugate = 0;
-	}
 	public override string ToString() {
-		return "you";
+		return "player";
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
@@ -51,16 +46,12 @@ public class GameRulePlayerSelector : GameRuleSourceSelector {
 }
 
 public class GameRuleOpponentSelector : GameRuleSelector {
-	public static string possessivePrefix = "your opponent's ";
 	public static GameRuleOpponentSelector instance = new GameRuleOpponentSelector();
-	public GameRuleOpponentSelector() {
-		conjugate = 1;
-	}
 	public override SportsObject target(SportsObject source) {
 		return ((TeamPlayer)(source)).opponent;
 	}
 	public override string ToString() {
-		return "your opponent";
+		return "opponent";
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
@@ -72,14 +63,11 @@ public class GameRuleOpponentSelector : GameRuleSelector {
 
 public class GameRuleBallShooterSelector : GameRuleSelector {
 	public static GameRuleBallShooterSelector instance = new GameRuleBallShooterSelector();
-	public GameRuleBallShooterSelector() {
-		conjugate = 1;
-	}
 	public override SportsObject target(SportsObject source) {
 		return ((Ball)(source)).currentPlayer;
 	}
 	public override string ToString() {
-		return "the player who shot the ball";
+		return "kicker";
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
@@ -91,15 +79,12 @@ public class GameRuleBallShooterSelector : GameRuleSelector {
 
 public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 	public static GameRuleBallShooterOpponentSelector instance = new GameRuleBallShooterOpponentSelector();
-	public GameRuleBallShooterOpponentSelector() {
-		conjugate = 1;
-	}
 	public override SportsObject target(SportsObject source) {
 		TeamPlayer shooter = ((Ball)(source)).currentPlayer;
 		return shooter == null ? null : shooter.opponent;
 	}
 	public override string ToString() {
-		return "the opponent of the player who shot the ball";
+		return "kicker's opponent";
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
@@ -111,11 +96,8 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 
 public class GameRuleBallSelector : GameRuleSourceSelector {
 	public static GameRuleBallSelector instance = new GameRuleBallSelector();
-	public GameRuleBallSelector() {
-		conjugate = 1;
-	}
 	public override string ToString() {
-		return "the ball";
+		return "ball";
 	}
 	public override System.Type targetType() {
 		return typeof(Ball);
