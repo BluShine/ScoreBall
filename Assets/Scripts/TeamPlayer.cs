@@ -407,7 +407,6 @@ public class TeamPlayer : SportsObject {
     }
 
 	public override void handleBallCollision(Ball collidedBall) {
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTouchBall, tp: this, bl: collidedBall));
 		if (collidedBall.grabBall(this)) {
 			carriedBall = collidedBall;
 			if(carriedBall.ultimate) {
@@ -430,10 +429,8 @@ public class TeamPlayer : SportsObject {
 			//steal the ball
 			if (collidedPlayer.carriedBall != null) {
 				Ball stolenBall = collidedPlayer.carriedBall;
-				if (collidedPlayer.carriedBall.grabBall(this)) {
+				if (collidedPlayer.carriedBall.grabBall(this))
 					carriedBall = stolenBall;
-					gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: this, vct: collidedPlayer, bl:stolenBall));
-				}
 			}
 			//tackle them
 			particles.Play();

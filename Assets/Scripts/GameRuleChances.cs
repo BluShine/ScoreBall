@@ -45,8 +45,6 @@ class GameRuleChances {
 		d[GameRuleEventType.PlayerHitSportsObject]						= 1;
 		d[GameRuleEventType.PlayerHitFieldObject]						= 1;
 		d[GameRuleEventType.PlayerStealBall]							= 1;
-		d[GameRuleEventType.PlayerHitInTheFaceByBall]					= 1;
-		d[GameRuleEventType.PlayerTouchBall]							= 1;
 
 		d[GameRuleEventType.BallHitSportsObject]						= 1;
 		d[GameRuleEventType.BallHitFieldObject]							= 1;

@@ -115,13 +115,13 @@ public class GameRules : MonoBehaviour {
 
 		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
 		display.transform.SetParent(uiCanvas.transform);
-        GameRule rule;
+		GameRule rule;
 		//build a rule from the inputted string
 		if (ruleEntryField.text.Length > 0) {
 			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
 			ruleEntryField.text = "";
 		} else
-            rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
+			rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
 		rulesList.Add(rule);
 
 		//unity has no good way of giving us what we clicked on, so we have to remember it here

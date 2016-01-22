@@ -14,8 +14,6 @@ public enum GameRuleEventType : int {
 	PlayerHitSportsObject,
 	PlayerHitFieldObject,
 	PlayerStealBall,
-	PlayerHitInTheFaceByBall,
-	PlayerTouchBall,
 	PlayerEventTypeEnd,
 
 	BallEventTypeStart,
@@ -87,10 +85,6 @@ public class GameRuleEvent {
 				return (thirdperson ? "hits" : "hit") + " a ";
 			case GameRuleEventType.PlayerStealBall:
 				return (thirdperson ? "steals" : "steal") + " the ball";
-			case GameRuleEventType.PlayerHitInTheFaceByBall:
-				return (thirdperson ? "gets" : "get") + " smacked by the ball";
-			case GameRuleEventType.PlayerTouchBall:
-				return (thirdperson ? "touches" : "touch") + " the ball";
 //			case GameRuleEventType.BallHitSportsObject:
 //				return "bumps into ????";
 			case GameRuleEventType.BallHitFieldObject:
@@ -142,9 +136,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		if ((eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) ||
 			eventType == GameRuleEventType.PlayerShootBall ||
 			eventType == GameRuleEventType.PlayerGrabBall ||
-			eventType == GameRuleEventType.PlayerStealBall ||
-			eventType == GameRuleEventType.PlayerHitInTheFaceByBall ||
-			eventType == GameRuleEventType.PlayerTouchBall)
+			eventType == GameRuleEventType.PlayerStealBall)
 			requiredObjectsList.Add(GameRuleRequiredObject.Ball);
 
 		//ball-ball collision needs a second ball

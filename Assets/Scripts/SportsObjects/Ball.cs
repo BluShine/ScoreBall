@@ -74,7 +74,10 @@ public class Ball : SportsObject {
             currentPlayer = player;
             isHeld = true;
             //send event
-            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerGrabBall, tp: currentPlayer, bl: this));
+            if (previousPlayer != null)
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: currentPlayer, vct: previousPlayer, bl: this));
+            else
+                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerGrabBall, tp: currentPlayer, bl: this));
             //play sound
             soundSource.clip = catchSounds[Random.Range(0, catchSounds.Count)];
             soundSource.Play();
