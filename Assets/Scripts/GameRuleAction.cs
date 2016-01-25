@@ -19,6 +19,11 @@ public class GameRuleAction {
 		if (target != null)
 			innerAction.takeAction(source, target);
 	}
+	public void addIcons(List<Sprite> iconList) {
+		selector.addIcons(iconList);
+		iconList.Add(GameRuleIconStorage.instance.gainsEffectIcon);
+		innerAction.addIcons(iconList);
+	}
 	public void packToString(GameRuleSerializer serializer) {
 		selector.packToString(serializer);
 		innerAction.packToString(serializer);
@@ -33,6 +38,7 @@ public class GameRuleAction {
 public abstract class GameRuleActionAction {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void takeAction(SportsObject source, SportsObject target);
+	public abstract void addIcons(List<Sprite> iconList);
 	//000=GameRulePointsPlayerActionAction
 	//001=GameRuleDuplicateActionAction
 	//010=GameRuleFreezeActionAction
@@ -68,6 +74,10 @@ public abstract class GameRuleDurationActionAction : GameRuleActionAction {
 	public override string ToString() {
 		return getVerb() + " " + duration.ToString();
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.clockIcon);
+		duration.addIcons(iconList);
+	}
 	public abstract void cancelAction(SportsObject so);
 	//this class handles the full ToString, subclasses just need to return the verb
 	public abstract string getVerb();
@@ -95,6 +105,15 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 			"gains " + pointsGiven.ToString() + pluralPointString :
 			"loses " + (-pointsGiven).ToString() + pluralPointString;
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		if (pointsGiven >= 0) {
+			iconList.Add(GameRuleIconStorage.instance.charPlusIcon);
+			GameRuleIconStorage.instance.addDigitIcons(pointsGiven, iconList);
+		} else {
+			iconList.Add(GameRuleIconStorage.instance.charMinusIcon);
+			GameRuleIconStorage.instance.addDigitIcons(-pointsGiven, iconList);
+		}
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 0);
 		//we'll just save N bits of the points, so one of the (2^N) consecutive values <= POINTS_SERIALIZATION_MAX_VALUE
@@ -116,6 +135,9 @@ public class GameRuleDuplicateActionAction : GameRuleActionAction {
 	public override string ToString() {
 		return "gets duplicated";
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.duplicatedIcon);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 1);
 	}
@@ -135,6 +157,10 @@ public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 	}
 	public override void cancelAction(SportsObject so) {
 		so.Unfreeze();
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.frozenIcon);
+		base.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 2);
@@ -157,6 +183,10 @@ public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
 	public override void cancelAction(SportsObject so) {
 		so.StopBeingDizzy();
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.dizzyIcon);
+		base.addIcons(iconList);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 3);
 		base.packToString(serializer);
@@ -178,6 +208,10 @@ public class GameRuleBounceActionAction : GameRuleDurationActionAction {
 	public override void cancelAction(SportsObject so) {
 		so.StopBouncing();
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.bouncyIcon);
+		base.addIcons(iconList);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 4);
 		base.packToString(serializer);
@@ -192,6 +226,7 @@ public class GameRuleBounceActionAction : GameRuleDurationActionAction {
 public abstract class GameRuleActionDuration {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract float startDuration(SportsObject source, SportsObject target, GameRuleDurationActionAction action);
+	public abstract void addIcons(List<Sprite> iconList);
 	//0=GameRuleActionFixedDuration
 	//1=GameRuleActionUntilConditionDuration
 	public const int GAME_RULE_ACTION_DURATION_BIT_SIZE = 1;
@@ -220,6 +255,9 @@ public class GameRuleActionFixedDuration : GameRuleActionDuration {
 	public override string ToString() {
 		return "for " + duration + " seconds";
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		GameRuleIconStorage.instance.addDigitIcons(duration, iconList);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 0);
 		//we'll just save N bits, so from 0 to (2^N-1)
@@ -246,6 +284,9 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	}
 	public override string ToString() {
 		return "until " + untilCondition.ToString();
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		untilCondition.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, 1);

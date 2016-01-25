@@ -42,6 +42,7 @@ public class GameRules : MonoBehaviour {
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public Text[] teamTexts;
 	public int[] teamScores;
+	public bool useRuleIcons = false;
 
     //colors
     public Color[] teamColors;
@@ -113,24 +114,17 @@ public class GameRules : MonoBehaviour {
         soundSource.clip = addRuleSound;
         soundSource.Play();
 
-		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
-		display.transform.SetParent(uiCanvas.transform);
 		GameRule rule;
 		//build a rule from the inputted string
 		if (ruleEntryField.text.Length > 0) {
 			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
 			ruleEntryField.text = "";
 		} else
-			rule = GameRuleGenerator.GenerateNewRule(display, optionalRestrictions);
+			rule = GameRuleGenerator.GenerateNewRule(optionalRestrictions);
 		rulesList.Add(rule);
 
 		//unity has no good way of giving us what we clicked on, so we have to remember it here
 		getButtonFromRuleDisplay(rule.ruleDisplay).onClick.AddListener(() => {this.DeleteRule(rule);});
-
-		Transform t = rule.ruleDisplay.transform;
-		t.GetChild(0).gameObject.GetComponent<Text>().text = "If " + rule.condition.ToString();
-		t.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + rule.action.ToString();
-		t.GetChild(2).gameObject.GetComponent<Text>().text = GameRuleSerializer.packRuleToString(rule);
 
 		addRequiredObjects();
 
@@ -465,6 +459,7 @@ public class GameRules : MonoBehaviour {
 ////////////////Represents a single game rule////////////////
 public class GameRule {
 	const float RULE_FLASH_FADE_SECONDS = 1.5f;
+	const float RULE_ICON_SPACING_AMOUNT = 1.0f / 8.0f;
 
 	public GameRuleCondition condition;
 	public GameRuleAction action;
@@ -490,13 +485,73 @@ public class GameRule {
 		condition = c;
 		action = a;
 		ruleDisplay = GameRules.instance.generateNewRuleDisplay();
-		flashImage = ruleDisplay.transform.FindChild("Flash").gameObject.GetComponent<Image>();
-		RectTransform flashSize = ((RectTransform)(flashImage.transform));
-		RectTransform ruleDisplaySize = ((RectTransform)(ruleDisplay.transform));
-		flashSize.sizeDelta = ruleDisplaySize.sizeDelta;
+		RectTransform t = (RectTransform)ruleDisplay.transform;
+
+		flashImage = t.FindChild("Flash").gameObject.GetComponent<Image>();
+		((RectTransform)(flashImage.transform)).sizeDelta = t.sizeDelta;
 		animationStartTime = Time.realtimeSinceStartup;
-		ruleDisplay.transform.localPosition = startPosition;
-		ruleDisplay.transform.localScale = startScale;
+		t.localPosition = startPosition;
+		t.localScale = startScale;
+
+		t.FindChild("Save Name").gameObject.GetComponent<Text>().text = GameRuleSerializer.packRuleToString(this);
+
+		Transform tText = t.FindChild("Rule Text");
+		Transform tImage = t.FindChild("Rule Icons");
+
+		if (GameRules.instance.useRuleIcons) {
+			tText.gameObject.SetActive(false);
+
+			//build out the list of icons to display
+			List<Sprite> iconList = new List<Sprite>();
+			condition.addIcons(iconList);
+			iconList.Add(GameRuleIconStorage.instance.resultsInIcon);
+			action.addIcons(iconList);
+
+			//clone our base image object so that we have one per icon (including the base image)
+			GameObject originalImage = tImage.GetChild(0).gameObject;
+			List<GameObject> imageObjects = new List<GameObject>();
+			imageObjects.Add(originalImage);
+			for (int i = iconList.Count; i > 1; i--) {
+				GameObject imageObject = (GameObject)GameObject.Instantiate(originalImage);
+				imageObject.transform.SetParent(tImage);
+				imageObjects.Add(imageObject);
+
+				//for some reason, Unity decides to set the instantiated scale to (0, 0, 0)
+				imageObject.transform.localScale = originalImage.transform.localScale;
+			}
+
+			//find out how big our images need to be
+			float iconWidthToHeightRatio = RULE_ICON_SPACING_AMOUNT * (iconList.Count - 1);
+			foreach (Sprite s in iconList) {
+				Texture tex = s.texture;
+				iconWidthToHeightRatio += (float)(tex.width) / tex.height;
+			}
+
+			//if the width:height ratio for the images is bigger than the width:height of the icon display area, shrink the images
+			Rect iconDisplaySpace = ((RectTransform)(tImage)).rect;
+			float targetHeight = Mathf.Min(iconDisplaySpace.height, iconDisplaySpace.width / iconWidthToHeightRatio);
+
+			//now fill in all the images
+			//conviniently, the image objects were set to use top-left anchoring
+			float nextX = 0;
+			for (int i = 0; i < iconList.Count; i++) {
+				GameObject imageObject = imageObjects[i];
+				Sprite s = iconList[i];
+				imageObject.GetComponent<Image>().sprite = s;
+
+				RectTransform imageTransform = (RectTransform)imageObject.transform;
+				Texture tex = s.texture;
+				imageTransform.sizeDelta = new Vector2(targetHeight * tex.width / tex.height, targetHeight);
+
+				imageTransform.anchoredPosition = new Vector2(nextX, 0);
+				nextX += imageTransform.sizeDelta.x + targetHeight * RULE_ICON_SPACING_AMOUNT;
+			}
+			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString());
+		} else {
+			tImage.gameObject.SetActive(false);
+			tText.GetChild(0).gameObject.GetComponent<Text>().text = "If " + condition.ToString();
+			tText.GetChild(1).gameObject.GetComponent<Text>().text = "Then " + action.ToString();
+		}
 	}
 	public void update() {
 		checkCondition();

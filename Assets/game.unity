@@ -2481,6 +2481,10 @@ Prefab:
       value: 
       objectReference: {fileID: 1025635857}
     - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
+      propertyPath: ruleEntryField
+      value: 
+      objectReference: {fileID: 2878064}
+    - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
       propertyPath: teamTexts.Array.data[1]
       value: 
       objectReference: {fileID: 10284417}
@@ -2488,18 +2492,6 @@ Prefab:
       propertyPath: teamTexts.Array.data[2]
       value: 
       objectReference: {fileID: 1716519677}
-    - target: {fileID: 8207848, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
-      propertyPath: panLevelCustomCurve.m_RotationOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8207848, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
-      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
-      propertyPath: ruleEntryField
-      value: 
-      objectReference: {fileID: 2878064}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
   m_IsPrefabParent: 0
@@ -2610,6 +2602,30 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: offset
       value: -200
+      objectReference: {fileID: 0}
+    - target: {fileID: 21296028, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 21259638, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 21234952, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 21229108, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 21296158, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 21215302, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
+      propertyPath: m_SortingOrder
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eb75c9b5680861648ac82bb309ce9371, type: 2}
@@ -3066,6 +3082,30 @@ Prefab:
       propertyPath: offset
       value: -200
       objectReference: {fileID: 0}
+    - target: {fileID: 21214982, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 21287238, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 21202408, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 21257474, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 21254014, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 21220210, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
+      propertyPath: m_SortingOrder
+      value: -10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b77ccbd85cd2db040987d5e3e7d1f0b4, type: 2}
   m_IsPrefabParent: 0
@@ -3112,6 +3152,10 @@ Prefab:
       propertyPath: gameRules
       value: 
       objectReference: {fileID: 2084299615}
+    - target: {fileID: 11489458, guid: 9ccb8dd4ca43ab847866b6f74a2fa555, type: 2}
+      propertyPath: oauthToken
+      value: oauth:pd20y2fa36iy847bckbhlkr11nsnrj
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9ccb8dd4ca43ab847866b6f74a2fa555, type: 2}
   m_IsPrefabParent: 0

@@ -1,7 +1,11 @@
-﻿////////////////Sports object selectors based on the source of an event////////////////
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+////////////////Sports object selectors based on the source of an event////////////////
 public abstract class GameRuleSelector {
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
+	public abstract void addIcons(List<Sprite> iconList);
 	//000=GameRulePlayerSelector
 	//001=GameRuleOpponentSelector
 	//010=GameRuleBallShooterSelector
@@ -40,6 +44,9 @@ public class GameRulePlayerSelector : GameRuleSourceSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.playerIcon);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 0);
 	}
@@ -56,6 +63,9 @@ public class GameRuleOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.opponentIcon);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 1);
 	}
@@ -71,6 +81,9 @@ public class GameRuleBallShooterSelector : GameRuleSelector {
 	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.playerIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 2);
@@ -89,6 +102,9 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.opponentIcon);
+	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 3);
 	}
@@ -101,6 +117,9 @@ public class GameRuleBallSelector : GameRuleSourceSelector {
 	}
 	public override System.Type targetType() {
 		return typeof(Ball);
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, 4);

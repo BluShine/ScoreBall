@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 //GameRuleCondition class definition in GameRuleComparisonCondition.cs
 
@@ -158,6 +159,57 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			else if (param != "boundary")
 				throw new System.Exception("Bug: could not determine object required");
 		}
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		selector.addIcons(iconList);
+		if (eventType == GameRuleEventType.PlayerShootBall) {
+			iconList.Add(GameRuleIconStorage.instance.kickIcon);
+			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
+		} else if (eventType == GameRuleEventType.PlayerGrabBall) {
+			iconList.Add(GameRuleIconStorage.instance.grabIcon);
+			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
+		} else if (eventType == GameRuleEventType.PlayerTacklePlayer) {
+			iconList.Add(GameRuleIconStorage.instance.smackIcon);
+			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
+		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
+		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
+//		} else if (eventType == GameRuleEventType.PlayerHitSportsObject) {
+//			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+//			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
+		} else if (eventType == GameRuleEventType.PlayerHitFieldObject) {
+			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+			addFieldObjectIcon(iconList);
+		} else if (eventType == GameRuleEventType.PlayerStealBall) {
+			iconList.Add(GameRuleIconStorage.instance.stealIcon);
+			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
+//		} else if (eventType == GameRuleEventType.BallHitSportsObject) {
+//			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
+//			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
+		} else if (eventType == GameRuleEventType.BallHitFieldObject) {
+			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+			addFieldObjectIcon(iconList);
+		} else if (eventType == GameRuleEventType.BallHitBall) {
+			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
+			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
+		}
+	}
+	public void addFieldObjectIcon(List<Sprite> iconList) {
+		if (param == "footgoal")
+			iconList.Add(GameRuleIconStorage.instance.soccerGoalIcon);
+		else if (param == "goalposts")
+			iconList.Add(GameRuleIconStorage.instance.goalpostsIcon);
+		else if (param == "backboardhoop")
+			iconList.Add(GameRuleIconStorage.instance.backboardHoopIcon);
+		else if (param == "smallwall" || param == "fullgoalwall")
+			iconList.Add(GameRuleIconStorage.instance.wallIcon);
+		else if (param == "boundary")
+			iconList.Add(GameRuleIconStorage.instance.boundaryIcon);
+		else
+			throw new System.Exception("Bug: could not find icon for field object " + eventType);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		//pack the condition type

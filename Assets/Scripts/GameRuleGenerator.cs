@@ -33,7 +33,7 @@ public class GameRuleGenerator {
 	private static GameRuleSelector ruleActionSelector;
 
 	//generate a completely new random rule
-	public static GameRule GenerateNewRule(GameObject display, List<GameRuleRestriction> ruleRestrictions = null) {
+	public static GameRule GenerateNewRule(List<GameRuleRestriction> ruleRestrictions = null) {
 		if (ruleRestrictions == null)
 			populateInitialRestrictions();
 		else

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 ////////////////Rule conditions////////////////
@@ -6,6 +7,7 @@ public abstract class GameRuleCondition {
 	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
 	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
+	public abstract void addIcons(List<Sprite> iconList);
 	//0=GameRuleComparisonCondition
 	//1=GameRuleEventHappenedCondition
 	public const int GAME_RULE_CONDITION_BIT_SIZE = 1;
@@ -26,6 +28,9 @@ public class GameRuleComparisonCondition : GameRuleCondition {
 	public GameRuleConditionOperator conditionOperator;
 	public GameRuleComparisonCondition(GameRuleConditionOperator grco) {
 		conditionOperator = grco;
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		throw new System.Exception("Icon displays not yet supported for comparison conditions!");
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 0);
