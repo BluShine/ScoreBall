@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Networking test/scene.unity
   - enabled: 1
+    path: Assets/title.unity
+  - enabled: 1
     path: Assets/game.unity
+  - enabled: 1
+    path: Assets/secondscreen.unity
