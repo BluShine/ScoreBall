@@ -481,9 +481,18 @@ public class GameRule {
 	public static Vector3 targetScale = new Vector3(1.0f, 1.0f);
 	public static Vector3 startScale = new Vector3(2.0f, 2.0f);
 
-	public GameRule(GameRuleCondition c, GameRuleAction a) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="c">condition</param>
+    /// <param name="a">action</param>
+    /// <param name="proxyRule">if true, rule will be created without display, etc.</param>
+	public GameRule(GameRuleCondition c, GameRuleAction a, bool proxyRule = false) {
 		condition = c;
 		action = a;
+        if (proxyRule)
+            return;
+
 		ruleDisplay = GameRules.instance.generateNewRuleDisplay();
 		RectTransform t = (RectTransform)ruleDisplay.transform;
 
