@@ -56,7 +56,11 @@ public class GameRuleIconStorage : MonoBehaviour {
 		instance = this;
 	}
 	public void addDigitIcons(int value, List<Sprite> iconList) {
+		List<int> digits = new List<int>();
 		for (; value > 0; value /= 10)
-			iconList.Add(charDigitIcons[value % 10]);
+			digits.Add(value % 10);
+		//gotta put them in most-significant-digit first
+		for (int i = digits.Count - 1; i >= 0; i--)
+			iconList.Add(charDigitIcons[digits[i]]);
 	}
 }
