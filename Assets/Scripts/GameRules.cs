@@ -115,14 +115,11 @@ public class GameRules : MonoBehaviour {
         soundSource.Play();
 
 		GameRule rule;
-        if(ruleString != null)
-        {
-            rule = GameRuleDeserializer.unpackStringToRule(ruleString);
-            ruleEntryField.text = ruleString;
-        }
+		if(ruleString != null)
+			rule = GameRuleDeserializer.unpackStringToRule(ruleString);
+		//build a rule from the inputted string
 		else if (ruleEntryField.text.Length > 0) {
-            //build a rule from the inputted string
-            rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
+			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
 			ruleEntryField.text = "";
 		} else
 			rule = GameRuleGenerator.GenerateNewRule(optionalRestrictions);
