@@ -11,7 +11,7 @@ public class RuleUIHandler : MonoBehaviour {
     public Slider pointslider;
     public Slider effectSlider;
 
-    RuleNetworking ruleNetwork;
+    public RuleNetworking ruleNetwork;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +19,6 @@ public class RuleUIHandler : MonoBehaviour {
         condition = new GameRuleEventHappenedCondition(
             GameRuleEventType.PlayerHitPlayer, 
             new GameRulePlayerSelector(), "");
-        ruleNetwork = GetComponent<RuleNetworking>();
 	}
 	
 	// Update is called once per frame
