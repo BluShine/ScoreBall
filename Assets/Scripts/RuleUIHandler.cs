@@ -11,12 +11,15 @@ public class RuleUIHandler : MonoBehaviour {
     public Slider pointslider;
     public Slider effectSlider;
 
+    RuleNetworking ruleNetwork;
+
 	// Use this for initialization
 	void Start () {
         actionSelector = new GameRulePlayerSelector();
         condition = new GameRuleEventHappenedCondition(
             GameRuleEventType.PlayerHitPlayer, 
             new GameRulePlayerSelector(), "");
+        ruleNetwork = GetComponent<RuleNetworking>();
 	}
 	
 	// Update is called once per frame
@@ -64,7 +67,7 @@ public class RuleUIHandler : MonoBehaviour {
     {
         if (condition == null || actionSelector == null || aAction == null)
             return;
-        GameRule r = new GameRule(condition, new GameRuleAction(actionSelector, aAction), true);
-        Debug.Log(GameRuleSerializer.packRuleToString(r));
+        GameRule rule = new GameRule(condition, new GameRuleAction(actionSelector, aAction), true);
+        ruleNetwork.sendRule(GameRuleSerializer.packRuleToString(rule));
     }
 }

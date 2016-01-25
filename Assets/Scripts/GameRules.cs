@@ -102,7 +102,7 @@ public class GameRules : MonoBehaviour {
 	public void GenerateNewRuleFromButton() {
 		GenerateNewRule();
 	}
-	public void GenerateNewRule(List<GameRuleRestriction> optionalRestrictions = null) {
+	public void GenerateNewRule(List<GameRuleRestriction> optionalRestrictions = null, string ruleString = null) {
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
 		if (ruleChangeIsOnCooldown() || rulesList.Count >= 3)
@@ -115,9 +115,14 @@ public class GameRules : MonoBehaviour {
         soundSource.Play();
 
 		GameRule rule;
-		//build a rule from the inputted string
-		if (ruleEntryField.text.Length > 0) {
-			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
+        if(ruleString != null)
+        {
+            rule = GameRuleDeserializer.unpackStringToRule(ruleString);
+            ruleEntryField.text = ruleString;
+        }
+		else if (ruleEntryField.text.Length > 0) {
+            //build a rule from the inputted string
+            rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
 			ruleEntryField.text = "";
 		} else
 			rule = GameRuleGenerator.GenerateNewRule(optionalRestrictions);
