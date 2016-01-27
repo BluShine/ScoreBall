@@ -231,6 +231,7 @@ public class SportsObject : FieldObject {
 		} else if (checkBallCollision(gameObject)) {
         } else if (checkPlayerCollision(gameObject)) {
         } else if (checkSportsCollision(gameObject)) {
+        } else if (checkZoneCollision(gameObject)) {
         } else if (checkFieldCollision(gameObject)) {
         }
     }
@@ -275,10 +276,22 @@ public class SportsObject : FieldObject {
 		return false;
 	}
 
+	public bool checkZoneCollision(GameObject gameObject) {
+		//check if the collision is with a specific zone
+		Zone zone = gameObject.GetComponent<Zone>();
+		if (zone != null) {
+			Debug.Log("Collided with zone at " + Time.realtimeSinceStartup);
+			handleZoneCollision(zone);
+			return true;
+		}
+		return false;
+	}
+
 	public virtual void handlePlayerCollision(TeamPlayer collidedPlayer) {}
 	public virtual void handleBallCollision(Ball hitBall) {}
 	public virtual void handleSportsCollision(SportsObject sObject) {}
 	public virtual void handleFieldCollision(FieldObject fObject) {}
+	public virtual void handleZoneCollision(Zone zone) {}
 
 	void OnCollisionExit(Collision collision) {
         if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.

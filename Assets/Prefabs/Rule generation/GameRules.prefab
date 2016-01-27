@@ -759,6 +759,7 @@ MonoBehaviour:
   goalPrefab3: {fileID: 194232, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
   goalPrefab4: {fileID: 116454, guid: e7b80022780a33448b0c94819b71e769, type: 2}
   goalPrefab5: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
+  zonePrefab: {fileID: 109018, guid: 4aae546363afffd4c9e22156c21f736f, type: 2}
   ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
   pointsTextPrefab: {fileID: 175400, guid: af5d39570a81ca247bd3de468f5ab89b, type: 2}
   uiCanvas: {fileID: 0}
@@ -864,6 +865,7 @@ MonoBehaviour:
   clockIcon: {fileID: 21300000, guid: e2123983a49d7dc45b9881f2b05fcb7e, type: 3}
   gainsEffectIcon: {fileID: 21300000, guid: 50095d6bc42dc60478b9fa7780a9483f, type: 3}
   resultsInIcon: {fileID: 21300000, guid: b96744af1a1511748b8a454a7d5ece24, type: 3}
+  oppositeZone: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

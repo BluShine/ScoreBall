@@ -29,6 +29,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject goalPrefab3;
 	public GameObject goalPrefab4;
 	public GameObject goalPrefab5;
+	public GameObject zonePrefab;
 
 	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
 
@@ -73,6 +74,7 @@ public class GameRules : MonoBehaviour {
 	public void Start() {
         soundSource = GetComponent<AudioSource>();
 		instance = this;
+		Instantiate(zonePrefab);
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed

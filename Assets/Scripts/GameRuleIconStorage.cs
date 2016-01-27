@@ -52,6 +52,9 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public Sprite gainsEffectIcon;
 	public Sprite resultsInIcon;
 
+	//zone icons
+	public Sprite oppositeZone;
+
 	void Start () {
 		instance = this;
 	}
