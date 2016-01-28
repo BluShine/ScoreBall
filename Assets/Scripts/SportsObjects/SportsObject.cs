@@ -280,8 +280,7 @@ public class SportsObject : FieldObject {
 		//check if the collision is with a specific zone
 		Zone zone = gameObject.GetComponent<Zone>();
 		if (zone != null) {
-			Debug.Log("Collided with zone at " + Time.realtimeSinceStartup);
-			handleZoneCollision(zone);
+			zone.objectsInZone.Add(this);
 			return true;
 		}
 		return false;
@@ -291,7 +290,6 @@ public class SportsObject : FieldObject {
 	public virtual void handleBallCollision(Ball hitBall) {}
 	public virtual void handleSportsCollision(SportsObject sObject) {}
 	public virtual void handleFieldCollision(FieldObject fObject) {}
-	public virtual void handleZoneCollision(Zone zone) {}
 
 	void OnCollisionExit(Collision collision) {
         if (!started) return; //somehow, Unity can call this method BEFORE Start()! This results in bad stuff.
@@ -306,5 +304,17 @@ public class SportsObject : FieldObject {
 	void handleCollisionExit(GameObject gameObject) {
 		if (gameObject == gameRules.floor)
 			isOnGround = false;
+		else if (checkZoneCollisionExit(gameObject)) {
+		}
+	}
+
+	public bool checkZoneCollisionExit(GameObject gameObject) {
+		//check if the object left the zone
+		Zone zone = gameObject.GetComponent<Zone>();
+		if (zone != null) {
+			zone.objectsInZone.Remove(this);
+			return true;
+		}
+		return false;
 	}
 }

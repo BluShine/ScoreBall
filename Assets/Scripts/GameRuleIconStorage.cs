@@ -46,6 +46,8 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public Sprite charPlusIcon;
 	public Sprite charMinusIcon;
 	public Sprite[] charDigitIcons;
+	public Sprite charAmpersandIcon;
+	public Sprite charSlashIcon;
 
 	//icons to join other icons
 	public Sprite clockIcon;
@@ -53,7 +55,7 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public Sprite resultsInIcon;
 
 	//zone icons
-	public Sprite oppositeZone;
+	public Sprite boomerangZone;
 
 	void Start () {
 		instance = this;

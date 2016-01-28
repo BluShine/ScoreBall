@@ -39,11 +39,11 @@ public class GameRuleGenerator {
 		else
 			restrictions = ruleRestrictions;
 		ruleCondition = randomCondition();
-		bool isComparison = ruleCondition is GameRuleComparisonCondition;
+		System.Type conditionClass = ruleCondition.GetType();
 		bool ballCondition = false;
-		if (!isComparison && ((GameRuleEventHappenedCondition)(ruleCondition)).eventType >= GameRuleEventType.BallEventTypeStart)
+		if ((conditionClass == typeof(GameRuleEventHappenedCondition)) && ((GameRuleEventHappenedCondition)(ruleCondition)).eventType >= GameRuleEventType.BallEventTypeStart)
 			ballCondition = true;
-		return new GameRule(ruleCondition, randomAction(isComparison, ballCondition));
+		return new GameRule(ruleCondition, randomAction(conditionClass, ballCondition));
 	}
 	//add any restrictions that can be determined before any generation has happened
 	public static void populateInitialRestrictions() {
@@ -53,11 +53,13 @@ public class GameRuleGenerator {
 		//if there is no rule that gives points, that is the top priority
 		bool needsPointsRule = true;
 		foreach (GameRule gameRule in GameRules.instance.rulesList) {
-			GameRuleActionAction innerAction = gameRule.action.innerAction;
-			if (innerAction is GameRulePointsPlayerActionAction &&
-				((GameRulePointsPlayerActionAction)(innerAction)).pointsGiven > 0) {
-				needsPointsRule = false;
-				break;
+			if (gameRule.action is GameRuleEffectAction) {
+				GameRuleEffect innerEffect = ((GameRuleEffectAction)(gameRule.action)).innerEffect;
+				if (innerEffect is GameRulePointsPlayerEffect &&
+					((GameRulePointsPlayerEffect)(innerEffect)).pointsGiven > 0) {
+					needsPointsRule = false;
+					break;
+				}
 			}
 		}
 		if (needsPointsRule) {
@@ -68,9 +70,10 @@ public class GameRuleGenerator {
 		}
 	}
 	//return whether the restriction is present and remove it if it is
-	public static bool hasRestriction(GameRuleRestriction restriction) {
+	public static bool hasRestriction(GameRuleRestriction restriction, bool removeRestriction = true) {
 		if (restrictions.Contains(restriction)) {
-			restrictions.RemoveAll((GameRuleRestriction otherRestriction) => (otherRestriction == restriction));
+			if (removeRestriction)
+				restrictions.RemoveAll((GameRuleRestriction otherRestriction) => (otherRestriction == restriction));
 			return true;
 		}
 		return false;
@@ -85,18 +88,22 @@ public class GameRuleGenerator {
 
 		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(new System.Type[] {
 			typeof(GameRuleComparisonCondition),
-			typeof(GameRuleEventHappenedCondition)
+			typeof(GameRuleEventHappenedCondition),
+			typeof(GameRuleZoneCondition)
 		}));
 		if (chosenType == typeof(GameRuleComparisonCondition))
 			return randomComparisonCondition();
 		else if (chosenType == typeof(GameRuleEventHappenedCondition))
 			return randomEventHappenedCondition();
+		else if (chosenType == typeof(GameRuleZoneCondition))
+			return randomZoneCondition();
 		else
 			throw new System.Exception("Bug: Invalid condition sub-type!");
 	}
 
 	////////////////GameRuleComparisonCondition generation////////////////
 	public static GameRuleComparisonCondition randomComparisonCondition() {
+		return null;/*
 		//only player-value comparison conditions for now
 		return new GameRulePlayerValueComparisonCondition(randomPlayerValue(), randomConditionOperator(), Random.Range(0, 2) == 0 ? randomValue() : randomPlayerValue());
 	}
@@ -120,6 +127,7 @@ public class GameRuleGenerator {
 	}
 	public static GameRuleValue randomValue() {
 		return new GameRuleIntConstantValue(Random.Range(-100, 101));
+*/
 	}
 
 	////////////////GameRuleEventHappenedCondition generation////////////////
@@ -195,48 +203,68 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 		return GameRuleChances.pickFrom(FieldObject.standardFieldObjects);
 	}
 
+	////////////////GameRuleZoneCondition generation////////////////
+	//generate a random ZoneCondition for a rule
+	public static GameRuleZoneCondition randomZoneCondition() {
+		GameRuleRequiredObject chosenZoneType = GameRuleChances.pickFrom(new List<GameRuleRequiredObject>(new GameRuleRequiredObject[] {
+			GameRuleRequiredObject.BoomerangZone
+		}));
+
+		if (chosenZoneType == GameRuleRequiredObject.BoomerangZone)
+			return new GameRuleZoneCondition(chosenZoneType, GameRulePlayerSelector.instance);
+		else
+			throw new System.Exception("Bug: Invalid zone type!");
+	}
+
 	////////////////GameRuleAction generation////////////////
 	//generate a random action based on the given condition information
-	public static GameRuleAction randomAction(bool isComparison, bool ballCondition) {
-		ruleActionSelector = randomSelectorForSource(ballCondition);
-		return new GameRuleAction(ruleActionSelector, randomActionActionForTarget(ruleActionSelector, ballCondition));
+	public static GameRuleAction randomAction(System.Type conditionClass, bool ballCondition) {
+		//one-time actions for one-time conditions
+		if (conditionClass == typeof(GameRuleEventHappenedCondition)) {
+			ruleActionSelector = randomSelectorForSource(ballCondition);
+			return new GameRuleEffectAction(ruleActionSelector, randomEffectForTarget(ruleActionSelector, ballCondition));
+		//metarules for zone conditions
+		} else if (conditionClass == typeof(GameRuleZoneCondition)) {
+			return new GameRuleMetaRuleAction(new GameRulePlayerSwapMetaRule());
+		} else
+			throw new System.Exception("Could not generate action for " + conditionClass);
 	}
 	//generate a random action to happen to the target of the selector
 	//pass along whether the original condition was a ball event-happened condition in case the action needs to know
-	public static GameRuleActionAction randomActionActionForTarget(GameRuleSelector sourceToTarget, bool ballCondition) {
+	public static GameRuleEffect randomEffectForTarget(GameRuleSelector sourceToTarget, bool ballCondition) {
 		if (sourceToTarget.targetType() == typeof(Ball))
-			return randomBallActionAction(ballCondition);
+			return randomBallEffect(ballCondition);
 		else
-			return randomPlayerActionAction(false, ballCondition);
+			return randomPlayerEffect(false, ballCondition);
 	}
 
-	public static GameRuleActionAction randomPlayerActionAction(bool isComparison, bool ballCondition) {
+	public static GameRuleEffect randomPlayerEffect(bool isComparison, bool ballCondition) {
 isComparison = false;
 		//build the list of acceptable action types, taking restrictions into account
 		List<System.Type> acceptableActionTypes;
 		if (hasRestriction(GameRuleRestriction.OnlyPointsActions))
 			acceptableActionTypes = new List<System.Type>(new System.Type[] {
-				typeof(GameRulePointsPlayerActionAction)
+				typeof(GameRulePointsPlayerEffect)
 			});
 		else if (hasRestriction(GameRuleRestriction.OnlyFunActions))
 			acceptableActionTypes = new List<System.Type>(new System.Type[] {
-				typeof(GameRuleFreezeActionAction),
-				typeof(GameRuleDuplicateActionAction),
-				typeof(GameRuleDizzyActionAction),
-				typeof(GameRuleBounceActionAction)
+				typeof(GameRuleFreezeEffect),
+				typeof(GameRuleDuplicateEffect),
+				typeof(GameRuleDizzyEffect),
+				typeof(GameRuleBounceEffect)
 			});
 		else //all acceptable types
 			acceptableActionTypes = new List<System.Type>(new System.Type[] {
-				typeof(GameRulePointsPlayerActionAction),
-				typeof(GameRuleFreezeActionAction),
-				typeof(GameRuleDuplicateActionAction),
-				typeof(GameRuleDizzyActionAction),
-				typeof(GameRuleBounceActionAction)
+				typeof(GameRulePointsPlayerEffect),
+				typeof(GameRuleFreezeEffect),
+				typeof(GameRuleDuplicateEffect),
+				typeof(GameRuleDizzyEffect),
+				typeof(GameRuleBounceEffect)
 			});
 
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
-		if (chosenType == typeof(GameRulePointsPlayerActionAction)) { 
+		if (chosenType == typeof(GameRulePointsPlayerEffect)) { 
 			int minPoints = (hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5);
 			int maxPoints = (hasRestriction(GameRuleRestriction.OnlyNegativePointAmounts) ? 0 : 10);
 			//if they ask for both positive and negative point amounts, give them 0
@@ -247,40 +275,40 @@ isComparison = false;
 			int points = Random.Range(minPoints, maxPoints);
 			if (points >= 0)
 				points++;
-			return new GameRulePointsPlayerActionAction(points);
-		} else if (chosenType == typeof(GameRuleFreezeActionAction)) {
+			return new GameRulePointsPlayerEffect(points);
+		} else if (chosenType == typeof(GameRuleFreezeEffect)) {
 			if (hasRestriction(GameRuleRestriction.NoPlayerFreezeUntilConditions))
 				restrictions.Add(GameRuleRestriction.NoUntilConditionDurations);
 			//freeze conditions are allowed, but we need to make sure not to make anything game-breaking if we pick it
 			else
 				restrictions.Add(GameRuleRestriction.CheckFreezeUntilConditionRestrictions);
-			return new GameRuleFreezeActionAction(randomActionDuration(ballCondition));
-		} else if (chosenType == typeof(GameRuleDuplicateActionAction))
-			return new GameRuleDuplicateActionAction();
-		else if (chosenType == typeof(GameRuleDizzyActionAction))
-			return new GameRuleDizzyActionAction(randomActionDuration(ballCondition));
-		else if (chosenType == typeof(GameRuleBounceActionAction))
-			return new GameRuleBounceActionAction(randomActionDuration(ballCondition));
+			return new GameRuleFreezeEffect(randomActionDuration(ballCondition));
+		} else if (chosenType == typeof(GameRuleDuplicateEffect))
+			return new GameRuleDuplicateEffect();
+		else if (chosenType == typeof(GameRuleDizzyEffect))
+			return new GameRuleDizzyEffect(randomActionDuration(ballCondition));
+		else if (chosenType == typeof(GameRuleBounceEffect))
+			return new GameRuleBounceEffect(randomActionDuration(ballCondition));
 		else
 			throw new System.Exception("Bug: Invalid player action type!");
 	}
-	public static GameRuleActionAction randomBallActionAction(bool ballCondition) {
+	public static GameRuleEffect randomBallEffect(bool ballCondition) {
 		//build the list of acceptable action types, taking restrictions into account
 		System.Type[] acceptableActionTypes = new System.Type[] {
 			//balls getting frozen hasn't made for fun gameplay yet
-			//typeof(GameRuleFreezeActionAction),
-			typeof(GameRuleDuplicateActionAction),
-			typeof(GameRuleBounceActionAction)
+			//typeof(GameRuleFreezeEffect),
+			typeof(GameRuleDuplicateEffect),
+			typeof(GameRuleBounceEffect)
 		};
 
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(acceptableActionTypes));
-		if (chosenType == typeof(GameRuleFreezeActionAction))
-			return new GameRuleFreezeActionAction(randomActionDuration(ballCondition));
-		else if (chosenType == typeof(GameRuleDuplicateActionAction))
-			return new GameRuleDuplicateActionAction();
-		else if (chosenType == typeof(GameRuleBounceActionAction))
-			return new GameRuleBounceActionAction(randomActionDuration(ballCondition));
+		if (chosenType == typeof(GameRuleFreezeEffect))
+			return new GameRuleFreezeEffect(randomActionDuration(ballCondition));
+		else if (chosenType == typeof(GameRuleDuplicateEffect))
+			return new GameRuleDuplicateEffect();
+		else if (chosenType == typeof(GameRuleBounceEffect))
+			return new GameRuleBounceEffect(randomActionDuration(ballCondition));
 		else
 			throw new System.Exception("Bug: Invalid ball action type!");
 	}
@@ -388,7 +416,7 @@ public class GameRuleSerializationBase {
 	//stores bits taken from the string/to be put into the string
 	protected int bits = 0;
 	//the count of how many bits are stored in the bits variable
-	protected int bitCount = 0;
+	protected byte bitCount = 0;
 	//determine how many bits we need to store an index for this list
 	public static byte bitsForIndex<T>(List<T> valueList) {
 		byte bitSize = 0;

@@ -28,7 +28,7 @@ GameObject:
   - 33: {fileID: 3384510}
   - 23: {fileID: 2326328}
   - 64: {fileID: 6489020}
-  - 114: {fileID: 11431260}
+  - 114: {fileID: 11477966}
   m_Layer: 10
   m_Name: Zone
   m_TagString: Untagged
@@ -139,7 +139,7 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 0}
---- !u!114 &11431260
+--- !u!114 &11477966
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sportName: object
   team: 0
+  objectsInZone: []
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

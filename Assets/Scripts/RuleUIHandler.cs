@@ -6,7 +6,7 @@ public class RuleUIHandler : MonoBehaviour {
 
     GameRuleCondition condition;
     GameRuleSelector actionSelector;
-    GameRuleActionAction aAction;
+    GameRuleEffect effect;
 
     public Slider pointslider;
     public Slider effectSlider;
@@ -32,19 +32,19 @@ public class RuleUIHandler : MonoBehaviour {
         {
             case 0:
                 //dizzy
-                aAction = new GameRuleDizzyActionAction(
+                effect = new GameRuleDizzyEffect(
             new GameRuleActionFixedDuration(
                 Mathf.FloorToInt(effectSlider.value)));
                 break;
             case 1:
                 //frozen
-                aAction = new GameRuleFreezeActionAction(
+                effect = new GameRuleFreezeEffect(
             new GameRuleActionFixedDuration(
                 Mathf.FloorToInt(effectSlider.value)));
                 break;
             case 2:
                 //bouncy
-                aAction = new GameRuleBounceActionAction(
+                effect = new GameRuleBounceEffect(
             new GameRuleActionFixedDuration(
                 Mathf.FloorToInt(effectSlider.value)));
                 break;
@@ -54,19 +54,19 @@ public class RuleUIHandler : MonoBehaviour {
 
     public void selectPoints()
     {
-        aAction = new GameRulePointsPlayerActionAction(Mathf.FloorToInt(pointslider.value));
+        effect = new GameRulePointsPlayerEffect(Mathf.FloorToInt(pointslider.value));
     }
 
     public void selectDuplicate()
     {
-        aAction = new GameRuleDuplicateActionAction();
+        effect = new GameRuleDuplicateEffect();
     }
 
     public void SendRule()
     {
-        if (condition == null || actionSelector == null || aAction == null)
+		if (condition == null || actionSelector == null || effect == null)
             return;
-        GameRule rule = new GameRule(condition, new GameRuleAction(actionSelector, aAction), true);
+		GameRule rule = new GameRule(condition, new GameRuleEffectAction(actionSelector, effect), true);
         ruleNetwork.sendRule(GameRuleSerializer.packRuleToString(rule));
     }
 }

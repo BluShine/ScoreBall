@@ -3,69 +3,90 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-////////////////Rule consequence base classes////////////////
-public class GameRuleAction {
-	public GameRuleSelector selector;
-	public GameRuleActionAction innerAction;
-	public GameRuleAction(GameRuleSelector sos, GameRuleActionAction ia) {
-		selector = sos;
-		innerAction = ia;
-	}
-	public override string ToString() {
-		return selector.ToString() + " " + innerAction.ToString();
-	}
-	public void takeAction(SportsObject source) {
-		SportsObject target = selector.target(source);
-		if (target != null)
-			innerAction.takeAction(source, target);
-	}
-	public void addIcons(List<Sprite> iconList) {
-		selector.addIcons(iconList);
-		iconList.Add(GameRuleIconStorage.instance.gainsEffectIcon);
-		innerAction.addIcons(iconList);
-	}
-	public void packToString(GameRuleSerializer serializer) {
-		selector.packToString(serializer);
-		innerAction.packToString(serializer);
-	}
+////////////////Rule consequence base class////////////////
+public abstract class GameRuleAction {
+	public abstract void addIcons(List<Sprite> iconList);
+	//0=GameRuleEffectAction
+	//1=GameRuleMetaRuleAction
+	public const int GAME_RULE_ACTION_BIT_SIZE = 1;
+	public abstract void packToString(GameRuleSerializer serializer);
 	public static GameRuleAction unpackFromString(GameRuleDeserializer deserializer) {
-		GameRuleSelector s = GameRuleSelector.unpackFromString(deserializer);
-		GameRuleActionAction ia = GameRuleActionAction.unpackFromString(deserializer);
-		return new GameRuleAction(s, ia);
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_ACTION_BIT_SIZE);
+		if (subclassByte == 0)
+			return GameRuleEffectAction.unpackFromString(deserializer);
+		else if (subclassByte == 1)
+			return GameRuleMetaRuleAction.unpackFromString(deserializer);
+		else
+			throw new System.Exception("Invalid GameRuleAction unpacked byte " + subclassByte);
 	}
 }
 
-public abstract class GameRuleActionAction {
+////////////////Base classes for one-time actions////////////////
+public class GameRuleEffectAction : GameRuleAction {
+	public GameRuleSelector selector;
+	public GameRuleEffect innerEffect;
+	public GameRuleEffectAction(GameRuleSelector sos, GameRuleEffect ie) {
+		selector = sos;
+		innerEffect = ie;
+	}
+	public override string ToString() {
+		return selector.ToString() + " " + innerEffect.ToString();
+	}
+	//returns the sportsobject that got affected, often the source
+	public SportsObject takeAction(SportsObject source) {
+		SportsObject target = GameRules.instance.interceptSelection(selector.target(source));
+		if (target != null)
+			innerEffect.takeAction(source, target);
+		return target;
+	}
+	public override void addIcons(List<Sprite> iconList) {
+		selector.addIcons(iconList);
+		iconList.Add(GameRuleIconStorage.instance.gainsEffectIcon);
+		innerEffect.addIcons(iconList);
+	}
+	public override void packToString(GameRuleSerializer serializer) {
+		serializer.packByte(GAME_RULE_ACTION_BIT_SIZE, 0);
+		selector.packToString(serializer);
+		innerEffect.packToString(serializer);
+	}
+	public static new GameRuleEffectAction unpackFromString(GameRuleDeserializer deserializer) {
+		GameRuleSelector s = GameRuleSelector.unpackFromString(deserializer);
+		GameRuleEffect ia = GameRuleEffect.unpackFromString(deserializer);
+		return new GameRuleEffectAction(s, ia);
+	}
+}
+
+public abstract class GameRuleEffect {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void takeAction(SportsObject source, SportsObject target);
 	public abstract void addIcons(List<Sprite> iconList);
-	//000=GameRulePointsPlayerActionAction
-	//001=GameRuleDuplicateActionAction
-	//010=GameRuleFreezeActionAction
-	//011=GameRuleDizzyActionAction
-	//100=GameRuleBounceActionAction
-	public const int GAME_RULE_ACTION_ACTION_BIT_SIZE = 3;
+	//000=GameRulePointsPlayerEffect
+	//001=GameRuleDuplicateEffect
+	//010=GameRuleFreezeEffect
+	//011=GameRuleDizzyEffect
+	//100=GameRuleBounceEffect
+	public const int GAME_RULE_EFFECT_BIT_SIZE = 3;
 	public abstract void packToString(GameRuleSerializer serializer);
-	public static GameRuleActionAction unpackFromString(GameRuleDeserializer deserializer) {
-		byte subclassByte = deserializer.unpackByte(GAME_RULE_ACTION_ACTION_BIT_SIZE);
+	public static GameRuleEffect unpackFromString(GameRuleDeserializer deserializer) {
+		byte subclassByte = deserializer.unpackByte(GAME_RULE_EFFECT_BIT_SIZE);
 		if (subclassByte == 0)
-			return GameRulePointsPlayerActionAction.unpackFromString(deserializer);
+			return GameRulePointsPlayerEffect.unpackFromString(deserializer);
 		else if (subclassByte == 1)
-			return GameRuleDuplicateActionAction.unpackFromString(deserializer);
+			return GameRuleDuplicateEffect.unpackFromString(deserializer);
 		else if (subclassByte == 2)
-			return GameRuleFreezeActionAction.unpackFromString(deserializer);
+			return GameRuleFreezeEffect.unpackFromString(deserializer);
 		else if (subclassByte == 3)
-			return GameRuleDizzyActionAction.unpackFromString(deserializer);
+			return GameRuleDizzyEffect.unpackFromString(deserializer);
 		else if (subclassByte == 4)
-			return GameRuleBounceActionAction.unpackFromString(deserializer);
+			return GameRuleBounceEffect.unpackFromString(deserializer);
 		else
-			throw new System.Exception("Invalid GameRuleActionAction unpacked byte " + subclassByte);
+			throw new System.Exception("Invalid GameRuleEffect unpacked byte " + subclassByte);
 	}
 }
 
-public abstract class GameRuleDurationActionAction : GameRuleActionAction {
+public abstract class GameRuleDurationEffect : GameRuleEffect {
 	public GameRuleActionDuration duration;
-	public GameRuleDurationActionAction(GameRuleActionDuration d) {
+	public GameRuleDurationEffect(GameRuleActionDuration d) {
 		duration = d;
 	}
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
@@ -87,12 +108,12 @@ public abstract class GameRuleDurationActionAction : GameRuleActionAction {
 }
 
 ////////////////The actual functionality to affect players and sports objects (one-off actions)////////////////
-public class GameRulePointsPlayerActionAction : GameRuleActionAction {
+public class GameRulePointsPlayerEffect : GameRuleEffect {
 	public const int POINTS_SERIALIZATION_BIT_COUNT = 5;
 	public const int POINTS_SERIALIZATION_MASK = ~(-1 << POINTS_SERIALIZATION_BIT_COUNT);
 	public const int POINTS_SERIALIZATION_MAX_VALUE = 20;
 	public int pointsGiven;
-	public GameRulePointsPlayerActionAction(int pg) {
+	public GameRulePointsPlayerEffect(int pg) {
 		pointsGiven = pg;
 	}
 	public override void takeAction(SportsObject source, SportsObject target) {
@@ -115,20 +136,20 @@ public class GameRulePointsPlayerActionAction : GameRuleActionAction {
 		}
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 0);
+		serializer.packByte(GAME_RULE_EFFECT_BIT_SIZE, 0);
 		//we'll just save N bits of the points, so one of the (2^N) consecutive values <= POINTS_SERIALIZATION_MAX_VALUE
 		serializer.packByte(POINTS_SERIALIZATION_BIT_COUNT, (byte)(pointsGiven & POINTS_SERIALIZATION_MASK));
 	}
-	public static new GameRulePointsPlayerActionAction unpackFromString(GameRuleDeserializer deserializer) {
+	public static new GameRulePointsPlayerEffect unpackFromString(GameRuleDeserializer deserializer) {
 		//if it's over the max value, it's actually the low bits of a negative number
 		int pg = deserializer.unpackByte(POINTS_SERIALIZATION_BIT_COUNT);
 		if (pg > POINTS_SERIALIZATION_MAX_VALUE)
 			pg |= ~POINTS_SERIALIZATION_MASK;
-		return new GameRulePointsPlayerActionAction(pg);
+		return new GameRulePointsPlayerEffect(pg);
 	}
 }
 
-public class GameRuleDuplicateActionAction : GameRuleActionAction {
+public class GameRuleDuplicateEffect : GameRuleEffect {
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.Duplicate(1);
 	}
@@ -139,16 +160,16 @@ public class GameRuleDuplicateActionAction : GameRuleActionAction {
 		iconList.Add(GameRuleIconStorage.instance.duplicatedIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 1);
+		serializer.packByte(GAME_RULE_EFFECT_BIT_SIZE, 1);
 	}
-	public static new GameRuleDuplicateActionAction unpackFromString(GameRuleDeserializer deserializer) {
-		return new GameRuleDuplicateActionAction();
+	public static new GameRuleDuplicateEffect unpackFromString(GameRuleDeserializer deserializer) {
+		return new GameRuleDuplicateEffect();
 	}
 }
 
 ////////////////The actual functionality to affect players and sports objects (duration actions)////////////////
-public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
-	public GameRuleFreezeActionAction(GameRuleActionDuration d) : base(d) {}
+public class GameRuleFreezeEffect : GameRuleDurationEffect {
+	public GameRuleFreezeEffect(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.Freeze(duration.startDuration(source, target, this));
 	}
@@ -163,17 +184,17 @@ public class GameRuleFreezeActionAction : GameRuleDurationActionAction {
 		base.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 2);
+		serializer.packByte(GAME_RULE_EFFECT_BIT_SIZE, 2);
 		base.packToString(serializer);
 	}
-	public static new GameRuleFreezeActionAction unpackFromString(GameRuleDeserializer deserializer) {
+	public static new GameRuleFreezeEffect unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
-		return new GameRuleFreezeActionAction(d);
+		return new GameRuleFreezeEffect(d);
 	}
 }
 
-public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
-	public GameRuleDizzyActionAction(GameRuleActionDuration d) : base(d) {}
+public class GameRuleDizzyEffect : GameRuleDurationEffect {
+	public GameRuleDizzyEffect(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.BeDizzy(duration.startDuration(source, target, this));
 	}
@@ -188,17 +209,17 @@ public class GameRuleDizzyActionAction : GameRuleDurationActionAction {
 		base.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 3);
+		serializer.packByte(GAME_RULE_EFFECT_BIT_SIZE, 3);
 		base.packToString(serializer);
 	}
-	public static new GameRuleDizzyActionAction unpackFromString(GameRuleDeserializer deserializer) {
+	public static new GameRuleDizzyEffect unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
-		return new GameRuleDizzyActionAction(d);
+		return new GameRuleDizzyEffect(d);
 	}
 }
 
-public class GameRuleBounceActionAction : GameRuleDurationActionAction {
-	public GameRuleBounceActionAction(GameRuleActionDuration d) : base(d) {}
+public class GameRuleBounceEffect : GameRuleDurationEffect {
+	public GameRuleBounceEffect(GameRuleActionDuration d) : base(d) {}
 	public override void takeAction(SportsObject source, SportsObject target) {
 		target.StartBouncing(duration.startDuration(source, target, this));
 	}
@@ -213,19 +234,19 @@ public class GameRuleBounceActionAction : GameRuleDurationActionAction {
 		base.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_ACTION_ACTION_BIT_SIZE, 4);
+		serializer.packByte(GAME_RULE_EFFECT_BIT_SIZE, 4);
 		base.packToString(serializer);
 	}
-	public static new GameRuleBounceActionAction unpackFromString(GameRuleDeserializer deserializer) {
+	public static new GameRuleBounceEffect unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleActionDuration d = GameRuleActionDuration.unpackFromString(deserializer);
-		return new GameRuleBounceActionAction(d);
+		return new GameRuleBounceEffect(d);
 	}
 }
 
 ////////////////Functionality for rules that happen for a duration////////////////
 public abstract class GameRuleActionDuration {
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
-	public abstract float startDuration(SportsObject source, SportsObject target, GameRuleDurationActionAction action);
+	public abstract float startDuration(SportsObject source, SportsObject target, GameRuleDurationEffect action);
 	public abstract void addIcons(List<Sprite> iconList);
 	//0=GameRuleActionFixedDuration
 	//1=GameRuleActionUntilConditionDuration
@@ -249,7 +270,7 @@ public class GameRuleActionFixedDuration : GameRuleActionDuration {
 	public GameRuleActionFixedDuration(int d) {
 		duration = d;
 	}
-	public override float startDuration(SportsObject source, SportsObject target, GameRuleDurationActionAction action) {
+	public override float startDuration(SportsObject source, SportsObject target, GameRuleDurationEffect action) {
 		return duration;
 	}
 	public override string ToString() {
@@ -275,7 +296,7 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	public GameRuleActionUntilConditionDuration(GameRuleEventHappenedCondition grehc) {
 		untilCondition = grehc;
 	}
-	public override float startDuration(SportsObject source, SportsObject target, GameRuleDurationActionAction action) {
+	public override float startDuration(SportsObject source, SportsObject target, GameRuleDurationEffect action) {
 		GameRules.instance.waitTimers.Add(new GameRuleActionWaitTimer(untilCondition, source, target, action));
 		return 1000000000.0f;
 	}
@@ -303,16 +324,16 @@ public class GameRuleActionWaitTimer {
 	public GameRuleEventHappenedCondition condition;
 	public SportsObject source; //this caused the original condition
 	public SportsObject target; //this is the object that the action happened to
-	public GameRuleDurationActionAction action;
+	public GameRuleDurationEffect action;
 	public GameRuleActionWaitTimer(GameRuleEventHappenedCondition grehc, SportsObject sos, SportsObject sot,
-		GameRuleDurationActionAction grdaa) {
+		GameRuleDurationEffect grdaa) {
 		condition = grehc;
 		source = sos;
 		target = sot;
 		action = grdaa;
 	}
-	public bool conditionHappened(GameRuleEvent gre) {
-		if (condition.conditionHappened(gre, source)) {
+	public bool eventHappened(GameRuleEvent gre) {
+		if (condition.eventHappened(gre, source)) {
 			cancelAction();
 			return true;
 		}

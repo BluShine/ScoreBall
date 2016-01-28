@@ -3,19 +3,26 @@ using System.Collections.Generic;
 
 //a class for field objects which sports objects can enter and exit
 //rules may check whether a sports object is in a zone
-public class Zone: FieldObject {
+public class Zone : FieldObject {
 	const float MESH_ICON_HALF_SIZE = 2.0f;
 
-	public void Start() {
+	public static List<GameRuleRequiredObject> standardZoneTypes = new List<GameRuleRequiredObject>(new GameRuleRequiredObject[] {
+		GameRuleRequiredObject.BoomerangZone
+	});
+
+	[HideInInspector]
+	public List<SportsObject> objectsInZone = new List<SportsObject>();
+
+	public void buildZone(GameRuleRequiredObject zoneType) {
 		Mesh collisionMesh = new Mesh();
 
 		//build up a list of triangles
 		//for now our floor vertex list is just a square
 		Vector2[] groundPolygon = new Vector2[] {
-			new Vector2(-4, -4),
-			new Vector2(-4, 4),
-			new Vector2(4, 4),
-			new Vector2(4, -4)
+			new Vector2(-8, -8),
+			new Vector2(-8, 8),
+			new Vector2(8, 8),
+			new Vector2(8, -8)
 		};
 
 		float groundY = GameRules.instance.floor.GetComponent<Collider>().bounds.extents.y + 0.01f;
@@ -66,6 +73,12 @@ public class Zone: FieldObject {
 
 		GameObject zoneIcon = transform.GetChild(0).gameObject;
 		zoneIcon.GetComponent<MeshFilter>().mesh = iconMesh;
-		zoneIcon.GetComponent<MeshRenderer>().material.mainTexture = GameRuleIconStorage.instance.oppositeZone.texture;
+		zoneIcon.GetComponent<MeshRenderer>().material.mainTexture = getIconForZoneType(zoneType).texture;
+	}
+	public Sprite getIconForZoneType(GameRuleRequiredObject zoneType) {
+		if (zoneType == GameRuleRequiredObject.BoomerangZone)
+			return GameRuleIconStorage.instance.boomerangZone;
+		else
+			throw new System.Exception("Bug: could not get zone icon for " + zoneType);
 	}
 }

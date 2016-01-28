@@ -64,6 +64,7 @@ public class Ball : SportsObject {
     {
         if (holdable && takeTimer == 0)
         {
+            bool wasHeld = isHeld;
             //give control of the ball to the player who 
             if (currentPlayer != null)
             {
@@ -74,7 +75,7 @@ public class Ball : SportsObject {
             currentPlayer = player;
             isHeld = true;
             //send event
-            if (previousPlayer != null)
+            if (wasHeld)
                 gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: currentPlayer, vct: previousPlayer, bl: this));
             else
                 gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerGrabBall, tp: currentPlayer, bl: this));

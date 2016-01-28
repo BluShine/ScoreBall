@@ -108,7 +108,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		param = p;
 		selector = grs;
 	}
-	public override bool conditionHappened(GameRuleEvent gre) {
+	public override bool eventHappened(GameRuleEvent gre) {
 		//make sure that we have the right event
 		if (gre.eventType != eventType || gre.param != param)
 			return false;
@@ -126,8 +126,8 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		//right event and no other disqualifications, the collision happened
 		return true;
 	}
-	public bool conditionHappened(GameRuleEvent gre, SportsObject triggerSource) {
-		return conditionHappened(gre) && selector.target(triggerSource) == gre.getEventSource();
+	public bool eventHappened(GameRuleEvent gre, SportsObject triggerSource) {
+		return eventHappened(gre) && selector.target(triggerSource) == gre.getEventSource();
 	}
 	public override string ToString() {
 		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType) + param;

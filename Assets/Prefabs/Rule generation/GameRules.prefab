@@ -862,10 +862,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 4ddf915df4e69b248bb96efcf2e7b4d6, type: 3}
   - {fileID: 21300000, guid: ff02e743e8451ed4d919dbdcfee5e282, type: 3}
   - {fileID: 21300000, guid: 6595c2e1acaf9db40bc47acb43ecd315, type: 3}
+  charAmpersandIcon: {fileID: 21300000, guid: de9264cb895712c4da8ad733a8e5b8c4, type: 3}
+  charSlashIcon: {fileID: 21300000, guid: 85aa7a0a359da7241bd9dad23a5444ec, type: 3}
   clockIcon: {fileID: 21300000, guid: e2123983a49d7dc45b9881f2b05fcb7e, type: 3}
   gainsEffectIcon: {fileID: 21300000, guid: 50095d6bc42dc60478b9fa7780a9483f, type: 3}
   resultsInIcon: {fileID: 21300000, guid: b96744af1a1511748b8a454a7d5ece24, type: 3}
-  oppositeZone: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb, type: 3}
+  boomerangZone: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -889,6 +891,11 @@ Prefab:
       propertyPath: goalPrefab5
       value: 
       objectReference: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
+    - target: {fileID: 0}
+      propertyPath: boomerangZone
+      value: 
+      objectReference: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 195328}

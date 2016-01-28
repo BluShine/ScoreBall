@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 ////////////////Rule conditions////////////////
 public abstract class GameRuleCondition {
-	public virtual void checkCondition(List<TeamPlayer> triggeringPlayers) {}
-	public virtual bool conditionHappened(GameRuleEvent gre) {return false;}
+	public virtual bool checkCondition(SportsObject triggeringObject) {return false;}
+	public virtual bool eventHappened(GameRuleEvent gre) {return false;}
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void addIcons(List<Sprite> iconList);
-	//0=GameRuleComparisonCondition
-	//1=GameRuleEventHappenedCondition
-	public const int GAME_RULE_CONDITION_BIT_SIZE = 1;
+	//00=GameRuleComparisonCondition
+	//01=GameRuleEventHappenedCondition
+	//10=GameRuleZoneCondition
+	public const int GAME_RULE_CONDITION_BIT_SIZE = 2;
 	public abstract void packToString(GameRuleSerializer serializer);
 	public static GameRuleCondition unpackFromString(GameRuleDeserializer deserializer) {
 		byte subclassByte = deserializer.unpackByte(GAME_RULE_CONDITION_BIT_SIZE);
@@ -18,13 +19,16 @@ public abstract class GameRuleCondition {
 			return GameRuleComparisonCondition.unpackFromString(deserializer);
 		else if (subclassByte == 1)
 			return GameRuleEventHappenedCondition.unpackFromString(deserializer);
+		else if (subclassByte == 2)
+			return GameRuleZoneCondition.unpackFromString(deserializer);
 		else
 			throw new System.Exception("Invalid GameRuleCondition unpacked byte " + subclassByte);
 	}
 }
 
 ////////////////Conditions that trigger actions when checked////////////////
-public class GameRuleComparisonCondition : GameRuleCondition {
+public abstract class GameRuleComparisonCondition : GameRuleCondition {
+/*
 	public GameRuleConditionOperator conditionOperator;
 	public GameRuleComparisonCondition(GameRuleConditionOperator grco) {
 		conditionOperator = grco;
@@ -50,14 +54,14 @@ public class GameRulePlayerValueComparisonCondition : GameRuleComparisonConditio
 		leftGRPV = grpvl;
 		rightGRV = grvr;
 	}
-	public override void checkCondition(List<TeamPlayer> triggeringPlayers) {
+	public override void checkCondition(List<SportsObject> triggeringObjects) {
 		foreach (List<TeamPlayer> teamPlayerList in GameRules.instance.allPlayers) {
 			TeamPlayer player = teamPlayerList[0];
 			leftGRPV.player = player;
 			if (rightGRV is GameRulePlayerValue)
 				((GameRulePlayerValue)(rightGRV)).player = player.opponent;
 			if (conditionOperator.compare(leftGRPV, rightGRV))
-				triggeringPlayers.Add(player);
+				triggeringObjects.Add(player);
 		}
 	}
 	public override string ToString() {
@@ -136,4 +140,5 @@ public class GameRulePlayerScoreValue : GameRulePlayerValue {
 	public override string ToString() {
 		return "score";
 	}
+*/
 }

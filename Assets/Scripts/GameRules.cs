@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum GameRuleRequiredObject {
+public enum GameRuleRequiredObject : int {
 	Ball,
 	SecondBall,
 
@@ -13,7 +13,11 @@ public enum GameRuleRequiredObject {
 	BackboardHoop,
 	SmallWall,
 	FullGoalWall,
-	GoalRequiredObjectEnd
+	GoalRequiredObjectEnd,
+
+	ZoneTypeStart,
+	BoomerangZone,
+	ZoneTypeEnd
 };
 
 ////////////////Master rules handler object////////////////
@@ -31,7 +35,8 @@ public class GameRules : MonoBehaviour {
 	public GameObject goalPrefab5;
 	public GameObject zonePrefab;
 
-	public Dictionary<GameObject, GameObject> spawnedObjectPrefabMap = new Dictionary<GameObject, GameObject>();
+	public Dictionary<GameRuleRequiredObject, List<GameObject>> spawnedObjectsMap =
+		new Dictionary<GameRuleRequiredObject, List<GameObject>>();
 
 	//access to interacting with the game world
 	public GameObject ruleDisplayPrefab;
@@ -66,6 +71,9 @@ public class GameRules : MonoBehaviour {
 
 	//active rules
 	public List<GameRule> rulesList = new List<GameRule>();
+	public List<GameRule> effectRulesList = new List<GameRule>();
+	public List<GameRule> metaRulesList = new List<GameRule>();
+	public Dictionary<System.Type, List<GameRule>> rulesDict = new Dictionary<System.Type, List<GameRule>>();
 	public List<GameRuleActionWaitTimer> waitTimers = new List<GameRuleActionWaitTimer>();
 	const float NEW_RULE_WAIT_TIME = 3.0f; //keep this at least as big as the complete new rule animation
 	[HideInInspector]
@@ -74,7 +82,8 @@ public class GameRules : MonoBehaviour {
 	public void Start() {
         soundSource = GetComponent<AudioSource>();
 		instance = this;
-		Instantiate(zonePrefab);
+		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
+		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed
@@ -126,11 +135,18 @@ public class GameRules : MonoBehaviour {
 		} else
 			rule = GameRuleGenerator.GenerateNewRule(optionalRestrictions);
 		rulesList.Add(rule);
+		rulesDict[rule.action.GetType()].Add(rule);
 
 		//unity has no good way of giving us what we clicked on, so we have to remember it here
 		getButtonFromRuleDisplay(rule.ruleDisplay).onClick.AddListener(() => {this.DeleteRule(rule);});
 
 		addRequiredObjects();
+
+		//if the rule condition tracks a zone, give it its zone to track
+		if (rule.condition is GameRuleZoneCondition) {
+			GameRuleZoneCondition zoneCondition = ((GameRuleZoneCondition)(rule.condition));
+			zoneCondition.conditionZone = spawnedObjectsMap[zoneCondition.zoneType][0].GetComponent<Zone>();
+		}
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
@@ -155,6 +171,7 @@ public class GameRules : MonoBehaviour {
 			if (gameRule == ruleToDelete) {
 				widthoffset = -widthoffset;
 				rulesList.RemoveAt(i);
+				rulesDict[ruleToDelete.action.GetType()].Remove(ruleToDelete);
 			} else {
 				gameRule.animationStartTime = Time.realtimeSinceStartup;
 				gameRule.animationState = 4;
@@ -164,17 +181,19 @@ public class GameRules : MonoBehaviour {
 			}
 
 			//cancel any wait timers associated with this rule
-			GameRuleActionAction innerAction = gameRule.action.innerAction;
-			if (innerAction is GameRuleDurationActionAction) {
-				GameRuleActionDuration duration = ((GameRuleDurationActionAction)(innerAction)).duration;
-				if (duration is GameRuleActionUntilConditionDuration) {
-					GameRuleEventHappenedCondition untilCondition =
-						((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
-					//loop through all the wait timers and cancel their actions if they have this rule
-					for (int j = waitTimers.Count - 1; j >= 0; j--) {
-						if (waitTimers[j].condition == untilCondition) {
-							waitTimers[j].cancelAction();
-							waitTimers.RemoveAt(j);
+			if (gameRule.action is GameRuleEffectAction) {
+				GameRuleEffect innerEffect = ((GameRuleEffectAction)(gameRule.action)).innerEffect;
+				if (innerEffect is GameRuleDurationEffect) {
+					GameRuleActionDuration duration = ((GameRuleDurationEffect)(innerEffect)).duration;
+					if (duration is GameRuleActionUntilConditionDuration) {
+						GameRuleEventHappenedCondition untilCondition =
+							((GameRuleActionUntilConditionDuration)(duration)).untilCondition;
+						//loop through all the wait timers and cancel their actions if they have this rule
+						for (int j = waitTimers.Count - 1; j >= 0; j--) {
+							if (waitTimers[j].condition == untilCondition) {
+								waitTimers[j].cancelAction();
+								waitTimers.RemoveAt(j);
+							}
 						}
 					}
 				}
@@ -220,32 +239,26 @@ public class GameRules : MonoBehaviour {
 		List<GameRuleRequiredObject> requiredObjectsList = buildRequiredObjectsList();
 		for (int i = requiredObjectsList.Count - 1; i >= 0; i--) {
 			GameRuleRequiredObject requiredObject = requiredObjectsList[i];
-			GameObject prefab = getPrefabForRequiredObject(requiredObject);
 
-			//check to see if the object is present
-			bool missingObject = true;
-			foreach (KeyValuePair<GameObject, GameObject> spawnedObjectPrefab in spawnedObjectPrefabMap) {
-				if (spawnedObjectPrefab.Value == prefab) {
-					missingObject = false;
-					break;
-				}
-			}
+			//if we don't have the object, we need to spawn one (or many)
+			if (!spawnedObjectsMap.ContainsKey(requiredObject)) {
+				List<GameObject> spawnedObjects = new List<GameObject>();
+				spawnedObjectsMap[requiredObject] = spawnedObjects;
 
-			//we don't have the object, spawn it
-			if (missingObject) {
+				GameObject prefab = getPrefabForRequiredObject(requiredObject);
 				GameObject spawnedObject = (GameObject)Instantiate(prefab);
-				spawnedObjectPrefabMap.Add(spawnedObject, prefab);
+				spawnedObjects.Add(spawnedObject);
 
 				//these need multiple objects that get assigned to teams
 				if (requiredObject > GameRuleRequiredObject.GoalRequiredObjectStart && requiredObject < GameRuleRequiredObject.GoalRequiredObjectEnd) {
-                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
+					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 2;
 
 					//make another one
 					spawnedObject = (GameObject)Instantiate(prefab);
-					spawnedObjectPrefabMap.Add(spawnedObject, prefab);
-                    spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
+					spawnedObjects.Add(spawnedObject);
+					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
 					fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 1;
 
@@ -257,34 +270,30 @@ public class GameRules : MonoBehaviour {
 					Quaternion q = t.rotation;
 					q *= Quaternion.Euler(Vector3.up * 180);
 					t.rotation = q;
+				//zones all use the same prefab but get a different zone type
+				} else if (requiredObject > GameRuleRequiredObject.ZoneTypeStart && requiredObject < GameRuleRequiredObject.ZoneTypeEnd) {
+					spawnedObject.GetComponent<Zone>().buildZone(requiredObject);
 				}
 			}
 		}
 	}
 	public void deleteRequiredObjects() {
 		List<GameRuleRequiredObject> requiredObjectsList = buildRequiredObjectsList();
-		List<GameObject> gameObjectsToRemove = new List<GameObject>();
-		foreach (KeyValuePair<GameObject, GameObject> spawnedObjectPrefab in spawnedObjectPrefabMap) {
-			GameRuleRequiredObject requiredObject = getRequiredObjectForPrefab(spawnedObjectPrefab.Value);
+		List<GameRuleRequiredObject> requiredObjectsToRemove = new List<GameRuleRequiredObject>();
+		foreach (KeyValuePair<GameRuleRequiredObject, List<GameObject>> spawnedObjects in spawnedObjectsMap) {
+			GameRuleRequiredObject requiredObject = spawnedObjects.Key;
 
-			//go through the required objects list and see if we need this one
-			bool objectNotRequired = true;
-			foreach (GameRuleRequiredObject otherRequiredObject in requiredObjectsList) {
-				if (otherRequiredObject == requiredObject) {
-					objectNotRequired = false;
-					break;
-				}
-			}
-
-			//none of the rules require this object, we'll delete it
-			if (objectNotRequired)
-				gameObjectsToRemove.Add(spawnedObjectPrefab.Key);
+			//none of the rules require these objects, add it for deletion
+			if (!requiredObjectsList.Contains(requiredObject))
+				requiredObjectsToRemove.Add(requiredObject);
 		}
 
 		//go through the list of objects to remove and remove them
-		foreach (GameObject objectToRemove in gameObjectsToRemove) {
-			spawnedObjectPrefabMap.Remove(objectToRemove);
-			Destroy(objectToRemove);
+		foreach (GameRuleRequiredObject requiredObjectToRemove in requiredObjectsToRemove) {
+			foreach (GameObject objectToRemove in spawnedObjectsMap[requiredObjectToRemove])
+				Destroy(objectToRemove);
+
+			spawnedObjectsMap.Remove(requiredObjectToRemove);
 		}
 	}
 	public List<GameRuleRequiredObject> buildRequiredObjectsList() {
@@ -308,26 +317,10 @@ public class GameRules : MonoBehaviour {
 			return goalPrefab4;
 		else if (requiredObject == GameRuleRequiredObject.FullGoalWall)
 			return goalPrefab5;
+		else if (requiredObject > GameRuleRequiredObject.ZoneTypeStart && requiredObject < GameRuleRequiredObject.ZoneTypeEnd)
+			return zonePrefab;
 		else
-			throw new System.Exception("Bug: Invalid required object");
-	}
-	public GameRuleRequiredObject getRequiredObjectForPrefab(GameObject prefab) {
-		if (prefab == ballPrefab)
-			return GameRuleRequiredObject.Ball;
-		else if (prefab == bigBallPrefab)
-			return GameRuleRequiredObject.SecondBall;
-		else if (prefab == goalPrefab)
-			return GameRuleRequiredObject.FootGoal;
-		else if (prefab == goalPrefab2)
-			return GameRuleRequiredObject.GoalPosts;
-		else if (prefab == goalPrefab3)
-			return GameRuleRequiredObject.BackboardHoop;
-		else if (prefab == goalPrefab4)
-			return GameRuleRequiredObject.SmallWall;
-		else if (prefab == goalPrefab5)
-			return GameRuleRequiredObject.FullGoalWall;
-		else
-			throw new System.Exception("Bug: Invalid prefab");
+			throw new System.Exception("Bug: Invalid required object " + requiredObject);
 	}
 	public bool ruleChangeIsOnCooldown() {
 		return Time.realtimeSinceStartup - lastRuleChange < NEW_RULE_WAIT_TIME;
@@ -429,8 +422,16 @@ public class GameRules : MonoBehaviour {
 		}
 	}
 	public void SendEvent(GameRuleEvent gre) {
-		foreach (GameRule rule in rulesList) {
+		foreach (GameRule rule in effectRulesList) {
 			rule.sendEvent(gre);
+		}
+		//if any of the metarules intercepted, give them a flash
+		foreach (GameRule rule in metaRulesList) {
+			GameRuleMetaRule metaRule = ((GameRuleMetaRuleAction)(rule.action)).innerMetaRule;
+			if (metaRule.lastInterceptionSource != null) {
+				rule.startFlash(metaRule.lastInterceptionSource);
+				metaRule.lastInterceptionSource = null;
+			}
 		}
 
 		//check wait timers and remove any if they happen
@@ -438,7 +439,7 @@ public class GameRules : MonoBehaviour {
 		int frozenTeam = 0;
 		for (int i = waitTimers.Count - 1; i >= 0; i--) {
 			GameRuleActionWaitTimer waitTimer = waitTimers[i];
-			if (waitTimer.action is GameRuleFreezeActionAction) {
+			if (waitTimer.action is GameRuleFreezeEffect) {
 				//this is the most recent team frozen, it will stay frozen
 				if (frozenTeam == 0)
 					frozenTeam = waitTimer.target.team;
@@ -449,9 +450,16 @@ public class GameRules : MonoBehaviour {
 					continue;
 				}
 			}
-			if (waitTimer.conditionHappened(gre))
+			if (waitTimer.eventHappened(gre))
 				waitTimers.RemoveAt(i);
 		}
+	}
+	public SportsObject interceptSelection(SportsObject so) {
+		foreach (GameRule metaRule in metaRulesList) {
+			if (metaRule.condition.checkCondition(so))
+				return ((GameRuleMetaRuleAction)(metaRule.action)).innerMetaRule.interceptSelection(so);
+		}
+		return so;
 	}
 
 	//General helpers
@@ -545,7 +553,7 @@ public class GameRule {
 			float targetHeight = Mathf.Min(iconDisplaySpace.height, iconDisplaySpace.width / iconWidthToHeightRatio);
 
 			//now fill in all the images
-			//conviniently, the image objects were set to use top-left anchoring
+			//conveniently, the image objects were set to use left anchoring
 			float nextX = 0;
 			for (int i = 0; i < iconList.Count; i++) {
 				GameObject imageObject = imageObjects[i];
@@ -600,23 +608,26 @@ public class GameRule {
 		}
 	}
 	public void checkCondition() {
+		/*
 		//receive a list of all players that triggered the condition
-		List<TeamPlayer> triggeringPlayers = new List<TeamPlayer>();
-		condition.checkCondition(triggeringPlayers);
-		if (triggeringPlayers.Count > 0) {
-			foreach (TeamPlayer tp in triggeringPlayers) {
-				action.takeAction(tp);
+		List<SportsObject> triggeringObjects = new List<SportsObject>();
+		condition.checkCondition(triggeringObjects);
+		if (triggeringObjects.Count > 0) {
+			foreach (SportsObject so in triggeringObjects) {
+				action.takeAction(so);
 			}
-			startFlash(triggeringPlayers[0]);
+			startFlash(triggeringObjects[0]);
 		}
+		*/
 	}
 	public void sendEvent(GameRuleEvent gre) {
-		if (condition.conditionHappened(gre)) {
-			SportsObject source = gre.getEventSource();
-			action.takeAction(source);
-			SportsObject target = action.selector.target(source);
-			if (target != null)
-				startFlash(target);
+		if (condition.eventHappened(gre)) {
+			if (action is GameRuleEffectAction) {
+				GameRuleEffectAction effectAction = (GameRuleEffectAction)action;
+				SportsObject target = effectAction.takeAction(gre.getEventSource());
+				if (target != null)
+					startFlash(target);
+			}
 		}
 	}
 	public void startFlash(SportsObject so) {
@@ -625,9 +636,10 @@ public class GameRule {
 		flashImage.color = new Color(targetColor.r, targetColor.g, targetColor.b, 1.0f);
 	}
 	public void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
-		//only conditions generate required objects but an action may have an inner until-condition action
+		//only conditions generate required objects but an effect action may have an inner until-condition effect
 		condition.addRequiredObjects(requiredObjectsList);
-		action.innerAction.addRequiredObjects(requiredObjectsList);
+		if (action is GameRuleEffectAction)
+			((GameRuleEffectAction)(action)).innerEffect.addRequiredObjects(requiredObjectsList);
 	}
 	public void packToString(GameRuleSerializer serializer) {
 		condition.packToString(serializer);

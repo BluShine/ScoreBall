@@ -14,6 +14,7 @@ class GameRuleChances {
 		//which kind of condition to do
 		d[typeof(GameRuleComparisonCondition)]										= 0;
 		d[typeof(GameRuleEventHappenedCondition)]									= 1;
+		d[typeof(GameRuleZoneCondition)]											= 1;
 
 		//there would be a big section here for comparison conditions but we're not using them right now
 
@@ -21,12 +22,12 @@ class GameRuleChances {
 		d[typeof(RuleStubPlayerEventHappenedCondition)]								= 2;
 		d[typeof(RuleStubBallEventHappenedCondition)]								= 1;
 
-		//which action-actions to use
-		d[typeof(GameRulePointsPlayerActionAction)]									= 1;
-		d[typeof(GameRuleFreezeActionAction)]										= 1;
-		d[typeof(GameRuleDuplicateActionAction)]									= 1;
-		d[typeof(GameRuleDizzyActionAction)]										= 1;
-		d[typeof(GameRuleBounceActionAction)]										= 1;
+		//which effects to use
+		d[typeof(GameRulePointsPlayerEffect)]										= 1;
+		d[typeof(GameRuleFreezeEffect)]												= 1;
+		d[typeof(GameRuleDuplicateEffect)]											= 1;
+		d[typeof(GameRuleDizzyEffect)]												= 1;
+		d[typeof(GameRuleBounceEffect)]												= 1;
 
 		//which durations to use
 		d[typeof(GameRuleActionFixedDuration)]										= 1;
@@ -78,6 +79,14 @@ class GameRuleChances {
 
 		return d;
 	}
+	public static Dictionary<GameRuleRequiredObject, int> zoneChances = createZoneChances();
+	public static Dictionary<GameRuleRequiredObject, int> createZoneChances() {
+		Dictionary<GameRuleRequiredObject, int> d = new Dictionary<GameRuleRequiredObject, int>();
+
+		d[GameRuleRequiredObject.BoomerangZone]						= 1;
+
+		return d;
+	}
 	//pick a value from the list based on the rate that each value can be picked
 	//chances are relative only to each other
 	public static System.Type pickFrom(List<System.Type> typeofList) {
@@ -92,16 +101,19 @@ class GameRuleChances {
 	public static GameRuleSelector pickFrom(List<GameRuleSelector> selectorList) {
 		return pickFrom(selectorList, selectorChances);
 	}
+	public static GameRuleRequiredObject pickFrom(List<GameRuleRequiredObject> zoneList) {
+		return pickFrom(zoneList, zoneChances);
+	}
 	public static T pickFrom<T>(List<T> valueList, Dictionary<T, int> valueChances) {
 		int totalChances = 0;
 		int[] valueChancesList = new int[valueList.Count];
 		//cache the chance values per type and sum up the chances
 		for (int i = valueList.Count - 1; i >= 0; i--)
 			totalChances += (valueChancesList[i] = valueChances[valueList[i]]);
-		int chosenType = Random.Range(0, totalChances);
+		int chosenValue = Random.Range(0, totalChances);
 		//find the type that chosenType corresponds to
 		for (int i = valueChancesList.Length - 1; i >= 0; i--)
-			if ((chosenType -= valueChancesList[i]) < 0)
+			if ((chosenValue -= valueChancesList[i]) < 0)
 				return valueList[i];
 		//we should never get here
 		throw new System.Exception("Bug: could not pick a random value from the list!");
