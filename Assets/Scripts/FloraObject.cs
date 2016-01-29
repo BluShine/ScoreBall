@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[ExecuteInEditMode]
 public class FloraObject : MonoBehaviour {
 
     public Gradient colorGradient;

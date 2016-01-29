@@ -27,6 +27,7 @@ public class SportsObject : FieldObject {
 
     [HideInInspector]
     public GameRules gameRules;
+    GameObject floor;
 
     [HideInInspector]
     public bool spawned = false;
@@ -66,7 +67,11 @@ public class SportsObject : FieldObject {
             dizzyTime = 0;
         }
         body = GetComponent<Rigidbody>();
-        gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
+        if (GameObject.Find("GameRules") != null)
+        {
+            gameRules = GameObject.Find("GameRules").GetComponent<GameRules>();
+            floor = gameRules.floor;
+        }
         soundSource = GetComponent<AudioSource>();
         startingConstraints = body.constraints;
         started = true;
@@ -226,7 +231,7 @@ public class SportsObject : FieldObject {
 	}
 
 	protected void handleCollision(GameObject gameObject) {
-		if (gameObject == gameRules.floor) {
+		if (floor != null && gameObject == floor) {
 			isOnGround = true;
 		} else if (checkBallCollision(gameObject)) {
         } else if (checkPlayerCollision(gameObject)) {
@@ -302,7 +307,7 @@ public class SportsObject : FieldObject {
 	}
 
 	void handleCollisionExit(GameObject gameObject) {
-		if (gameObject == gameRules.floor)
+		if (floor != null && gameObject == floor)
 			isOnGround = false;
 		else if (checkZoneCollisionExit(gameObject)) {
 		}

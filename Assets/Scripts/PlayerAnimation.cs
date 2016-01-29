@@ -9,6 +9,7 @@ public class PlayerAnimation : MonoBehaviour {
     static float TURNMINTIME = 0.1f;
     public Vector3 offset = new Vector3(0,0,0.5f);
     public Vector3 shadowOffset = new Vector3(0, .01f, .5f);
+    public float rotation = 35;
 
     enum Direction { NW, SW, NE, SE}
     Direction lastDirection;
@@ -29,7 +30,7 @@ public class PlayerAnimation : MonoBehaviour {
 	void Update () {
         if (!stunned)
         {
-            transform.rotation = Quaternion.Euler(35, 0, 0);
+            transform.rotation = Quaternion.Euler(rotation, 0, 0);
             transform.position = transform.parent.position + offset;
         }
 

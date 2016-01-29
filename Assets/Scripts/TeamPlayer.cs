@@ -68,7 +68,8 @@ public class TeamPlayer : SportsObject {
 	new void Start () {
         base.Start();
         useDefaultFreezing(false);
-		gameRules.RegisterPlayer(this);
+        if(gameRules != null)
+		    gameRules.RegisterPlayer(this);
         line = GetComponent<TrailRenderer>();
         particles = GetComponent<ParticleSystem>();
         playerAnim = GetComponentInChildren<PlayerAnimation>();
@@ -449,6 +450,8 @@ public class TeamPlayer : SportsObject {
     }
 
 	public override void handleFieldCollision(FieldObject fObject) {
+        if (gameRules == null)
+            return;
 		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo: fObject));
     }
 
