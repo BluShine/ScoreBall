@@ -11,7 +11,7 @@ Shader "Sprites/Bottom"
 	{
 		Tags
 		{ 
-			"Queue"="AlphaTest " 
+			"Queue"="Geometry" 
 			"IgnoreProjector"="True" 
 			"RenderType"="Transparent" 
 			"PreviewType"="Plane"
