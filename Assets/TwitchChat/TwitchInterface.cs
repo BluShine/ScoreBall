@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Net.Sockets;
 using System.IO;
+using UnityEngine.UI;
 
 public class TwitchInterface : MonoBehaviour {
 
@@ -22,6 +23,9 @@ public class TwitchInterface : MonoBehaviour {
     /// </summary>
     public string channel = "#bobross";
 
+    public InputField usernameField;
+    public InputField oauthField; 
+
     //recieved messages delegate
     public delegate void RecievedMessage(string message);
     public RecievedMessage messageReciever;
@@ -30,6 +34,10 @@ public class TwitchInterface : MonoBehaviour {
     private NetworkStream nStream;
     private StreamReader sReader;
     private StreamWriter sWriter;
+
+    bool connected = false;
+    public GameObject connectObject;
+    public Text errorMessage;
 
     public struct TwitchChatMessage
     {
@@ -44,12 +52,37 @@ public class TwitchInterface : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        Connect();
-	}
+        connectObject.SetActive(false);
+
+    }
 
     public void Connect()
     {
-        tcpClient = new TcpClient(SERVER, PORT);
+        if (connected)
+            return;
+
+        username = usernameField.text.ToLower();
+        oauthToken = oauthField.text;
+        channel = "#" + username;
+        if (username == "")
+        {
+            errorMessage.text = "please enter a username";
+            return;
+        }
+        if(oauthToken == "")
+        {
+            errorMessage.text = "please enter your oauth token";
+            return;
+        }
+
+        try
+        {
+            tcpClient = new TcpClient(SERVER, PORT);
+        }
+        catch (SocketException e)
+        {
+            errorMessage.text = "network error: " + e.Message;
+        }
         nStream = tcpClient.GetStream();
         sReader = new StreamReader(nStream);
         sWriter = new StreamWriter(nStream);
@@ -68,7 +101,7 @@ public class TwitchInterface : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //check for new data
-	    while(nStream.DataAvailable)
+        while (nStream != null && nStream.DataAvailable)
         {
             string data = sReader.ReadLine();
             if (data != null)
@@ -79,22 +112,29 @@ public class TwitchInterface : MonoBehaviour {
     void ReadData(string data)
     {
         string[] splitData = data.Split(' ');
-        switch(splitData[1])
+        //find the second colon
+        int colonIndex = data.IndexOf(':');
+        int secondColonIndex = data.IndexOf(':', colonIndex + 1);
+        switch (splitData[1])
         {
             case "PING":
                 //respond to pings
                 SendMessage("PONG " + splitData[2]);
                 break;
+            case "NOTICE":
+                errorMessage.text = "tmi.twitch.tv: " + data.Substring(secondColonIndex + 1);
+                break;
             case "PRIVMSG":
-                //find the second colon, get the string from after that
-                int colonIndex = data.IndexOf(':');
-                int secondColonIndex = data.IndexOf(':', colonIndex + 1);
+                //get the string after the second colon
                 messageReciever(data.Substring(secondColonIndex + 1));
                 break;
             case "001":
                 Write(("MODE " + username + " +B"));
                 Write("JOIN " + channel);
                 Write("PRIVMSG " + channel + " :Game connected!");
+                connected = true;
+                connectObject.SetActive(true);
+                errorMessage.text = "connection successful";
                 break;
             default:
                 break;
