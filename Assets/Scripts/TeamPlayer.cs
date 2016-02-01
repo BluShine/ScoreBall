@@ -425,6 +425,8 @@ public class TeamPlayer : SportsObject {
     }
 
 	public override void handlePlayerCollision(TeamPlayer collidedPlayer) {
+        if (gameRules == null)
+            return;
 		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitPlayer, tp: this, vct: collidedPlayer));
 		if (dashTimer > 0) {
 			//steal the ball
