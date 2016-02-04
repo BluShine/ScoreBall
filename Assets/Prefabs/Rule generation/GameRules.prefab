@@ -82,22 +82,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &184160
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 461896}
-  - 114: {fileID: 11485242}
-  m_Layer: 0
-  m_Name: Icon Storage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &193714
 GameObject:
   m_ObjectHideFlags: 1
@@ -207,18 +191,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 480648}
   m_RootOrder: 0
---- !u!4 &461896
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 184160}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 470434}
-  m_RootOrder: 3
 --- !u!4 &470434
 Transform:
   m_ObjectHideFlags: 1
@@ -232,7 +204,6 @@ Transform:
   - {fileID: 480648}
   - {fileID: 471332}
   - {fileID: 426908}
-  - {fileID: 461896}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &471332
@@ -762,6 +733,7 @@ MonoBehaviour:
   zonePrefab: {fileID: 109018, guid: 4aae546363afffd4c9e22156c21f736f, type: 2}
   ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
   pointsTextPrefab: {fileID: 175400, guid: af5d39570a81ca247bd3de468f5ab89b, type: 2}
+  iconStoragePrefab: {fileID: 134634, guid: 50d26ced33503c64d9d73fa8adec8965, type: 2}
   uiCanvas: {fileID: 0}
   mainCamera: {fileID: 0}
   floor: {fileID: 0}
@@ -812,62 +784,6 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 5
---- !u!114 &11485242
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 184160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8052c8f9fbcd56845b1a8b98df34fb3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerIcon: {fileID: 21300000, guid: 4b0bdaa760428f246b11e464fa4d500b, type: 3}
-  opponentIcon: {fileID: 21300000, guid: 26a8fbcab7fff454587a47c6653ded01, type: 3}
-  genericBallIcon: {fileID: 21300000, guid: e39f80ec26ffc2d449a710a35cc86852, type: 3}
-  soccerBallIcon: {fileID: 21300000, guid: 1157f9bafd61be1478b6a36a7c118fc6, type: 3}
-  beachBallIcon: {fileID: 21300000, guid: 30777eb99a37c694095675e525002783, type: 3}
-  ultimateBallIcon: {fileID: 21300000, guid: a3d9a43854a35c04e85d639a60249b44, type: 3}
-  fishIcon: {fileID: 21300000, guid: 3ec0bfd92d18bc94389e0c1ef0ee1e9e, type: 3}
-  genericSportsObjectIcon: {fileID: 21300000, guid: 83a822cdd9e763244a4cb38049c8b1af,
-    type: 3}
-  bananaIcon: {fileID: 21300000, guid: 89ebe84515bc21143b4adc6a54226ab7, type: 3}
-  catIcon: {fileID: 21300000, guid: c5e6ff0f237d04442853a5decfc2e2bd, type: 3}
-  soccerGoalIcon: {fileID: 21300000, guid: 550a5e7b6b19406439396ea423d4ffd6, type: 3}
-  backboardHoopIcon: {fileID: 21300000, guid: 54469b77681afb1478bb87541c3eda5f, type: 3}
-  wallIcon: {fileID: 21300000, guid: b8f1aa40696e294498235f3e468230f3, type: 3}
-  goalpostsIcon: {fileID: 21300000, guid: 62bf8ff667ba47e48b9f43f1e7862122, type: 3}
-  boundaryIcon: {fileID: 21300000, guid: f8c062f38a088554e92effc0fd93bd44, type: 3}
-  stealIcon: {fileID: 21300000, guid: 24a0bede40123b244b752939668b2864, type: 3}
-  bumpIcon: {fileID: 21300000, guid: c8b940590ad209b498f8f8de42506c47, type: 3}
-  scoreGoalIcon: {fileID: 21300000, guid: 1f78c22640373de43a96ad783d7e26b0, type: 3}
-  smackIcon: {fileID: 21300000, guid: 9e1581b926cb8ea469f5eb1e61c3215b, type: 3}
-  grabIcon: {fileID: 21300000, guid: db90b01ba722914479efd50d70d62c4f, type: 3}
-  kickIcon: {fileID: 21300000, guid: e7b978c8445732a41883b31445d3e683, type: 3}
-  duplicatedIcon: {fileID: 21300000, guid: f6ee6f4b0f38d754b8145141d11549db, type: 3}
-  frozenIcon: {fileID: 21300000, guid: 2e15f5a16136dc744a23eb2e71f06fdd, type: 3}
-  dizzyIcon: {fileID: 21300000, guid: 81faf60b081402340853b6be81e225ea, type: 3}
-  bouncyIcon: {fileID: 21300000, guid: c3e243cde503e9642af0a8eb6bf13737, type: 3}
-  charPlusIcon: {fileID: 21300000, guid: d0e48a68fc6a0d248bb87a3ade7a2907, type: 3}
-  charMinusIcon: {fileID: 21300000, guid: 1fd5df97418c1bd44a8812e16a0b0d29, type: 3}
-  charDigitIcons:
-  - {fileID: 21300000, guid: 5f56db7867477874193e1f93fc476bb0, type: 3}
-  - {fileID: 21300000, guid: f36e3c7ba07d8e442862f08f0e023b5d, type: 3}
-  - {fileID: 21300000, guid: 5582c0b36d4deac4fb30919d905f408e, type: 3}
-  - {fileID: 21300000, guid: 7c2f44866303d3843892ecd1e6a17b5f, type: 3}
-  - {fileID: 21300000, guid: b63f9bf57f791744eae9248731a983d9, type: 3}
-  - {fileID: 21300000, guid: e06899a368f6dec46a682254b3b039b2, type: 3}
-  - {fileID: 21300000, guid: a2f4ed111513f74499f8e3437503d6a8, type: 3}
-  - {fileID: 21300000, guid: 4ddf915df4e69b248bb96efcf2e7b4d6, type: 3}
-  - {fileID: 21300000, guid: ff02e743e8451ed4d919dbdcfee5e282, type: 3}
-  - {fileID: 21300000, guid: 6595c2e1acaf9db40bc47acb43ecd315, type: 3}
-  charAmpersandIcon: {fileID: 21300000, guid: de9264cb895712c4da8ad733a8e5b8c4, type: 3}
-  charSlashIcon: {fileID: 21300000, guid: 85aa7a0a359da7241bd9dad23a5444ec, type: 3}
-  clockIcon: {fileID: 21300000, guid: e2123983a49d7dc45b9881f2b05fcb7e, type: 3}
-  gainsEffectIcon: {fileID: 21300000, guid: 50095d6bc42dc60478b9fa7780a9483f, type: 3}
-  resultsInIcon: {fileID: 21300000, guid: b96744af1a1511748b8a454a7d5ece24, type: 3}
-  boomerangZone: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -896,6 +812,10 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: c622fb4aa94deb54a9dc75d36c2429bb,
         type: 3}
+    - target: {fileID: 0}
+      propertyPath: iconStoragePrefab
+      value: 
+      objectReference: {fileID: 134634, guid: 50d26ced33503c64d9d73fa8adec8965, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 195328}

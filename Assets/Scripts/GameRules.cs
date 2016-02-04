@@ -41,6 +41,7 @@ public class GameRules : MonoBehaviour {
 	//access to interacting with the game world
 	public GameObject ruleDisplayPrefab;
 	public GameObject pointsTextPrefab;
+	public GameObject iconStoragePrefab; //this is shared across scenes, so keep it as just a prefab
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
@@ -84,6 +85,7 @@ public class GameRules : MonoBehaviour {
 		instance = this;
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
+		Instantiate(iconStoragePrefab);
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed
@@ -117,6 +119,9 @@ public class GameRules : MonoBehaviour {
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
 		if (ruleChangeIsOnCooldown() || rulesList.Count >= 3)
+			return;
+		//if we're using rule icons, make sure that the icon storage has loaded
+		if (useRuleIcons && GameRuleIconStorage.instance == null)
 			return;
 
 		lastRuleChange = Time.realtimeSinceStartup;
