@@ -7,8 +7,10 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: Assets/Networking test/scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/title.unity
+  - enabled: 1
+    path: Assets/titlescreen.unity
   - enabled: 1
     path: Assets/game.unity
   - enabled: 1
