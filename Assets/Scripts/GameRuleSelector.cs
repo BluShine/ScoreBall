@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public abstract class GameRuleSelector {
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
-	public abstract void addIcons(List<Sprite> iconList);
+	public abstract void addIcons(List<GameObject> iconList);
 	//000=GameRulePlayerSelector
 	//001=GameRuleOpponentSelector
 	//010=GameRuleBallShooterSelector
@@ -44,7 +44,7 @@ public class GameRulePlayerSelector : GameRuleSourceSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.playerIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
@@ -63,7 +63,7 @@ public class GameRuleOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.opponentIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
@@ -82,7 +82,7 @@ public class GameRuleBallShooterSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.playerIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
@@ -102,7 +102,7 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.opponentIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
@@ -118,7 +118,7 @@ public class GameRuleBallSelector : GameRuleSourceSelector {
 	public override System.Type targetType() {
 		return typeof(Ball);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {

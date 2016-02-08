@@ -7,7 +7,7 @@ public abstract class GameRuleCondition {
 	public virtual bool checkCondition(SportsObject triggeringObject) {return false;}
 	public virtual bool eventHappened(GameRuleEvent gre) {return false;}
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
-	public abstract void addIcons(List<Sprite> iconList);
+	public abstract void addIcons(List<GameObject> iconList);
 	//00=GameRuleComparisonCondition
 	//01=GameRuleEventHappenedCondition
 	//10=GameRuleZoneCondition

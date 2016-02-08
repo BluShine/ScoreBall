@@ -72,10 +72,10 @@ public class Zone : FieldObject {
 		};
 
 		GameObject zoneIcon = transform.GetChild(0).gameObject;
-		zoneIcon.GetComponent<MeshFilter>().mesh = iconMesh;
-		zoneIcon.GetComponent<MeshRenderer>().material.mainTexture = getIconForZoneType(zoneType).texture;
+		//zoneIcon.GetComponent<MeshFilter>().mesh = iconMesh;
+		//zoneIcon.GetComponent<MeshRenderer>().material.mainTexture = getIconForZoneType(zoneType);
 	}
-	public Sprite getIconForZoneType(GameRuleRequiredObject zoneType) {
+	public GameObject getIconForZoneType(GameRuleRequiredObject zoneType) {
 		if (zoneType == GameRuleRequiredObject.BoomerangZone)
 			return GameRuleIconStorage.instance.boomerangZone;
 		else

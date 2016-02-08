@@ -160,7 +160,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 				throw new System.Exception("Bug: could not determine object required");
 		}
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		selector.addIcons(iconList);
 		if (eventType == GameRuleEventType.PlayerShootBall) {
 			iconList.Add(GameRuleIconStorage.instance.kickIcon);
@@ -197,7 +197,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 		}
 	}
-	public void addFieldObjectIcon(List<Sprite> iconList) {
+	public void addFieldObjectIcon(List<GameObject> iconList) {
 		if (param == "footgoal")
 			iconList.Add(GameRuleIconStorage.instance.soccerGoalIcon);
 		else if (param == "goalposts")

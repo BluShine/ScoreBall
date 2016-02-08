@@ -528,49 +528,22 @@ public class GameRule {
 			tText.gameObject.SetActive(false);
 
 			//build out the list of icons to display
-			List<Sprite> iconList = new List<Sprite>();
+			List<GameObject> iconList = new List<GameObject>();
 			condition.addIcons(iconList);
 			iconList.Add(GameRuleIconStorage.instance.resultsInIcon);
 			action.addIcons(iconList);
 
 			//clone our base image object so that we have one per icon (including the base image)
-			GameObject originalImage = tImage.GetChild(0).gameObject;
+			GameObject parentObject = tImage.FindChild("Image").gameObject;
 			List<GameObject> imageObjects = new List<GameObject>();
-			imageObjects.Add(originalImage);
-			for (int i = iconList.Count; i > 1; i--) {
-				GameObject imageObject = (GameObject)GameObject.Instantiate(originalImage);
-				imageObject.transform.SetParent(tImage);
+            float x = 0;
+			for (int i = iconList.Count - 1; i > 0; i--) {
+				GameObject imageObject = GameObject.Instantiate(iconList[i]);
+				imageObject.transform.parent = parentObject.transform;
 				imageObjects.Add(imageObject);
-
 				//for some reason, Unity decides to set the instantiated scale to (0, 0, 0)
-				imageObject.transform.localScale = originalImage.transform.localScale;
-			}
+				imageObject.transform.localScale = Vector3.one;
 
-			//find out how big our images need to be
-			float iconWidthToHeightRatio = RULE_ICON_SPACING_AMOUNT * (iconList.Count - 1);
-			foreach (Sprite s in iconList) {
-				Texture tex = s.texture;
-				iconWidthToHeightRatio += (float)(tex.width) / tex.height;
-			}
-
-			//if the width:height ratio for the images is bigger than the width:height of the icon display area, shrink the images
-			Rect iconDisplaySpace = ((RectTransform)(tImage)).rect;
-			float targetHeight = Mathf.Min(iconDisplaySpace.height, iconDisplaySpace.width / iconWidthToHeightRatio);
-
-			//now fill in all the images
-			//conveniently, the image objects were set to use left anchoring
-			float nextX = 0;
-			for (int i = 0; i < iconList.Count; i++) {
-				GameObject imageObject = imageObjects[i];
-				Sprite s = iconList[i];
-				imageObject.GetComponent<Image>().sprite = s;
-
-				RectTransform imageTransform = (RectTransform)imageObject.transform;
-				Texture tex = s.texture;
-				imageTransform.sizeDelta = new Vector2(targetHeight * tex.width / tex.height, targetHeight);
-
-				imageTransform.anchoredPosition = new Vector2(nextX, 0);
-				nextX += imageTransform.sizeDelta.x + targetHeight * RULE_ICON_SPACING_AMOUNT;
 			}
 			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString());
 		} else {

@@ -8,59 +8,59 @@ public class GameRuleIconStorage : MonoBehaviour {
 
 	//all the various icon images
 	//player selectors
-	public Sprite playerIcon;
-	public Sprite opponentIcon;
+	public GameObject playerIcon;
+	public GameObject opponentIcon;
 
 	//ball selectors
-	public Sprite genericBallIcon;
-	public Sprite soccerBallIcon;
-	public Sprite beachBallIcon;
-	public Sprite ultimateBallIcon;
-	public Sprite fishIcon;
+	public GameObject genericBallIcon;
+	public GameObject soccerBallIcon;
+	public GameObject beachBallIcon;
+	public GameObject ultimateBallIcon;
+	public GameObject fishIcon;
 
 	//sports object types
-	public Sprite genericSportsObjectIcon;
-	public Sprite bananaIcon;
-	public Sprite catIcon;
+	public GameObject genericSportsObjectIcon;
+	public GameObject bananaIcon;
+	public GameObject catIcon;
 
 	//field object types
-	public Sprite soccerGoalIcon;
-	public Sprite backboardHoopIcon;
-	public Sprite wallIcon;
-	public Sprite goalpostsIcon;
-	public Sprite boundaryIcon;
+	public GameObject soccerGoalIcon;
+	public GameObject backboardHoopIcon;
+	public GameObject wallIcon;
+	public GameObject goalpostsIcon;
+	public GameObject boundaryIcon;
 
 	//events
-	public Sprite stealIcon;
-	public Sprite bumpIcon;
-	public Sprite scoreGoalIcon;
-	public Sprite smackIcon;
-	public Sprite grabIcon;
-	public Sprite kickIcon;
+	public GameObject stealIcon;
+	public GameObject bumpIcon;
+	public GameObject scoreGoalIcon;
+	public GameObject smackIcon;
+	public GameObject grabIcon;
+	public GameObject kickIcon;
 
 	//effects
-	public Sprite duplicatedIcon;
-	public Sprite frozenIcon;
-	public Sprite dizzyIcon;
-	public Sprite bouncyIcon;
-	public Sprite charPlusIcon;
-	public Sprite charMinusIcon;
-	public Sprite[] charDigitIcons;
-	public Sprite charAmpersandIcon;
-	public Sprite charSlashIcon;
+	public GameObject duplicatedIcon;
+	public GameObject frozenIcon;
+	public GameObject dizzyIcon;
+	public GameObject bouncyIcon;
+	public GameObject charPlusIcon;
+	public GameObject charMinusIcon;
+	public GameObject[] charDigitIcons;
+	public GameObject charAmpersandIcon;
+	public GameObject charSlashIcon;
 
 	//icons to join other icons
-	public Sprite clockIcon;
-	public Sprite gainsEffectIcon;
-	public Sprite resultsInIcon;
+	public GameObject clockIcon;
+	public GameObject gainsEffectIcon;
+	public GameObject resultsInIcon;
 
 	//zone icons
-	public Sprite boomerangZone;
+	public GameObject boomerangZone;
 
 	void Start () {
 		instance = this;
 	}
-	public void addDigitIcons(int value, List<Sprite> iconList) {
+	public void addDigitIcons(int value, List<GameObject> iconList) {
 		List<int> digits = new List<int>();
 		for (; value > 0; value /= 10)
 			digits.Add(value % 10);

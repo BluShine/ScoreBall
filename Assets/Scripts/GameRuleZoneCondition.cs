@@ -26,7 +26,7 @@ public class GameRuleZoneCondition : GameRuleCondition {
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		requiredObjectsList.Add(zoneType);
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		if (zoneType == GameRuleRequiredObject.BoomerangZone)
 			iconList.Add(GameRuleIconStorage.instance.boomerangZone);
 		else
