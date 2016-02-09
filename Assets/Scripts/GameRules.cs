@@ -537,13 +537,15 @@ public class GameRule {
 			GameObject parentObject = tImage.FindChild("Image").gameObject;
 			List<GameObject> imageObjects = new List<GameObject>();
             float x = 0;
-			for (int i = iconList.Count - 1; i > 0; i--) {
+			for (int i = 0; i < iconList.Count; i++) {
 				GameObject imageObject = GameObject.Instantiate(iconList[i]);
-				imageObject.transform.parent = parentObject.transform;
+                //set parent to the parentObject, making sure to use the prefab's local position (not world)
+				imageObject.transform.SetParent(parentObject.transform, false);
 				imageObjects.Add(imageObject);
-				//for some reason, Unity decides to set the instantiated scale to (0, 0, 0)
-				imageObject.transform.localScale = Vector3.one;
-
+                //space out the icons
+                RectTransform r = imageObject.GetComponent<RectTransform>();
+                r.localPosition = r.localPosition + new Vector3(x, 0, 0);
+                x += r.rect.width;
 			}
 			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString());
 		} else {

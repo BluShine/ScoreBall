@@ -8,7 +8,7 @@ public class MenuItems
     {
         foreach(GameObject g in Selection.gameObjects)
         {
-            //PrefabUtility.ReplacePrefab(g, PrefabUtility.GetPrefabParent(g));
-        }   
+            PrefabUtility.ReplacePrefab(g, PrefabUtility.GetPrefabParent(g));
+        }
     }
 }
