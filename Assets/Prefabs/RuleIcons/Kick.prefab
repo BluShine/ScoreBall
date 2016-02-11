@@ -26,6 +26,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 22414166}
   - 222: {fileID: 22283920}
+  - 114: {fileID: 11452860}
   m_Layer: 5
   m_Name: Kick
   m_TagString: Untagged
@@ -60,6 +61,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11452860
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 167824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38cd86b77909da548bae28a18687aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &22239882
 CanvasRenderer:
   m_ObjectHideFlags: 1

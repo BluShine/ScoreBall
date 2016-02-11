@@ -10,6 +10,7 @@ GameObject:
   - 224: {fileID: 22494226}
   - 222: {fileID: 22212108}
   - 95: {fileID: 9548882}
+  - 114: {fileID: 11417774}
   m_Layer: 5
   m_Name: Collide
   m_TagString: Untagged
@@ -51,6 +52,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11417774
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 127456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38cd86b77909da548bae28a18687aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11454458
 MonoBehaviour:
   m_ObjectHideFlags: 1
