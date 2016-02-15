@@ -8,18 +8,19 @@ public abstract class GameRuleCondition {
 	public virtual bool eventHappened(GameRuleEvent gre) {return false;}
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void addIcons(List<GameObject> iconList);
-	//00=GameRuleComparisonCondition
-	//01=GameRuleEventHappenedCondition
-	//10=GameRuleZoneCondition
+	//serialization
+	public const int GAME_RULE_COMPARISON_CONDITION_BYTE_VAL = 0;
+	public const int GAME_RULE_EVENT_HAPPENED_CONDITION_BYTE_VAL = 1;
+	public const int GAME_RULE_ZONE_CONDITION_BYTE_VAL = 2;
 	public const int GAME_RULE_CONDITION_BIT_SIZE = 2;
 	public abstract void packToString(GameRuleSerializer serializer);
 	public static GameRuleCondition unpackFromString(GameRuleDeserializer deserializer) {
 		byte subclassByte = deserializer.unpackByte(GAME_RULE_CONDITION_BIT_SIZE);
-		if (subclassByte == 0)
+		if (subclassByte == GAME_RULE_COMPARISON_CONDITION_BYTE_VAL)
 			return GameRuleComparisonCondition.unpackFromString(deserializer);
-		else if (subclassByte == 1)
+		else if (subclassByte == GAME_RULE_EVENT_HAPPENED_CONDITION_BYTE_VAL)
 			return GameRuleEventHappenedCondition.unpackFromString(deserializer);
-		else if (subclassByte == 2)
+		else if (subclassByte == GAME_RULE_ZONE_CONDITION_BYTE_VAL)
 			return GameRuleZoneCondition.unpackFromString(deserializer);
 		else
 			throw new System.Exception("Invalid GameRuleCondition unpacked byte " + subclassByte);
@@ -37,12 +38,14 @@ public abstract class GameRuleComparisonCondition : GameRuleCondition {
 		throw new System.Exception("Icon displays not yet supported for comparison conditions!");
 	}
 	public override void packToString(GameRuleSerializer serializer) {
-		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 0);
+		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_COMPARISON_CONDITION_BYTE_VAL);
 		throw new System.Exception("Rule serialization not yet supported for comparison conditions!");
 	}
+*/
 	public static new GameRuleComparisonCondition unpackFromString(GameRuleDeserializer deserializer) {
 		throw new System.Exception("Rule deserialization not yet supported for comparison conditions!");
 	}
+/*
 }
 
 //comparison between a value on a player and a value that may or may not be on a player

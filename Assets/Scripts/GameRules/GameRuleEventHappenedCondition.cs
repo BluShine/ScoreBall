@@ -213,7 +213,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		//pack the condition type
-		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, 1);
+		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_EVENT_HAPPENED_CONDITION_BYTE_VAL);
 		//pack the event type
 		serializer.packToString(eventType, GameRuleEvent.eventTypesList);
 		//pack the param if applicable

@@ -409,7 +409,7 @@ isComparison = false;
 ////////////////Serialization and Deserialization of rules////////////////
 public class GameRuleSerializationBase {
 	public const byte GAME_RULE_FORMAT_CURRENT_VERSION = 1;
-	public const byte GAME_RULE_FORMAT_VERSION_BASE = 32;
+	public const byte GAME_RULE_FORMAT_VERSION_BASE = 32; //once the version hits 2 digits this can't change
 	public const byte GAME_RULE_FORMAT_BITS_PER_CHAR = 5;
 	public const byte GAME_RULE_FORMAT_CHAR_BIT_MASK = ~(-1 << GAME_RULE_FORMAT_BITS_PER_CHAR);
 	public const byte O_CHARACTER_BYTE_VALUE = 10 + 'O' - 'A';
@@ -495,6 +495,8 @@ public class GameRuleDeserializer : GameRuleSerializationBase {
 				version = version * GameRuleSerializer.GAME_RULE_FORMAT_VERSION_BASE + charToByte(c);
 			start++;
 		}
+		if (version > GAME_RULE_FORMAT_CURRENT_VERSION)
+			throw new System.Exception("Cannot load rules from the future!");
 		//add the string to our list in reverse so we can take chars off the end of it
 		for (int i = ruleString.Length - 1; i > start; i--)
 			ruleBits.Add(ruleString[i]);

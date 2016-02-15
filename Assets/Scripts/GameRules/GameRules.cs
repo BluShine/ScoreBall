@@ -444,7 +444,7 @@ public class GameRules : MonoBehaviour {
 		int frozenTeam = 0;
 		for (int i = waitTimers.Count - 1; i >= 0; i--) {
 			GameRuleActionWaitTimer waitTimer = waitTimers[i];
-			if (waitTimer.action is GameRuleFreezeEffect) {
+			if (waitTimer.effect is GameRuleFreezeEffect) {
 				//this is the most recent team frozen, it will stay frozen
 				if (frozenTeam == 0)
 					frozenTeam = waitTimer.target.team;
