@@ -1,0 +1,214 @@
+fileFormatVersion: 2
+guid: 29cc323419f22c64db1bbaa958ad33df
+timeCreated: 1454971240
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: moreicons_0
+    21300002: moreicons_1
+    21300004: moreicons_2
+    21300006: moreicons_3
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: moreicons_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 630
+        width: 230
+        height: 394
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 115, y: 195}
+        - {x: 48, y: 195}
+        - {x: 50, y: 96}
+        - {x: -68, y: 116}
+        - {x: -94, y: 120}
+        - {x: -107, y: 102}
+        - {x: -115, y: 68}
+        - {x: -115, y: -112}
+        - {x: -104, y: -170}
+        - {x: -28, y: -197}
+        - {x: 72, y: -197}
+        - {x: 40, y: -19}
+        - {x: 113, y: 28}
+        - {x: 115, y: 38}
+    - name: moreicons_1
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 499
+        width: 570
+        height: 520
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -41, y: -226}
+        - {x: -29, y: -215}
+        - {x: -16, y: -204}
+        - {x: 7, y: -188}
+        - {x: 24, y: -173}
+        - {x: 42, y: -162}
+        - {x: 69, y: -139}
+        - {x: 99, y: -118}
+        - {x: 127, y: -95}
+        - {x: 150, y: -71}
+        - {x: 187, y: -43}
+        - {x: 216, y: -20}
+        - {x: 228, y: -14}
+        - {x: 238, y: -5}
+        - {x: 263, y: 24}
+        - {x: 285, y: 52}
+        - {x: 285, y: 70}
+        - {x: 277, y: 79}
+        - {x: 243, y: 116}
+        - {x: 221, y: 140}
+        - {x: 206, y: 160}
+        - {x: 178, y: 187}
+        - {x: 145, y: 210}
+        - {x: 125, y: 227}
+        - {x: 107, y: 243}
+        - {x: 83, y: 260}
+        - {x: 69, y: 260}
+        - {x: 58, y: 252}
+        - {x: 56, y: 248}
+        - {x: 13, y: 214}
+        - {x: 0, y: 200}
+        - {x: -18, y: 189}
+        - {x: -26, y: 183}
+        - {x: -45, y: 162}
+        - {x: -56, y: 152}
+        - {x: -73, y: 133}
+        - {x: -91, y: 120}
+        - {x: -110, y: 105}
+        - {x: -129, y: 93}
+        - {x: -143, y: 76}
+        - {x: -169, y: 58}
+        - {x: -198, y: 31}
+        - {x: -213, y: 13}
+        - {x: -229, y: 0}
+        - {x: -285, y: -56}
+        - {x: -285, y: -71}
+        - {x: -279, y: -78}
+        - {x: -248, y: -113}
+        - {x: -216, y: -143}
+        - {x: -203, y: -154}
+        - {x: -188, y: -171}
+        - {x: -136, y: -222}
+        - {x: -126, y: -231}
+        - {x: -109, y: -250}
+        - {x: -95, y: -259}
+        - {x: -92, y: -260}
+        - {x: -77, y: -260}
+        - {x: -70, y: -254}
+        - {x: -63, y: -247}
+        - {x: -48, y: -238}
+    - name: moreicons_2
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 407
+        width: 211
+        height: 203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 105.5, y: -41.5}
+        - {x: 105.5, y: 13.5}
+        - {x: 89.5, y: 66.5}
+        - {x: 54.5, y: 90.5}
+        - {x: 24.5, y: 101.5}
+        - {x: -60.5, y: 101.5}
+        - {x: -99.5, y: 35.5}
+        - {x: -105.5, y: -11.5}
+        - {x: -105.5, y: -56.5}
+        - {x: -104.5, y: -76.5}
+        - {x: -89.5, y: -97.5}
+        - {x: -60.5, y: -101.5}
+        - {x: 30.5, y: -101.5}
+        - {x: 79.5, y: -75.5}
+        - {x: 103.5, y: -48.5}
+    - name: moreicons_3
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 110
+        width: 410
+        height: 267
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 50, y: -44.5}
+        - {x: 50, y: -74.5}
+        - {x: 159, y: -41.5}
+        - {x: 205, y: -9.5}
+        - {x: 205, y: 16.5}
+        - {x: 177, y: 115.5}
+        - {x: 169, y: 132.5}
+        - {x: 128, y: 132.5}
+        - {x: -32, y: 103.5}
+        - {x: -85, y: 80.5}
+        - {x: -159, y: 29.5}
+        - {x: -205, y: -13.5}
+        - {x: -205, y: -62.5}
+        - {x: -203, y: -70.5}
+        - {x: -130, y: -53.5}
+        - {x: -139, y: -133.5}
+        - {x: -100, y: -133.5}
+        - {x: -43, y: -52.5}
+        - {x: 30, y: -10.5}
+        - {x: 75, y: -16.5}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -11,7 +11,8 @@ public class TwitchChatter : MonoBehaviour {
     static int MAXOBJECTSOFTYPE = 20;
 
     //struct to store a gameobject ref and it's index in 
-    struct SpawnRef {
+    struct SpawnRef
+    {
         public SpawnRef(GameObject gObj, int i) : this()
         {
             gameObj = gObj;
@@ -73,8 +74,14 @@ public class TwitchChatter : MonoBehaviour {
                 string key = message.Remove(0, 4);
                 if (spawnDict.ContainsKey(key))
                 {
-                    SpawnRef spr = spawnDict[key];
-                    spawnedObjects[spr.index].Add(GameObject.Instantiate(spr.gameObj));
+                    int spawns = 1;
+                    if (message.Contains("apocalypse") || message.Contains("armageddon"))
+                        spawns = 20;
+                    for (int i = 0; i < spawns; i++)
+                    {
+                        SpawnRef spr = spawnDict[key];
+                        spawnedObjects[spr.index].Add(GameObject.Instantiate(spr.gameObj));
+                    }
                 }
             }
         }

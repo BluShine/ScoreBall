@@ -10,7 +10,7 @@ public class GameRuleMetaRuleAction : GameRuleAction {
 	public override string ToString() {
 		return innerMetaRule.ToString();
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		innerMetaRule.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
@@ -26,7 +26,7 @@ public class GameRuleMetaRuleAction : GameRuleAction {
 public abstract class GameRuleMetaRule {
 	public SportsObject lastInterceptionSource = null;
 	public abstract SportsObject interceptSelection(SportsObject so);
-	public abstract void addIcons(List<Sprite> iconList);
+	public abstract void addIcons(List<GameObject> iconList);
 	//0=GameRulePlayerSwapMetaRule
 	public const int GAME_RULE_META_RULE_BIT_SIZE = 1;
 	public abstract void packToString(GameRuleSerializer serializer);
@@ -48,7 +48,7 @@ public class GameRulePlayerSwapMetaRule : GameRuleMetaRule {
 	public override string ToString() {
 		return "effects that happen to player happen to opponent instead";
 	}
-	public override void addIcons(List<Sprite> iconList) {
+	public override void addIcons(List<GameObject> iconList) {
 		iconList.Add(GameRuleIconStorage.instance.gainsEffectIcon);
 		iconList.Add(GameRuleIconStorage.instance.playerIcon);
 		iconList.Add(GameRuleIconStorage.instance.resultsInIcon);
