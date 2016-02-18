@@ -28,8 +28,6 @@ public class GameRuleSpawnableObjectRegistry : MonoBehaviour {
 	public GameRuleSpawnableObject[] goalSpawnableObjects;
 
 	public void Start() {
-		instance = this;
-
 		//put balls which can be held into their own list for easy access if we need a holdable ball
 		List<GameRuleSpawnableObject> holdableBallSpawnableObjectsList = new List<GameRuleSpawnableObject>();
 		for (int i = 0; i < ballSpawnableObjects.Length; i++) {
@@ -38,11 +36,13 @@ public class GameRuleSpawnableObjectRegistry : MonoBehaviour {
 				holdableBallSpawnableObjectsList.Add(ballSpawnableObject);
 		}
 		holdableBallSpawnableObjects = holdableBallSpawnableObjectsList.ToArray();
+
+		instance = this;
 	}
 }
 
 [System.Serializable]
 public class GameRuleSpawnableObject {
-	public FieldObject spawnedObject;
+	public GameObject spawnedObject;
 	public GameObject icon;
 }

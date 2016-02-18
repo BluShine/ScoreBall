@@ -198,21 +198,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballSpawnableObjects:
-  - spawnedObject: {fileID: 11413498, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
+  - spawnedObject: {fileID: 151856, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
     icon: {fileID: 177044, guid: 69b6c5a4d1c5fd7499f1fecbfa92bd97, type: 2}
-  - spawnedObject: {fileID: 11450262, guid: 4a06b57296e4f2148bb67ddd93fa0b4a, type: 2}
+  - spawnedObject: {fileID: 164744, guid: 4a06b57296e4f2148bb67ddd93fa0b4a, type: 2}
     icon: {fileID: 105372, guid: 687db9c5b2207d843892e3e5d1daad75, type: 2}
   holdableBallSpawnableObjects: []
   goalSpawnableObjects:
-  - spawnedObject: {fileID: 11409558, guid: b3c365657726c674799621af6ecee79c, type: 2}
+  - spawnedObject: {fileID: 157804, guid: b3c365657726c674799621af6ecee79c, type: 2}
     icon: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
-  - spawnedObject: {fileID: 11464716, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2, type: 2}
+  - spawnedObject: {fileID: 179854, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2, type: 2}
     icon: {fileID: 154360, guid: eab0b2b77ce40c5488f6cc1679617f86, type: 2}
-  - spawnedObject: {fileID: 11441842, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
+  - spawnedObject: {fileID: 194232, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
     icon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
-  - spawnedObject: {fileID: 11430106, guid: e7b80022780a33448b0c94819b71e769, type: 2}
+  - spawnedObject: {fileID: 116454, guid: e7b80022780a33448b0c94819b71e769, type: 2}
     icon: {fileID: 107860, guid: eab79635bdb4ea546936b09155758de8, type: 2}
-  - spawnedObject: {fileID: 11419352, guid: 29e62d13109ead649a952c828428f71a, type: 2}
+  - spawnedObject: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
     icon: {fileID: 131706, guid: 7d66aa9a98579a94980551512c92905c, type: 2}
 --- !u!1001 &100100000
 Prefab:
@@ -224,28 +224,23 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[0].spawnedObject
       value: 
-      objectReference: {fileID: 11409558, guid: b3c365657726c674799621af6ecee79c,
-        type: 2}
+      objectReference: {fileID: 157804, guid: b3c365657726c674799621af6ecee79c, type: 2}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[1].spawnedObject
       value: 
-      objectReference: {fileID: 11464716, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2,
-        type: 2}
+      objectReference: {fileID: 179854, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2, type: 2}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[2].spawnedObject
       value: 
-      objectReference: {fileID: 11441842, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc,
-        type: 2}
+      objectReference: {fileID: 194232, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[3].spawnedObject
       value: 
-      objectReference: {fileID: 11430106, guid: e7b80022780a33448b0c94819b71e769,
-        type: 2}
+      objectReference: {fileID: 116454, guid: e7b80022780a33448b0c94819b71e769, type: 2}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[4].spawnedObject
       value: 
-      objectReference: {fileID: 11419352, guid: 29e62d13109ead649a952c828428f71a,
-        type: 2}
+      objectReference: {fileID: 100758, guid: 29e62d13109ead649a952c828428f71a, type: 2}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[4].icon
       value: 
@@ -262,6 +257,14 @@ Prefab:
       propertyPath: goalSpawnableObjects.Array.data[0].icon
       value: 
       objectReference: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[0].spawnedObject
+      value: 
+      objectReference: {fileID: 151856, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[1].spawnedObject
+      value: 
+      objectReference: {fileID: 164744, guid: 4a06b57296e4f2148bb67ddd93fa0b4a, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133356}

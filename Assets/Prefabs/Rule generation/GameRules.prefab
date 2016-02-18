@@ -733,9 +733,7 @@ MonoBehaviour:
   zonePrefab: {fileID: 109018, guid: 4aae546363afffd4c9e22156c21f736f, type: 2}
   ruleDisplayPrefab: {fileID: 146688, guid: 942a48e9118a9174e84f85a3f60ec9a1, type: 2}
   pointsTextPrefab: {fileID: 175400, guid: af5d39570a81ca247bd3de468f5ab89b, type: 2}
-  iconStoragePrefab: {fileID: 134634, guid: 50d26ced33503c64d9d73fa8adec8965, type: 2}
-  effectStoragePrefab: {fileID: 11425230, guid: 601e0ebdb2ad6d847aba7171e3b20d6b,
-    type: 2}
+  dataStoragePrefab: {fileID: 133356, guid: cbda8c9040b479943bc2fa582cc92dda, type: 2}
   uiCanvas: {fileID: 0}
   mainCamera: {fileID: 0}
   floor: {fileID: 0}
@@ -823,6 +821,10 @@ Prefab:
       value: 
       objectReference: {fileID: 11425230, guid: 601e0ebdb2ad6d847aba7171e3b20d6b,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: dataStoragePrefab
+      value: 
+      objectReference: {fileID: 133356, guid: cbda8c9040b479943bc2fa582cc92dda, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 195328}

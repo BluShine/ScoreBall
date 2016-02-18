@@ -65,10 +65,11 @@ public class GameRules : MonoBehaviour {
 
 	public void Start() {
         soundSource = GetComponent<AudioSource>();
-		instance = this;
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
 		Instantiate(dataStoragePrefab);
+
+		instance = this;
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed
