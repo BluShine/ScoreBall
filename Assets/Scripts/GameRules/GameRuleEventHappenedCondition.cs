@@ -130,7 +130,11 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return eventHappened(gre) && selector.target(triggerSource) == gre.getEventSource();
 	}
 	public override string ToString() {
-		return selector.ToString() + " " + GameRuleEvent.getEventText(eventType) + param;
+		return ToString(selector);
+	}
+	//an until-condition will steal our selector, but provide it here for generating rule text
+	public string ToString(GameRuleSelector displaySelector) {
+		return displaySelector.ToString() + " " + GameRuleEvent.getEventText(eventType) + param;
 	}
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		//any event involving a ball needs a ball
@@ -212,6 +216,10 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			throw new System.Exception("Bug: could not find icon for field object " + eventType);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
+		packToString(serializer, selector);
+	}
+	//an until-condition will steal our selector, but provide it here for generating a save string
+	public void packToString(GameRuleSerializer serializer, GameRuleSelector selectorToPack) {
 		//pack the condition type
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_EVENT_HAPPENED_CONDITION_BYTE_VAL);
 		//pack the event type
@@ -220,7 +228,7 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		if (eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject)
 			serializer.packToString(param, FieldObject.standardFieldObjects);
 		//pack the selector type
-		selector.packToString(serializer);
+		selectorToPack.packToString(serializer);
 	}
 	public static new GameRuleEventHappenedCondition unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleEventType et = deserializer.unpackFromString(GameRuleEvent.eventTypesList);
