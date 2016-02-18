@@ -42,6 +42,7 @@ public class GameRules : MonoBehaviour {
 	public GameObject ruleDisplayPrefab;
 	public GameObject pointsTextPrefab;
 	public GameObject iconStoragePrefab; //this is shared across scenes, so keep it as just a prefab
+    public GameRuleEffectStorage effectStoragePrefab; //same as icon storage, but for effects
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
@@ -86,6 +87,7 @@ public class GameRules : MonoBehaviour {
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
 		Instantiate(iconStoragePrefab);
+        Instantiate(effectStoragePrefab);
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed

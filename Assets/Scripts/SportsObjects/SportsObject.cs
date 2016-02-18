@@ -33,6 +33,7 @@ public class SportsObject : FieldObject {
     [HideInInspector]
     public bool spawned = false;
 
+    //effects
     [HideInInspector]
     public float freezeTime { get; private set; }
     bool usesFreezing = true;
@@ -45,6 +46,9 @@ public class SportsObject : FieldObject {
 	public float bounceTime { get; private set; }
 	protected bool isOnGround = false;
 	protected bool preJump = false; //indicates the time between starting a jump and leaving the ground
+
+    public Vector3 effectOffset = new Vector3(0, 1, 0); //vertical offset for the effect display
+    GameObject effectObject; //temporary object used to display the effect.
 
     //sound
     public List<AudioClip> hitSounds;
@@ -122,7 +126,15 @@ public class SportsObject : FieldObject {
 		//object is on the ground and is bouncing
 		else if (bounceTime > 0)
 			Jump();
-	}
+        //update effect object
+        if (effectObject != null)
+        {
+            effectObject.transform.position = transform.position + effectOffset;
+            effectObject.transform.rotation = Quaternion.Euler(Vector3.zero);
+            if (dizzyTime == 0 && freezeTime == 0 && bounceTime == 0)
+                SetEffect(null);
+        }
+    }
 
     public virtual void Respawn()
     {
@@ -192,30 +204,46 @@ public class SportsObject : FieldObject {
         }
     }
 
+    private void SetEffect(GameObject effectPrefab)
+    {
+        if (effectObject != null)
+            GameObject.Destroy(effectObject);
+        if (effectPrefab == null)
+            return;
+        effectObject = Instantiate(effectPrefab);
+        effectObject.transform.SetParent(this.transform);
+    }
+
     public virtual void Freeze(float duration)
     {
 		freezeTime = Mathf.Max(duration, freezeTime);
+        SetEffect(gameRules.effectStoragePrefab.freeze);
     }
 
 	public virtual void Unfreeze() {
 		freezeTime = 0.0f;
+        SetEffect(null);
 	}
 
 	public virtual void BeDizzy(float duration) {
 		dizzyTime = Mathf.Max(duration, dizzyTime);
-	}
+        SetEffect(gameRules.effectStoragePrefab.dizzy);
+    }
 
 	public virtual void StopBeingDizzy() {
 		dizzyTime = 0.0f;
-	}
+        SetEffect(null);
+    }
 
 	public virtual void StartBouncing(float duration) {
 		bounceTime = Mathf.Max(duration, bounceTime);
-	}
+        SetEffect(gameRules.effectStoragePrefab.bouncy);
+    }
 
 	public virtual void StopBouncing() {
 		bounceTime = 0.0f;
-	}
+        SetEffect(null);
+    }
 
 	public virtual void Jump() {
 		//make sure we're not already trying to jump
