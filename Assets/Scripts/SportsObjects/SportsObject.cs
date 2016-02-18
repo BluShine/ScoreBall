@@ -22,6 +22,7 @@ public class SportsObject : FieldObject {
     public float jumpSpeed = 10; //velocity when you jump
 
     static float DUPELICATELIFETIME = 20;
+    static float DUPELICATEDARKENAMOUNT = 0.5f;
     public float lifeTime = 0;
     public bool expires;
 
@@ -162,6 +163,20 @@ public class SportsObject : FieldObject {
             dupe.spawned = true;
             dupe.expires = true;
             dupe.lifeTime = DUPELICATELIFETIME;
+            //color the duplicate darker than ourself, unless we are already a duplicate
+            if(!expires)
+            {
+                foreach(SpriteRenderer s in dupe.GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    s.color = new Color(s.color.r * DUPELICATEDARKENAMOUNT,
+                        s.color.g * DUPELICATEDARKENAMOUNT, s.color.b * DUPELICATEDARKENAMOUNT);
+                }
+                foreach(MeshRenderer m in dupe.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    m.material.color = new Color(m.material.color.r * DUPELICATEDARKENAMOUNT,
+                        m.material.color.g * DUPELICATEDARKENAMOUNT, m.material.color.b * DUPELICATEDARKENAMOUNT);
+                }
+            }
             duplicates.Add(dupe);
         }
     }
