@@ -28,10 +28,7 @@ public class GameRuleZoneCondition : GameRuleCondition {
 		requiredObjectsList.Add(zoneType);
 	}
 	public override void addIcons(List<GameObject> iconList) {
-		if (zoneType == GameRuleRequiredObject.BoomerangZone)
-			iconList.Add(GameRuleIconStorage.instance.boomerangZone);
-		else
-			throw new System.Exception("Bug: no zone icon for " + zoneType);
+		iconList.Add(Zone.getIconForZoneType(zoneType));
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_ZONE_CONDITION_BYTE_VAL);

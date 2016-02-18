@@ -63,9 +63,9 @@ public class Zone : FieldObject {
 		GetComponent<MeshCollider>().sharedMesh = collisionMesh;
 		GetComponent<MeshFilter>().mesh = displayMesh;
 	}
-	public GameObject getIconForZoneType(GameRuleRequiredObject zoneType) {
+	public static GameObject getIconForZoneType(GameRuleRequiredObject zoneType) {
 		if (zoneType == GameRuleRequiredObject.BoomerangZone)
-			return GameRuleIconStorage.instance.boomerangZone;
+			return GameRuleIconStorage.instance.boomerangZoneIcon;
 		else
 			throw new System.Exception("Bug: could not get zone icon for " + zoneType);
 	}

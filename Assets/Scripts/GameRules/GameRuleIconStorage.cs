@@ -31,6 +31,7 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public GameObject boundaryIcon;
 
 	//events
+	public GameObject genericEventIcon;
 	public GameObject stealIcon;
 	public GameObject bumpIcon;
 	public GameObject scoreGoalIcon;
@@ -55,17 +56,19 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public GameObject resultsInIcon;
 
 	//zone icons
-	public GameObject boomerangZone;
+	public GameObject genericZoneIcon;
+	public GameObject boomerangZoneIcon;
 
 	void Start () {
 		instance = this;
 	}
 	public void addDigitIcons(int value, List<GameObject> iconList) {
-		List<int> digits = new List<int>();
-		for (; value > 0; value /= 10)
-			digits.Add(value % 10);
-		//gotta put them in most-significant-digit first
-		for (int i = digits.Count - 1; i >= 0; i--)
-			iconList.Add(charDigitIcons[digits[i]]);
+		if (value < 10)
+			iconList.Add(charDigitIcons[value]);
+		//gotta put them in most-significant-digit first, recursion helps
+		else {
+			addDigitIcons(value / 10, iconList);
+			iconList.Add(charDigitIcons[value % 10]);
+		}
 	}
 }

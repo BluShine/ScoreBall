@@ -1,0 +1,268 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &133356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 464070}
+  m_Layer: 0
+  m_Name: Game Rule Data Storage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &136592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 445894}
+  - 114: {fileID: 11479594}
+  m_Layer: 0
+  m_Name: Spawnable Objects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &173562
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 476600}
+  - 114: {fileID: 11469548}
+  m_Layer: 0
+  m_Name: Icon Storage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &179144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 465576}
+  - 114: {fileID: 11466372}
+  m_Layer: 0
+  m_Name: Effect Storage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &445894
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 136592}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 464070}
+  m_RootOrder: 1
+--- !u!4 &464070
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 133356}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 476600}
+  - {fileID: 445894}
+  - {fileID: 465576}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &465576
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179144}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.72, y: 4.435294, z: 5.76}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 464070}
+  m_RootOrder: 2
+--- !u!4 &476600
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173562}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -276.74515, y: -148.2709, z: -161.63013}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 464070}
+  m_RootOrder: 0
+--- !u!114 &11466372
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b6c4d0608dec174791095ef881fd13a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freeze: {fileID: 162734, guid: bd011f5f8aa3ccd4896d5753a69c96c3, type: 2}
+  bouncy: {fileID: 163140, guid: cc7fcc6d9caec5243b08f9e0bf7dbc95, type: 2}
+  dizzy: {fileID: 164674, guid: 80191a47c559006419872e7e03d25710, type: 2}
+--- !u!114 &11469548
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8052c8f9fbcd56845b1a8b98df34fb3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerIcon: {fileID: 193824, guid: 4b0afa6d6ff20dd4b92960ac116b378b, type: 2}
+  opponentIcon: {fileID: 158604, guid: c2fd29490c420874ba87b2490899981c, type: 2}
+  genericBallIcon: {fileID: 158770, guid: 7b605ae098720ed458a94693576f4100, type: 2}
+  soccerBallIcon: {fileID: 177044, guid: 69b6c5a4d1c5fd7499f1fecbfa92bd97, type: 2}
+  beachBallIcon: {fileID: 105372, guid: 687db9c5b2207d843892e3e5d1daad75, type: 2}
+  ultimateBallIcon: {fileID: 158124, guid: 97b130963aad1c84c80ad894ea8113f1, type: 2}
+  fishIcon: {fileID: 117274, guid: 50b1959ef7004b74a8e3ed239b830845, type: 2}
+  genericSportsObjectIcon: {fileID: 158770, guid: 7b605ae098720ed458a94693576f4100,
+    type: 2}
+  bananaIcon: {fileID: 150010, guid: eb98ef51e158f1341a0579ec745c2da0, type: 2}
+  catIcon: {fileID: 177638, guid: d153a5712df6f664eb1c2913f0a974d6, type: 2}
+  soccerGoalIcon: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
+  backboardHoopIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
+  wallIcon: {fileID: 107860, guid: eab79635bdb4ea546936b09155758de8, type: 2}
+  goalpostsIcon: {fileID: 154360, guid: eab0b2b77ce40c5488f6cc1679617f86, type: 2}
+  boundaryIcon: {fileID: 134810, guid: cc24e6a5a929cae478b82b09ee349ac7, type: 2}
+  genericEventIcon: {fileID: 158770, guid: 7b605ae098720ed458a94693576f4100, type: 2}
+  stealIcon: {fileID: 121068, guid: e35f31e8e7d3a6f4e84b92f71b147a1b, type: 2}
+  bumpIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
+  scoreGoalIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
+  smackIcon: {fileID: 101090, guid: aee3396882841424aa4ecbf525baf952, type: 2}
+  grabIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
+  kickIcon: {fileID: 167824, guid: 2c08b88802568994795ee8c02d54ab5b, type: 2}
+  duplicatedIcon: {fileID: 180186, guid: 5c8788eb7a898e94789092f8bff4b642, type: 2}
+  frozenIcon: {fileID: 177580, guid: a827ac68cf5d78745a7200bb0208027e, type: 2}
+  dizzyIcon: {fileID: 183782, guid: b7a10e01f557cfd4dbabf36fd6ae6ad6, type: 2}
+  bouncyIcon: {fileID: 125502, guid: f4844faee702de940b70cad0a2b66f1c, type: 2}
+  charPlusIcon: {fileID: 182644, guid: 35bad821830d8e64988c780cc1062489, type: 2}
+  charMinusIcon: {fileID: 175048, guid: b8282aeba6ab5d34ea9bfcc06e3d3474, type: 2}
+  charDigitIcons:
+  - {fileID: 133382, guid: 4dd3b13d0a85c5941b439414467e175b, type: 2}
+  - {fileID: 137790, guid: f124059c39268954a9c7a0df867983b2, type: 2}
+  - {fileID: 189214, guid: ff9c83d9e47f03e4eae99ec470a28a44, type: 2}
+  - {fileID: 102664, guid: bf2c4c4ac11b09e4fa3cb44d9d77408a, type: 2}
+  - {fileID: 128490, guid: 673fb33211a01654eb87d8b67f8c472a, type: 2}
+  - {fileID: 152076, guid: 0118ffbaf67a5d74395a8d3996088b86, type: 2}
+  - {fileID: 161342, guid: 83a32fce24bfa4348bef7a652b2aa194, type: 2}
+  - {fileID: 117224, guid: 2d0dea766fd25614da0dd26b751a4a5d, type: 2}
+  - {fileID: 139390, guid: 8949ca9fcd477f94fbf809bc0ea88954, type: 2}
+  - {fileID: 120716, guid: fbae7ff948521fa428e7dc5439e6de52, type: 2}
+  charAmpersandIcon: {fileID: 182644, guid: 35bad821830d8e64988c780cc1062489, type: 2}
+  charSlashIcon: {fileID: 186970, guid: 02b3106880a77844b9d0e55bf6b42645, type: 2}
+  clockIcon: {fileID: 143390, guid: 3940863df279b5046853fd1dc6be30eb, type: 2}
+  gainsEffectIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+  resultsInIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+  genericZoneIcon: {fileID: 197860, guid: 33ca0bb0d38fb5347b673d94874c99cd, type: 2}
+  boomerangZoneIcon: {fileID: 158770, guid: 7b605ae098720ed458a94693576f4100, type: 2}
+--- !u!114 &11479594
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 136592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d227e9b3c0ebc346aa7ac2f2080be1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballSpawnableObjects:
+  - spawnedObject: {fileID: 11413498, guid: c2f8a265ecd3579419abcc29f55ecdbd, type: 2}
+    icon: {fileID: 177044, guid: 69b6c5a4d1c5fd7499f1fecbfa92bd97, type: 2}
+  - spawnedObject: {fileID: 11450262, guid: 4a06b57296e4f2148bb67ddd93fa0b4a, type: 2}
+    icon: {fileID: 105372, guid: 687db9c5b2207d843892e3e5d1daad75, type: 2}
+  holdableBallSpawnableObjects: []
+  goalSpawnableObjects:
+  - spawnedObject: {fileID: 11409558, guid: b3c365657726c674799621af6ecee79c, type: 2}
+    icon: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
+  - spawnedObject: {fileID: 11464716, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2, type: 2}
+    icon: {fileID: 154360, guid: eab0b2b77ce40c5488f6cc1679617f86, type: 2}
+  - spawnedObject: {fileID: 11441842, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc, type: 2}
+    icon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
+  - spawnedObject: {fileID: 11430106, guid: e7b80022780a33448b0c94819b71e769, type: 2}
+    icon: {fileID: 107860, guid: eab79635bdb4ea546936b09155758de8, type: 2}
+  - spawnedObject: {fileID: 11419352, guid: 29e62d13109ead649a952c828428f71a, type: 2}
+    icon: {fileID: 131706, guid: 7d66aa9a98579a94980551512c92905c, type: 2}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[0].spawnedObject
+      value: 
+      objectReference: {fileID: 11409558, guid: b3c365657726c674799621af6ecee79c,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[1].spawnedObject
+      value: 
+      objectReference: {fileID: 11464716, guid: 2c20d56e1aa356a4e9b8c97eb69f29a2,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[2].spawnedObject
+      value: 
+      objectReference: {fileID: 11441842, guid: 1f63b6a0e63bdf74ca71a9c28522f9fc,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[3].spawnedObject
+      value: 
+      objectReference: {fileID: 11430106, guid: e7b80022780a33448b0c94819b71e769,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[4].spawnedObject
+      value: 
+      objectReference: {fileID: 11419352, guid: 29e62d13109ead649a952c828428f71a,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[4].icon
+      value: 
+      objectReference: {fileID: 131706, guid: 7d66aa9a98579a94980551512c92905c, type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[3].icon
+      value: 
+      objectReference: {fileID: 107860, guid: eab79635bdb4ea546936b09155758de8, type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[1].icon
+      value: 
+      objectReference: {fileID: 154360, guid: eab0b2b77ce40c5488f6cc1679617f86, type: 2}
+    - target: {fileID: 0}
+      propertyPath: goalSpawnableObjects.Array.data[0].icon
+      value: 
+      objectReference: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 133356}
+  m_IsPrefabParent: 1

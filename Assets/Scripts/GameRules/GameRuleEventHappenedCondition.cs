@@ -166,54 +166,57 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	}
 	public override void addIcons(List<GameObject> iconList) {
 		selector.addIcons(iconList);
-		if (eventType == GameRuleEventType.PlayerShootBall) {
+		addIconsForEventType(eventType, param, iconList);
+	}
+	public static void addIconsForEventType(GameRuleEventType et, string p, List<GameObject> iconList) {
+		if (et == GameRuleEventType.PlayerShootBall) {
 			iconList.Add(GameRuleIconStorage.instance.kickIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
-		} else if (eventType == GameRuleEventType.PlayerGrabBall) {
+		} else if (et == GameRuleEventType.PlayerGrabBall) {
 			iconList.Add(GameRuleIconStorage.instance.grabIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
-		} else if (eventType == GameRuleEventType.PlayerTacklePlayer) {
+		} else if (et == GameRuleEventType.PlayerTacklePlayer) {
 			iconList.Add(GameRuleIconStorage.instance.smackIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+		} else if (et == GameRuleEventType.PlayerHitPlayer) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+		} else if (et == GameRuleEventType.PlayerHitPlayer) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-//		} else if (eventType == GameRuleEventType.PlayerHitSportsObject) {
+//		} else if (et == GameRuleEventType.PlayerHitSportsObject) {
 //			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 //			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitFieldObject) {
+		} else if (et == GameRuleEventType.PlayerHitFieldObject) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
-			addFieldObjectIcon(iconList);
-		} else if (eventType == GameRuleEventType.PlayerStealBall) {
+			addFieldObjectIcon(p, iconList);
+		} else if (et == GameRuleEventType.PlayerStealBall) {
 			iconList.Add(GameRuleIconStorage.instance.stealIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 //		} else if (eventType == GameRuleEventType.BallHitSportsObject) {
 //			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 //			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
-		} else if (eventType == GameRuleEventType.BallHitFieldObject) {
+		} else if (et == GameRuleEventType.BallHitFieldObject) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
-			addFieldObjectIcon(iconList);
-		} else if (eventType == GameRuleEventType.BallHitBall) {
+			addFieldObjectIcon(p, iconList);
+		} else if (et == GameRuleEventType.BallHitBall) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 		}
 	}
-	public void addFieldObjectIcon(List<GameObject> iconList) {
-		if (param == "footgoal")
+	public static void addFieldObjectIcon(string p, List<GameObject> iconList) {
+		if (p == "footgoal")
 			iconList.Add(GameRuleIconStorage.instance.soccerGoalIcon);
-		else if (param == "goalposts")
+		else if (p == "goalposts")
 			iconList.Add(GameRuleIconStorage.instance.goalpostsIcon);
-		else if (param == "backboardhoop")
+		else if (p == "backboardhoop")
 			iconList.Add(GameRuleIconStorage.instance.backboardHoopIcon);
-		else if (param == "smallwall" || param == "fullgoalwall")
+		else if (p == "smallwall" || p == "fullgoalwall")
 			iconList.Add(GameRuleIconStorage.instance.wallIcon);
-		else if (param == "boundary")
+		else if (p == "boundary")
 			iconList.Add(GameRuleIconStorage.instance.boundaryIcon);
 		else
-			throw new System.Exception("Bug: could not find icon for field object " + eventType);
+			throw new System.Exception("Bug: could not find icon for field object " + p);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		packToString(serializer, selector);

@@ -3,23 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum GameRuleRequiredObject : int {
-	Ball,
-	SecondBall,
-
-	GoalRequiredObjectStart,
-	FootGoal,
-	GoalPosts,
-	BackboardHoop,
-	SmallWall,
-	FullGoalWall,
-	GoalRequiredObjectEnd,
-
-	ZoneTypeStart,
-	BoomerangZone,
-	ZoneTypeEnd
-};
-
 ////////////////Master rules handler object////////////////
 public class GameRules : MonoBehaviour {
 	//so that we have access to scores and stuff when evaluating rules
@@ -41,8 +24,7 @@ public class GameRules : MonoBehaviour {
 	//access to interacting with the game world
 	public GameObject ruleDisplayPrefab;
 	public GameObject pointsTextPrefab;
-	public GameObject iconStoragePrefab; //this is shared across scenes, so keep it as just a prefab
-    public GameRuleEffectStorage effectStoragePrefab; //same as icon storage, but for effects
+	public GameObject dataStoragePrefab; //this is shared across scenes, so keep it as just a prefab
 	public GameObject uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
@@ -86,8 +68,7 @@ public class GameRules : MonoBehaviour {
 		instance = this;
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
-		Instantiate(iconStoragePrefab);
-        Instantiate(effectStoragePrefab);
+		Instantiate(dataStoragePrefab);
 	}
 	public void RegisterPlayer(TeamPlayer tp) {
 		//fill unused teams in the allPlayers list with nulls as needed

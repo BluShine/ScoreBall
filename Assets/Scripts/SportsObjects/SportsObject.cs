@@ -217,7 +217,7 @@ public class SportsObject : FieldObject {
     public virtual void Freeze(float duration)
     {
 		freezeTime = Mathf.Max(duration, freezeTime);
-        SetEffect(gameRules.effectStoragePrefab.freeze);
+        SetEffect(GameRuleEffectStorage.instance.freeze);
     }
 
 	public virtual void Unfreeze() {
@@ -227,7 +227,7 @@ public class SportsObject : FieldObject {
 
 	public virtual void BeDizzy(float duration) {
 		dizzyTime = Mathf.Max(duration, dizzyTime);
-        SetEffect(gameRules.effectStoragePrefab.dizzy);
+		SetEffect(GameRuleEffectStorage.instance.dizzy);
     }
 
 	public virtual void StopBeingDizzy() {
@@ -237,7 +237,7 @@ public class SportsObject : FieldObject {
 
 	public virtual void StartBouncing(float duration) {
 		bounceTime = Mathf.Max(duration, bounceTime);
-        SetEffect(gameRules.effectStoragePrefab.bouncy);
+		SetEffect(GameRuleEffectStorage.instance.bouncy);
     }
 
 	public virtual void StopBouncing() {
