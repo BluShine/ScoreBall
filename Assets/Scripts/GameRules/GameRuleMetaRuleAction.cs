@@ -34,7 +34,7 @@ public abstract class GameRuleMetaRule {
 	public static GameRuleMetaRule unpackFromString(GameRuleDeserializer deserializer) {
 		byte subclassByte = deserializer.unpackByte(GAME_RULE_META_RULE_BIT_SIZE);
 		if (subclassByte == GAME_RULE_PLAYER_SWAP_META_RULE_BYTE_VAL)
-			return GameRulePlayerSwapMetaRule.unpackFromString(deserializer);
+			return GameRulePlayerSwapMetaRule.instance;
 		else
 			throw new System.Exception("Invalid GameRuleMetaRule unpacked byte " + subclassByte);
 	}
@@ -42,6 +42,7 @@ public abstract class GameRuleMetaRule {
 
 ////////////////The actual metarules////////////////
 public class GameRulePlayerSwapMetaRule : GameRuleMetaRule {
+	public static GameRulePlayerSwapMetaRule instance = new GameRulePlayerSwapMetaRule();
 	public override SportsObject interceptSelection(SportsObject so) {
 		lastInterceptionSource = so;
 		return ((TeamPlayer)(so)).opponent;
@@ -58,8 +59,5 @@ public class GameRulePlayerSwapMetaRule : GameRuleMetaRule {
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_META_RULE_BIT_SIZE, GAME_RULE_PLAYER_SWAP_META_RULE_BYTE_VAL);
-	}
-	public static new GameRulePlayerSwapMetaRule unpackFromString(GameRuleDeserializer deserializer) {
-		return new GameRulePlayerSwapMetaRule();
 	}
 }

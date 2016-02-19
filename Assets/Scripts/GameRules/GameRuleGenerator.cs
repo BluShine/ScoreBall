@@ -206,11 +206,11 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 	////////////////GameRuleZoneCondition generation////////////////
 	//generate a random ZoneCondition for a rule
 	public static GameRuleZoneCondition randomZoneCondition() {
-		GameRuleRequiredObject chosenZoneType = GameRuleChances.pickFrom(new List<GameRuleRequiredObject>(new GameRuleRequiredObject[] {
-			GameRuleRequiredObject.BoomerangZone
+		GameRuleRequiredObjectType chosenZoneType = GameRuleChances.pickFrom(new List<GameRuleRequiredObjectType>(new GameRuleRequiredObjectType[] {
+			GameRuleRequiredObjectType.BoomerangZone
 		}));
 
-		if (chosenZoneType == GameRuleRequiredObject.BoomerangZone)
+		if (chosenZoneType == GameRuleRequiredObjectType.BoomerangZone)
 			return new GameRuleZoneCondition(chosenZoneType, GameRulePlayerSelector.instance);
 		else
 			throw new System.Exception("Bug: Invalid zone type!");
@@ -225,7 +225,7 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 			return new GameRuleEffectAction(ruleActionSelector, randomEffectForTarget(ruleActionSelector, ballCondition));
 		//metarules for zone conditions
 		} else if (conditionClass == typeof(GameRuleZoneCondition)) {
-			return new GameRuleMetaRuleAction(new GameRulePlayerSwapMetaRule());
+			return new GameRuleMetaRuleAction(GameRulePlayerSwapMetaRule.instance);
 		} else
 			throw new System.Exception("Could not generate action for " + conditionClass);
 	}
@@ -463,7 +463,7 @@ public class GameRuleSerializer : GameRuleSerializationBase {
 		//pack the value's index in the list
 		for (byte i = (byte)(valueList.Count - 1); i >= 0; i--) {
 			if (valueList[i].Equals(valueToPack)) {
-				packByte(bitsForIndex(valueList), (byte)(i));
+				packByte(bitsForIndex(valueList), i);
 				return;
 			}
 		}

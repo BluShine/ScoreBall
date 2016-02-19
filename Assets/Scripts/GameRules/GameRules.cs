@@ -8,14 +8,10 @@ public class GameRules : MonoBehaviour {
 	//so that we have access to scores and stuff when evaluating rules
 	public static GameRules instance;
 
+	//don't do any rules stuff until all classes we use are ready
+	private static bool allClassesAreReady = false;
+
 	//prefabs for spawning objects
-	public GameObject ballPrefab;
-	public GameObject bigBallPrefab;
-	public GameObject goalPrefab;
-	public GameObject goalPrefab2;
-	public GameObject goalPrefab3;
-	public GameObject goalPrefab4;
-	public GameObject goalPrefab5;
 	public GameObject zonePrefab;
 
 	public Dictionary<GameRuleRequiredObject, List<GameObject>> spawnedObjectsMap =
@@ -82,6 +78,9 @@ public class GameRules : MonoBehaviour {
 
 		allPlayers[tp.team].Add(tp);
 	}
+	public void DeregisterPlayer(TeamPlayer tp) {
+		allPlayers[tp.team].Remove(tp);
+	}
 	public void UpdateScore() {
 		foreach (List<TeamPlayer> teamPlayerList in allPlayers) {
 			//in case the team numbers are not consecutive
@@ -100,12 +99,19 @@ public class GameRules : MonoBehaviour {
 		GenerateNewRule();
 	}
 	public void GenerateNewRule(List<GameRuleRestriction> optionalRestrictions = null, string ruleString = null) {
+		//bail out if one of the classes we use isn't ready
+		if (!allClassesAreReady) {
+			if (GameRuleIconStorage.instance == null ||
+				GameRuleEffectStorage.instance == null ||
+				GameRuleSpawnableObjectRegistry.instance == null)
+				return;
+			//actually, they're all ready, we can proceed
+			else
+				allClassesAreReady = true;
+		}
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
 		if (ruleChangeIsOnCooldown() || rulesList.Count >= 3)
-			return;
-		//if we're using rule icons, make sure that the icon storage has loaded
-		if (useRuleIcons && GameRuleIconStorage.instance == null)
 			return;
 
 		lastRuleChange = Time.realtimeSinceStartup;
@@ -145,7 +151,7 @@ public class GameRules : MonoBehaviour {
 		display.transform.SetParent(uiCanvas.transform);
 		return display;
 	}
-	public void DeleteRule(GameRule ruleToDelete) {
+	public void DeleteRule(GameRule ruleToDelete, bool shouldDeleteRequiredObjects = true) {
 		//don't delete a rule if the rules were recently changed
 		if (ruleChangeIsOnCooldown())
 			return;
@@ -189,7 +195,8 @@ public class GameRules : MonoBehaviour {
 			}
 		}
 		Destroy(ruleToDelete.ruleDisplay);
-		deleteRequiredObjects();
+		if (shouldDeleteRequiredObjects)
+			deleteRequiredObjects();
 		lastRuleChange = Time.realtimeSinceStartup;
 
         //update music
@@ -213,13 +220,14 @@ public class GameRules : MonoBehaviour {
         soundSource.Play();
 
 		for (int i = rulesList.Count - 1; i >= 0; i--) {
-			DeleteRule(rulesList[i]);
+			DeleteRule(rulesList[i], false);
 
 			//reset the time so that we can delete all the rules
 			//after this, a new rule will get generated and set it to normal
 			lastRuleChange = -NEW_RULE_WAIT_TIME;
 		}
 		rulesList.Clear();
+		deleteRequiredObjects();
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
@@ -234,12 +242,13 @@ public class GameRules : MonoBehaviour {
 				List<GameObject> spawnedObjects = new List<GameObject>();
 				spawnedObjectsMap[requiredObject] = spawnedObjects;
 
-				GameObject prefab = getPrefabForRequiredObject(requiredObject);
+				GameObject prefab = GameRuleSpawnableObjectRegistry.instance.getPrefabForRequiredObject(requiredObject);
 				GameObject spawnedObject = (GameObject)Instantiate(prefab);
 				spawnedObjects.Add(spawnedObject);
 
 				//these need multiple objects that get assigned to teams
-				if (requiredObject > GameRuleRequiredObject.GoalRequiredObjectStart && requiredObject < GameRuleRequiredObject.GoalRequiredObjectEnd) {
+				GameRuleRequiredObjectType requiredObjectType = requiredObject.requiredObjectType;
+				if (requiredObjectType == GameRuleRequiredObjectType.SpecificGoal) {
 					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
 					fo.team = 2;
@@ -260,8 +269,8 @@ public class GameRules : MonoBehaviour {
 					q *= Quaternion.Euler(Vector3.up * 180);
 					t.rotation = q;
 				//zones all use the same prefab but get a different zone type
-				} else if (requiredObject > GameRuleRequiredObject.ZoneTypeStart && requiredObject < GameRuleRequiredObject.ZoneTypeEnd) {
-					spawnedObject.GetComponent<Zone>().buildZone(requiredObject);
+				} else if (requiredObjectType == GameRuleRequiredObjectType.BoomerangZone) {
+					spawnedObject.GetComponent<Zone>().buildZone(requiredObjectType);
 				}
 			}
 		}
@@ -290,26 +299,6 @@ public class GameRules : MonoBehaviour {
 		foreach (GameRule gameRule in rulesList)
 			gameRule.addRequiredObjects(requiredObjectsList);
 		return requiredObjectsList;
-	}
-	public GameObject getPrefabForRequiredObject(GameRuleRequiredObject requiredObject) {
-		if (requiredObject == GameRuleRequiredObject.Ball)
-			return ballPrefab;
-		else if (requiredObject == GameRuleRequiredObject.SecondBall)
-			return bigBallPrefab;
-		else if (requiredObject == GameRuleRequiredObject.FootGoal)
-			return goalPrefab;
-		else if (requiredObject == GameRuleRequiredObject.GoalPosts)
-			return goalPrefab2;
-		else if (requiredObject == GameRuleRequiredObject.BackboardHoop)
-			return goalPrefab3;
-		else if (requiredObject == GameRuleRequiredObject.SmallWall)
-			return goalPrefab4;
-		else if (requiredObject == GameRuleRequiredObject.FullGoalWall)
-			return goalPrefab5;
-		else if (requiredObject > GameRuleRequiredObject.ZoneTypeStart && requiredObject < GameRuleRequiredObject.ZoneTypeEnd)
-			return zonePrefab;
-		else
-			throw new System.Exception("Bug: Invalid required object " + requiredObject);
 	}
 	public bool ruleChangeIsOnCooldown() {
 		return Time.realtimeSinceStartup - lastRuleChange < NEW_RULE_WAIT_TIME;

@@ -130,7 +130,11 @@ public class TeamPlayer : SportsObject {
 	// FixedUpdate is called at a fixed rate
 	protected override void FixedUpdate () {
         base.FixedUpdate();
-        	
+        if (expires && lifeTime == 0) {
+            gameRules.DeregisterPlayer(this);
+            return;
+        }
+
 		//MOVEMENT--------------------------------------------------------------------
 		//decrement dash timers
 		dashTimer = Mathf.Max(0, dashTimer - Time.fixedDeltaTime);

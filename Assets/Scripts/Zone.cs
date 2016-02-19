@@ -6,14 +6,14 @@ using System.Collections.Generic;
 public class Zone : FieldObject {
 	const float MESH_ICON_HALF_SIZE = 2.0f;
 
-	public static List<GameRuleRequiredObject> standardZoneTypes = new List<GameRuleRequiredObject>(new GameRuleRequiredObject[] {
-		GameRuleRequiredObject.BoomerangZone
+	public static List<GameRuleRequiredObjectType> standardZoneTypes = new List<GameRuleRequiredObjectType>(new GameRuleRequiredObjectType[] {
+		GameRuleRequiredObjectType.BoomerangZone
 	});
 
 	[HideInInspector]
 	public List<SportsObject> objectsInZone = new List<SportsObject>();
 
-	public void buildZone(GameRuleRequiredObject zoneType) {
+	public void buildZone(GameRuleRequiredObjectType zoneType) {
 		Mesh collisionMesh = new Mesh();
         Mesh displayMesh = new Mesh();
 
@@ -63,8 +63,8 @@ public class Zone : FieldObject {
 		GetComponent<MeshCollider>().sharedMesh = collisionMesh;
 		GetComponent<MeshFilter>().mesh = displayMesh;
 	}
-	public static GameObject getIconForZoneType(GameRuleRequiredObject zoneType) {
-		if (zoneType == GameRuleRequiredObject.BoomerangZone)
+	public static GameObject getIconForZoneType(GameRuleRequiredObjectType zoneType) {
+		if (zoneType == GameRuleRequiredObjectType.BoomerangZone)
 			return GameRuleIconStorage.instance.boomerangZoneIcon;
 		else
 			throw new System.Exception("Bug: could not get zone icon for " + zoneType);

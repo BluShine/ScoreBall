@@ -24,10 +24,6 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public GameObject catIcon;
 
 	//field object types
-	public GameObject soccerGoalIcon;
-	public GameObject backboardHoopIcon;
-	public GameObject wallIcon;
-	public GameObject goalpostsIcon;
 	public GameObject boundaryIcon;
 
 	//events

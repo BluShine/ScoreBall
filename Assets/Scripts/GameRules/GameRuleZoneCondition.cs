@@ -8,8 +8,8 @@ public class GameRuleZoneCondition : GameRuleCondition {
 	public GameRuleRequiredObject zoneType;
 	public GameRuleSourceSelector selector;
 	public Zone conditionZone; //assigned by GameRules after generating this rule
-	public GameRuleZoneCondition(GameRuleRequiredObject zt, GameRuleSourceSelector s) {
-		zoneType = zt;
+	public GameRuleZoneCondition(GameRuleRequiredObjectType zt, GameRuleSourceSelector s) {
+		zoneType = new GameRuleRequiredObject(zt, null);
 		selector = s;
 	}
 	public override bool checkCondition(SportsObject triggeringObject) {
@@ -19,7 +19,7 @@ public class GameRuleZoneCondition : GameRuleCondition {
 		return selector.ToString() + " is in the " + getZoneNameString() + " zone";
 	}
 	public string getZoneNameString() {
-		if (zoneType == GameRuleRequiredObject.BoomerangZone)
+		if (zoneType.requiredObjectType == GameRuleRequiredObjectType.BoomerangZone)
 			return "boomerang";
 		else
 			throw new System.Exception("Bug: no zone name for " + zoneType);
@@ -28,15 +28,15 @@ public class GameRuleZoneCondition : GameRuleCondition {
 		requiredObjectsList.Add(zoneType);
 	}
 	public override void addIcons(List<GameObject> iconList) {
-		iconList.Add(Zone.getIconForZoneType(zoneType));
+		iconList.Add(Zone.getIconForZoneType(zoneType.requiredObjectType));
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_ZONE_CONDITION_BYTE_VAL);
-		serializer.packToString(zoneType, Zone.standardZoneTypes);
+		serializer.packToString(zoneType.requiredObjectType, Zone.standardZoneTypes);
 		selector.packToStringAsSourceSelector(serializer);
 	}
 	public static new GameRuleZoneCondition unpackFromString(GameRuleDeserializer deserializer) {
-		GameRuleRequiredObject zt = deserializer.unpackFromString(Zone.standardZoneTypes);
+		GameRuleRequiredObjectType zt = deserializer.unpackFromString(Zone.standardZoneTypes);
 		GameRuleSourceSelector s = GameRuleSourceSelector.unpackFromString(deserializer);
 		return new GameRuleZoneCondition(zt, s);
 	}

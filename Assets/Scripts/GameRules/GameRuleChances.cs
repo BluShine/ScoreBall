@@ -79,11 +79,11 @@ class GameRuleChances {
 
 		return d;
 	}
-	public static Dictionary<GameRuleRequiredObject, int> zoneChances = createZoneChances();
-	public static Dictionary<GameRuleRequiredObject, int> createZoneChances() {
-		Dictionary<GameRuleRequiredObject, int> d = new Dictionary<GameRuleRequiredObject, int>();
+	public static Dictionary<GameRuleRequiredObjectType, int> zoneChances = createZoneChances();
+	public static Dictionary<GameRuleRequiredObjectType, int> createZoneChances() {
+		Dictionary<GameRuleRequiredObjectType, int> d = new Dictionary<GameRuleRequiredObjectType, int>();
 
-		d[GameRuleRequiredObject.BoomerangZone]						= 1;
+		d[GameRuleRequiredObjectType.BoomerangZone]						= 1;
 
 		return d;
 	}
@@ -101,7 +101,7 @@ class GameRuleChances {
 	public static GameRuleSelector pickFrom(List<GameRuleSelector> selectorList) {
 		return pickFrom(selectorList, selectorChances);
 	}
-	public static GameRuleRequiredObject pickFrom(List<GameRuleRequiredObject> zoneList) {
+	public static GameRuleRequiredObjectType pickFrom(List<GameRuleRequiredObjectType> zoneList) {
 		return pickFrom(zoneList, zoneChances);
 	}
 	public static T pickFrom<T>(List<T> valueList, Dictionary<T, int> valueChances) {
