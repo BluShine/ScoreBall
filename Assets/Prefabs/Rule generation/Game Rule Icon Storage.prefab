@@ -80,7 +80,7 @@ MonoBehaviour:
   - {fileID: 120716, guid: fbae7ff948521fa428e7dc5439e6de52, type: 2}
   charAmpersandIcon: {fileID: 182644, guid: 35bad821830d8e64988c780cc1062489, type: 2}
   charSlashIcon: {fileID: 186970, guid: 02b3106880a77844b9d0e55bf6b42645, type: 2}
-  clockIcon: {fileID: 143390, guid: 3940863df279b5046853fd1dc6be30eb, type: 2}
+  clockIcon: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
   gainsEffectIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
   resultsInIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
   boomerangZone: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
@@ -90,7 +90,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: clockIcon
+      value: 
+      objectReference: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 134634}
