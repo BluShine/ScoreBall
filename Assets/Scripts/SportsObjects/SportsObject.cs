@@ -16,9 +16,9 @@ public class SportsObject : FieldObject {
     public Rigidbody body;
     [HideInInspector]
     public List<SportsObject> duplicates { get; private set; }
-    static int MAXDUPLICATES = 100;
-    static float DUPLICATIONCOOLDOWN = .15f;
-    float dupeCoolTimer = .15f;
+    static int MAXDUPLICATES = 25;
+    static float DUPLICATIONCOOLDOWN = .5f;
+    float dupeCoolTimer = .5f;
     public float jumpSpeed = 10; //velocity when you jump
 
     static float DUPELICATELIFETIME = 20;
