@@ -50,11 +50,8 @@ MonoBehaviour:
     type: 2}
   bananaIcon: {fileID: 150010, guid: eb98ef51e158f1341a0579ec745c2da0, type: 2}
   catIcon: {fileID: 177638, guid: d153a5712df6f664eb1c2913f0a974d6, type: 2}
-  soccerGoalIcon: {fileID: 102172, guid: 53ef924cd32f63641a4a62b42c489535, type: 2}
-  backboardHoopIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
-  wallIcon: {fileID: 107860, guid: eab79635bdb4ea546936b09155758de8, type: 2}
-  goalpostsIcon: {fileID: 154360, guid: eab0b2b77ce40c5488f6cc1679617f86, type: 2}
   boundaryIcon: {fileID: 134810, guid: cc24e6a5a929cae478b82b09ee349ac7, type: 2}
+  genericEventIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
   stealIcon: {fileID: 121068, guid: e35f31e8e7d3a6f4e84b92f71b147a1b, type: 2}
   bumpIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
   scoreGoalIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
@@ -83,7 +80,8 @@ MonoBehaviour:
   clockIcon: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
   gainsEffectIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
   resultsInIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
-  boomerangZone: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+  genericZoneIcon: {fileID: 197860, guid: 33ca0bb0d38fb5347b673d94874c99cd, type: 2}
+  boomerangZoneIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -95,6 +93,18 @@ Prefab:
       propertyPath: clockIcon
       value: 
       objectReference: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
+    - target: {fileID: 0}
+      propertyPath: genericZoneIcon
+      value: 
+      objectReference: {fileID: 197860, guid: 33ca0bb0d38fb5347b673d94874c99cd, type: 2}
+    - target: {fileID: 0}
+      propertyPath: boomerangZoneIcon
+      value: 
+      objectReference: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+    - target: {fileID: 0}
+      propertyPath: genericEventIcon
+      value: 
+      objectReference: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 134634}
