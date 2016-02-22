@@ -103,10 +103,35 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public GameRuleEventType eventType;
 	public string param;
 	public GameRuleSelector selector; // this is unused except for in text display and until-condition actions
+	public GameRuleRequiredObject requiredObjectForSource;
+	public GameRuleRequiredObject requiredObjectForTarget;
 	public GameRuleEventHappenedCondition(GameRuleEventType et, GameRuleSelector grs, string p) {
 		eventType = et;
 		param = p;
 		selector = grs;
+
+		//any event involving a ball needs a ball
+		//ideally it doesn't need to be holdable, but at the moment for practical reasons it does
+		if ((eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd))
+			requiredObjectForSource = new GameRuleRequiredObject(GameRuleRequiredObjectType.HoldableBall, null);
+		//our event type doesn't have a required object as its source
+		else
+			requiredObjectForSource = null;
+
+		//ball-ball collision needs a second ball
+		if (eventType == GameRuleEventType.BallHitBall)
+			requiredObjectForTarget = new GameRuleRequiredObject(GameRuleRequiredObjectType.SecondBall, null);
+		//any event that involves a player holding a ball requires a holdable ball
+		else if (eventType == GameRuleEventType.PlayerShootBall ||
+			eventType == GameRuleEventType.PlayerGrabBall ||
+			eventType == GameRuleEventType.PlayerStealBall)
+			requiredObjectForSource = new GameRuleRequiredObject(GameRuleRequiredObjectType.HoldableBall, null);
+		//any field object collision that isn't with a boundary is with a goal
+		else if ((eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject) && param != "boundary")
+			requiredObjectForTarget = new GameRuleRequiredObject(GameRuleRequiredObjectType.SpecificGoal, param);
+		//our event type doesn't need have a required object as its target
+		else
+			requiredObjectForTarget = null;
 	}
 	public override bool eventHappened(GameRuleEvent gre) {
 		//make sure that we have the right event
@@ -137,83 +162,56 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return displaySelector.ToString() + " " + GameRuleEvent.getEventText(eventType) + param;
 	}
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
-		//any event involving a ball needs a ball
-		if ((eventType > GameRuleEventType.BallEventTypeStart && eventType < GameRuleEventType.BallEventTypeEnd) ||
-			eventType == GameRuleEventType.PlayerShootBall ||
-			eventType == GameRuleEventType.PlayerGrabBall ||
-			eventType == GameRuleEventType.PlayerStealBall)
-			requiredObjectsList.Add(GameRuleRequiredObject.Ball);
-
-		//ball-ball collision needs a second ball
-		if (eventType == GameRuleEventType.BallHitBall)
-			requiredObjectsList.Add(GameRuleRequiredObject.SecondBall);
-
-		//if the field object is a goal we need a goal
-		if (eventType == GameRuleEventType.PlayerHitFieldObject || eventType == GameRuleEventType.BallHitFieldObject) {
-			if (param == "footgoal")
-				requiredObjectsList.Add(GameRuleRequiredObject.FootGoal);
-			else if (param == "goalposts")
-				requiredObjectsList.Add(GameRuleRequiredObject.GoalPosts);
-			else if (param == "backboardhoop")
-				requiredObjectsList.Add(GameRuleRequiredObject.BackboardHoop);
-			else if (param == "smallwall")
-				requiredObjectsList.Add(GameRuleRequiredObject.SmallWall);
-			else if (param == "fullgoalwall")
-				requiredObjectsList.Add(GameRuleRequiredObject.FullGoalWall);
-			else if (param != "boundary")
-				throw new System.Exception("Bug: could not determine object required");
-		}
+		if (requiredObjectForSource != null)
+			requiredObjectsList.Add(requiredObjectForSource);
+		if (requiredObjectForTarget != null)
+			requiredObjectsList.Add(requiredObjectForTarget);
 	}
 	public override void addIcons(List<GameObject> iconList) {
 		selector.addIcons(iconList);
-		if (eventType == GameRuleEventType.PlayerShootBall) {
+		addIconsForEventType(eventType, param, iconList);
+	}
+	public static void addIconsForEventType(GameRuleEventType et, string p, List<GameObject> iconList) {
+		if (et == GameRuleEventType.PlayerShootBall) {
 			iconList.Add(GameRuleIconStorage.instance.kickIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
-		} else if (eventType == GameRuleEventType.PlayerGrabBall) {
+		} else if (et == GameRuleEventType.PlayerGrabBall) {
 			iconList.Add(GameRuleIconStorage.instance.grabIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
-		} else if (eventType == GameRuleEventType.PlayerTacklePlayer) {
+		} else if (et == GameRuleEventType.PlayerTacklePlayer) {
 			iconList.Add(GameRuleIconStorage.instance.smackIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+		} else if (et == GameRuleEventType.PlayerHitPlayer) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitPlayer) {
+		} else if (et == GameRuleEventType.PlayerHitPlayer) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.opponentIcon);
-//		} else if (eventType == GameRuleEventType.PlayerHitSportsObject) {
+//		} else if (et == GameRuleEventType.PlayerHitSportsObject) {
 //			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 //			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
-		} else if (eventType == GameRuleEventType.PlayerHitFieldObject) {
+		} else if (et == GameRuleEventType.PlayerHitFieldObject) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
-			addFieldObjectIcon(iconList);
-		} else if (eventType == GameRuleEventType.PlayerStealBall) {
+			addFieldObjectIcon(p, iconList);
+		} else if (et == GameRuleEventType.PlayerStealBall) {
 			iconList.Add(GameRuleIconStorage.instance.stealIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 //		} else if (eventType == GameRuleEventType.BallHitSportsObject) {
 //			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 //			iconList.Add(GameRuleIconStorage.instance.genericSportsObjectIcon);
-		} else if (eventType == GameRuleEventType.BallHitFieldObject) {
+		} else if (et == GameRuleEventType.BallHitFieldObject) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
-			addFieldObjectIcon(iconList);
-		} else if (eventType == GameRuleEventType.BallHitBall) {
+			addFieldObjectIcon(p, iconList);
+		} else if (et == GameRuleEventType.BallHitBall) {
 			iconList.Add(GameRuleIconStorage.instance.bumpIcon);
 			iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 		}
 	}
-	public void addFieldObjectIcon(List<GameObject> iconList) {
-		if (param == "footgoal")
-			iconList.Add(GameRuleIconStorage.instance.soccerGoalIcon);
-		else if (param == "goalposts")
-			iconList.Add(GameRuleIconStorage.instance.goalpostsIcon);
-		else if (param == "backboardhoop")
-			iconList.Add(GameRuleIconStorage.instance.backboardHoopIcon);
-		else if (param == "smallwall" || param == "fullgoalwall")
-			iconList.Add(GameRuleIconStorage.instance.wallIcon);
-		else if (param == "boundary")
+	public static void addFieldObjectIcon(string p, List<GameObject> iconList) {
+		if (p == "boundary")
 			iconList.Add(GameRuleIconStorage.instance.boundaryIcon);
 		else
-			throw new System.Exception("Bug: could not find icon for field object " + eventType);
+			iconList.Add(GameRuleSpawnableObjectRegistry.instance.findGoalObject(p).icon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		packToString(serializer, selector);
