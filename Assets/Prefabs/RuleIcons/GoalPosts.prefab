@@ -84,10 +84,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22440770}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -23.6, y: -0.09999964}
-  m_SizeDelta: {x: 48.1, y: 82}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 47.86802, y: 82}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22440770
 RectTransform:
@@ -105,7 +105,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 47.2, y: 64}
+  m_SizeDelta: {x: 47.86802, y: 82}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1001 &100100000
 Prefab:
