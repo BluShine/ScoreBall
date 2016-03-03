@@ -95,6 +95,7 @@ public class GameRules : MonoBehaviour {
 			teamScores[team] = totalscore;
 		}
 	}
+	//unity buttons don't like optional parameters
 	public void GenerateNewRuleFromButton() {
 		GenerateNewRule();
 	}
@@ -122,13 +123,14 @@ public class GameRules : MonoBehaviour {
 
 		GameRule rule;
 		if(ruleString != null)
-			rule = GameRuleDeserializer.unpackStringToRule(ruleString);
+			rule = GameRuleDeserializer.unpackRuleFromString(ruleString);
 		//build a rule from the inputted string
 		else if (ruleEntryField.text.Length > 0) {
-			rule = GameRuleDeserializer.unpackStringToRule(ruleEntryField.text);
+			rule = GameRuleDeserializer.unpackRuleFromString(ruleEntryField.text);
 			ruleEntryField.text = "";
 		} else
 			rule = GameRuleGenerator.GenerateNewRule(optionalRestrictions);
+		rule.buildRuleDisplay();
 		rulesList.Add(rule);
 		rulesDict[rule.action.GetType()].Add(rule);
 
@@ -145,11 +147,6 @@ public class GameRules : MonoBehaviour {
 
         //update music
         musicPlayer.setTrackCount(rulesList.Count);
-	}
-	public GameObject generateNewRuleDisplay() {
-		GameObject display = (GameObject)Instantiate(ruleDisplayPrefab);
-		display.transform.SetParent(uiCanvas.transform);
-		return display;
 	}
 	public void DeleteRule(GameRule ruleToDelete, bool shouldDeleteRequiredObjects = true) {
 		//don't delete a rule if the rules were recently changed
@@ -243,7 +240,7 @@ public class GameRules : MonoBehaviour {
 				spawnedObjectsMap[requiredObject] = spawnedObjects;
 
 				GameObject prefab = GameRuleSpawnableObjectRegistry.instance.getPrefabForRequiredObject(requiredObject);
-				GameObject spawnedObject = (GameObject)Instantiate(prefab);
+				GameObject spawnedObject = Instantiate(prefab);
 				spawnedObjects.Add(spawnedObject);
 
 				//these need multiple objects that get assigned to teams
@@ -254,7 +251,7 @@ public class GameRules : MonoBehaviour {
 					fo.team = 2;
 
 					//make another one
-					spawnedObject = (GameObject)Instantiate(prefab);
+					spawnedObject = Instantiate(prefab);
 					spawnedObjects.Add(spawnedObject);
 					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
 					fo = spawnedObject.GetComponent<FieldObject>();
@@ -310,7 +307,7 @@ public class GameRules : MonoBehaviour {
 		//add to the pool if there isn't enough
 		if (pointsTextPool.Count == 0) {
 			//for (int i = POINTS_TEXT_POOL_AMOUNT; i > 0; i--) {
-				pointsTextObject = GameObject.Instantiate(GameRules.instance.pointsTextPrefab);
+				pointsTextObject = Instantiate(GameRules.instance.pointsTextPrefab);
 				pointsTextObject.SetActive(false);
 				pointsText = pointsTextObject.GetComponent<TextMesh>();
 				pointsTextPool.Push(pointsText);
@@ -444,6 +441,9 @@ public class GameRules : MonoBehaviour {
 	public static Button getButtonFromRuleDisplay(GameObject ruleDisplay) {
 		return ruleDisplay.transform.FindChild("Delete Button").gameObject.GetComponent<Button>();
 	}
+	public static bool derivesFrom(System.Type a, System.Type b) {
+		return a == b || a.IsSubclassOf(b);
+	}
 }
 
 ////////////////Represents a single game rule////////////////
@@ -471,20 +471,14 @@ public class GameRule {
 	public static Vector3 targetScale = new Vector3(1.0f, 1.0f);
 	public static Vector3 startScale = new Vector3(2.0f, 2.0f);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="c">condition</param>
-    /// <param name="a">action</param>
-    /// <param name="proxyRule">if true, rule will be created without display, etc.</param>
-	public GameRule(GameRuleCondition c, GameRuleAction a, bool proxyRule = false) {
+	public GameRule(GameRuleCondition c, GameRuleAction a) {
 		condition = c;
 		action = a;
-        if (proxyRule)
-            return;
-
-		ruleDisplay = GameRules.instance.generateNewRuleDisplay();
+	}
+	public void buildRuleDisplay() {
+		ruleDisplay = GameObject.Instantiate(GameRules.instance.ruleDisplayPrefab);
 		RectTransform t = (RectTransform)ruleDisplay.transform;
+		t.SetParent(GameRules.instance.uiCanvas.transform);
 
 		flashImage = t.FindChild("Flash").gameObject.GetComponent<Image>();
 		((RectTransform)(flashImage.transform)).sizeDelta = t.sizeDelta;
@@ -577,7 +571,7 @@ public class GameRule {
 		if (condition.eventHappened(gre)) {
 			if (action is GameRuleEffectAction) {
 				GameRuleEffectAction effectAction = (GameRuleEffectAction)action;
-				SportsObject target = effectAction.takeAction(gre.getEventSource());
+				SportsObject target = effectAction.takeAction(gre.source);
 				if (target != null)
 					startFlash(target);
 			}

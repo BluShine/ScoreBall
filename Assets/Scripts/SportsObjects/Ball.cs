@@ -48,15 +48,14 @@ public class Ball : SportsObject {
     }
 
 	public override void handleBallCollision(Ball hitBall) {
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitBall, bl: this, bl2: hitBall));
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Bump, this, hitBall));
     }
 
 	public override void handleSportsCollision(SportsObject sObject) {
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitSportsObject, bl: this, so: sObject));
     }
 
 	public override void handleFieldCollision(FieldObject fObject) {
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.BallHitFieldObject, bl: this, fo: fObject));
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Bump, this, fObject));
     }
 
     //try to grab the ball. Returns true if you got it.
@@ -75,10 +74,7 @@ public class Ball : SportsObject {
             currentPlayer = player;
             isHeld = true;
             //send event
-            if (wasHeld)
-                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerStealBall, tp: currentPlayer, vct: previousPlayer, bl: this));
-            else
-                gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerGrabBall, tp: currentPlayer, bl: this));
+            gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Grab, currentPlayer, this));
             //play sound
             soundSource.clip = catchSounds[Random.Range(0, catchSounds.Count)];
             soundSource.Play();
@@ -96,7 +92,7 @@ public class Ball : SportsObject {
         //remove the player's control over the ball
         currentPlayer.removeBall(this);
         //send event
-        gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerShootBall, tp: currentPlayer, bl: this));
+        gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Kick, currentPlayer, this));
         //play sound
         soundSource.clip = catchSounds[Random.Range(0, kickSounds.Count)];
         soundSource.Play();

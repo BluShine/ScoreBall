@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 //these are empty classes that exist solely for the purpose of producing a System.Type
 class RuleStubZoneType {}
+class RuleStubEventSource {}
+class RuleStubEventTarget {}
 
 public class GameRuleDesigner : MonoBehaviour {
 	public static GameRuleDesigner instance;
@@ -88,37 +90,34 @@ public class GameRuleDesigner : MonoBehaviour {
 				typeof(GameRuleBallSelector),
 				GameRuleIconStorage.instance.genericBallIcon, 0, true, null);
 			//event types for GameRuleEventHappenedConditions
-			//The ones that end in FieldObject will also need to get a string param
-			GameRuleDesignComponentEventTypeDescriptor playerShootBallDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerShootBall,
-				GameRuleIconStorage.instance.kickIcon, 0, true, null);
-			GameRuleDesignComponentEventTypeDescriptor playerGrabBallDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerGrabBall,
-				GameRuleIconStorage.instance.grabIcon, 0, true, null);
-			GameRuleDesignComponentEventTypeDescriptor playerTacklePlayerDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerTacklePlayer,
-				GameRuleIconStorage.instance.smackIcon, 0, true, null);
-			GameRuleDesignComponentEventTypeDescriptor playerHitPlayerDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerHitPlayer,
-				GameRuleIconStorage.instance.bumpIcon, 0, true, null);
-			GameRuleDesignComponentEventTypeDescriptor playerHitFieldObjectDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerHitFieldObject,
-				GameRuleIconStorage.instance.bumpIcon, 0, true, 
+			GameRuleDesignComponentEventTypeDescriptor kickDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
+				GameRuleEventType.Kick,
+				GameRuleIconStorage.instance.kickIcon, 1, true,
 				new System.Type[] {
-					typeof(FieldObject)
+					typeof(RuleStubEventSource),
+					typeof(RuleStubEventTarget)
 				});
-			GameRuleDesignComponentEventTypeDescriptor playerStealBallDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.PlayerStealBall,
-				GameRuleIconStorage.instance.stealIcon, 0, true, null);
-			GameRuleDesignComponentEventTypeDescriptor ballHitFieldObjectDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.BallHitFieldObject,
-				GameRuleIconStorage.instance.bumpIcon, 0, true,
+			GameRuleDesignComponentEventTypeDescriptor grabDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
+				GameRuleEventType.Grab,
+				GameRuleIconStorage.instance.grabIcon, 1, true,
 				new System.Type[] {
-					typeof(FieldObject)
+					typeof(RuleStubEventSource),
+					typeof(RuleStubEventTarget)
 				});
-			GameRuleDesignComponentEventTypeDescriptor ballHitBallDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
-				GameRuleEventType.BallHitBall,
-				GameRuleIconStorage.instance.bumpIcon, 0, true, null);
+			GameRuleDesignComponentEventTypeDescriptor bumpDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
+				GameRuleEventType.Bump,
+				GameRuleIconStorage.instance.bumpIcon, 1, true,
+				new System.Type[] {
+					typeof(RuleStubEventSource),
+					typeof(RuleStubEventTarget)
+				});
+			GameRuleDesignComponentEventTypeDescriptor smackDescriptor = new GameRuleDesignComponentEventTypeDescriptor(
+				GameRuleEventType.Smack,
+				GameRuleIconStorage.instance.smackIcon, 1, true,
+				new System.Type[] {
+					typeof(RuleStubEventSource),
+					typeof(RuleStubEventTarget)
+				});
 			//zone types
 			GameRuleDesignComponentZoneTypeDescriptor boomerangZoneDescriptor = new GameRuleDesignComponentZoneTypeDescriptor(
 				GameRuleRequiredObjectType.BoomerangZone,
@@ -185,14 +184,10 @@ public class GameRuleDesigner : MonoBehaviour {
 			gameRuleSelectorSelection.Add(gameRuleBallShooterOpponentSelectorDescriptor);
 			gameRuleSelectorSelection.Add(gameRuleBallSelectorDescriptor);
 			List<GameRuleDesignComponentDescriptor> gameRuleEventTypeSelection = (componentSelectionMap[typeof(GameRuleEventType)] = new List<GameRuleDesignComponentDescriptor>());
-			gameRuleEventTypeSelection.Add(playerShootBallDescriptor);
-			gameRuleEventTypeSelection.Add(playerGrabBallDescriptor);
-			gameRuleEventTypeSelection.Add(playerTacklePlayerDescriptor);
-			gameRuleEventTypeSelection.Add(playerHitPlayerDescriptor);
-			gameRuleEventTypeSelection.Add(playerHitFieldObjectDescriptor);
-			gameRuleEventTypeSelection.Add(playerStealBallDescriptor);
-			gameRuleEventTypeSelection.Add(ballHitFieldObjectDescriptor);
-			gameRuleEventTypeSelection.Add(ballHitBallDescriptor);
+			gameRuleEventTypeSelection.Add(kickDescriptor);
+			gameRuleEventTypeSelection.Add(grabDescriptor);
+			gameRuleEventTypeSelection.Add(bumpDescriptor);
+			gameRuleEventTypeSelection.Add(smackDescriptor);
 			List<GameRuleDesignComponentDescriptor> gameRuleSourceSelectorSelection = (componentSelectionMap[typeof(GameRuleSourceSelector)] = new List<GameRuleDesignComponentDescriptor>());
 			gameRuleSourceSelectorSelection.Add(gameRulePlayerSelectorDescriptor);
 			gameRuleSourceSelectorSelection.Add(gameRuleBallSelectorDescriptor);

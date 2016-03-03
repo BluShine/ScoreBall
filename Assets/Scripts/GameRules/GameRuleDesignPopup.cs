@@ -61,7 +61,6 @@ return;
 			initializeIconContainer();
 		GameObject iconContainerGameObject = iconContainer.gameObject;
 		iconContainerGameObject.SetActive(!iconContainerGameObject.activeSelf);
-Debug.Log(opening ? "Opening" : "Closing");
 	}
 	public void initializeIconContainer() {
 if (popupIcons.Count == 0)
@@ -111,9 +110,7 @@ return;
 		//we want to give it the scale of the icon container for the whole panel
 		float designPanelScale = GameRuleDesigner.instance.ruleDesignPanel.GetChild(0).localScale.x;
 		//but if it's too big for the screen, we need to use that scale into our position
-Debug.Log("Target scale " + designPanelScale);
 		float scale = Mathf.Min(designPanelScale, Mathf.Min(screenSize.x / containerWidth, screenSize.y / containerHeight));
-Debug.Log("Actual scale " + scale);
 		iconContainer.localScale = new Vector3(scale, scale);
 		//we have now scaled it
 		//next, we want to get the center of this popup in canvas space so that we can try to center the icon container there
@@ -121,10 +118,6 @@ Debug.Log("Actual scale " + scale);
 		//the popup pivot is in the left-center, so add half the width to make it center-center
 		//we also need to factor in the design panel scale
 		targetPosition.x += ((RectTransform)transform).sizeDelta.x * 0.5f * designPanelScale;
-Debug.Log(
-"targetPosition " + targetPosition.x + ", " + targetPosition.y +
-" final width/height " + (containerWidth * scale) + ", " + (containerHeight * scale)
-);
 		//position the container relative to the center of the ui canvas
 		Vector2 halfScreenSize = screenSize * 0.5f;
 		float halfFinalWidth = containerWidth * scale * 0.5f;
@@ -135,10 +128,6 @@ Debug.Log(
 			Mathf.Max(halfFinalWidth - halfScreenSize.x, Mathf.Min(targetPosition.x, halfScreenSize.x - halfFinalWidth)),
 			Mathf.Max(halfFinalHeight - halfScreenSize.y, Mathf.Min(targetPosition.y, halfScreenSize.y - halfFinalHeight))
 		);
-Debug.Log("Positioned at canvas-space " +
-iconContainer.localPosition.x + ", " + iconContainer.localPosition.y + " targeting " +
-targetPosition.x + ", " + targetPosition.y
-);
 
 		//we have finally resized and repositioned the icon container
 		//now, layout all the icons
@@ -157,10 +146,6 @@ targetPosition.x + ", " + targetPosition.y
 				iconAreaBottomLeft.x - halfContainerWidth + (i % cols) * gridWidth,
 				iconAreaBottomLeft.y - halfContainerHeight + (i / cols) * gridHeight + popupIcon.sizeDelta.y * 0.5f
 			);
-Debug.Log("Placing at " +
-(i % cols) + ", " + (i / cols) + " / " +
-popupIcon.localPosition.x + ", " + popupIcon.localPosition.y
-);
 		}
 
 		iconContainerInitialized = true;
@@ -171,8 +156,7 @@ popupIcon.localPosition.x + ", " + popupIcon.localPosition.y
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(iconContainer, Input.mousePosition, null, out localPoint);
 		localPoint.x += iconContainer.rect.width * 0.5f;
 		localPoint.y = iconContainer.rect.height * 0.5f - localPoint.y;
-Debug.Log("Picked icon");
-Debug.Log(localPoint.x + ", " + localPoint.y);
+Debug.Log("Picked icon at " + localPoint.x + ", " + localPoint.y);
 		TogglePopup();
 	}
 	//we need to destroy the icon container too

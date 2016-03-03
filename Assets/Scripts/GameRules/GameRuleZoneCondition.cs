@@ -13,7 +13,8 @@ public class GameRuleZoneCondition : GameRuleCondition {
 		selector = s;
 	}
 	public override bool checkCondition(SportsObject triggeringObject) {
-		return triggeringObject.GetType() == selector.targetType() && conditionZone.objectsInZone.Contains(triggeringObject);
+		return GameRules.derivesFrom(triggeringObject.GetType(), selector.targetType()) &&
+			conditionZone.objectsInZone.Contains(triggeringObject);
 	}
 	public override string ToString() {
 		return selector.ToString() + " is in the " + getZoneNameString() + " zone";

@@ -58,6 +58,7 @@ public class GameRuleIconStorage : MonoBehaviour {
 	void Start () {
 		instance = this;
 	}
+	//assumes you've given a non-negative value
 	public void addDigitIcons(int value, List<GameObject> iconList) {
 		if (value < 10)
 			iconList.Add(charDigitIcons[value]);

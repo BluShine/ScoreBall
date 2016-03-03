@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class RuleUIHandler : MonoBehaviour {
-
+/*
     GameRuleCondition condition;
     GameRuleSelector actionSelector;
     GameRuleEffect effect;
@@ -66,7 +66,8 @@ public class RuleUIHandler : MonoBehaviour {
     {
 		if (condition == null || actionSelector == null || effect == null)
             return;
-		GameRule rule = new GameRule(condition, new GameRuleEffectAction(actionSelector, effect), true);
+		GameRule rule = new GameRule(condition, new GameRuleEffectAction(actionSelector, effect));
         ruleNetwork.sendRule(GameRuleSerializer.packRuleToString(rule));
     }
+*/
 }

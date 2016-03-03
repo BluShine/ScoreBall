@@ -18,7 +18,7 @@ class GameRuleChances {
 
 		//there would be a big section here for comparison conditions but we're not using them right now
 
-		//which target for event-happened conditions to do
+		//which source for event-happened conditions to do
 		d[typeof(RuleStubPlayerEventHappenedCondition)]								= 2;
 		d[typeof(RuleStubBallEventHappenedCondition)]								= 1;
 
@@ -35,21 +35,25 @@ class GameRuleChances {
 
 		return d;
 	}
+	public static Dictionary<System.Type, int> potentialEventTargetChances = createPotentialEventTargetChances();
+	public static Dictionary<System.Type, int> createPotentialEventTargetChances() {
+		Dictionary<System.Type, int> d = new Dictionary<System.Type, int>();
+
+		//which target for event-happened conditions to do
+		d[typeof(TeamPlayer)]						= 1;
+		d[typeof(Ball)]								= 1;
+		d[typeof(FieldObject)]						= 1;
+
+		return d;
+	}
 	public static Dictionary<GameRuleEventType, int> eventTypeChances = createEventTypeChances();
 	public static Dictionary<GameRuleEventType, int> createEventTypeChances() {
 		Dictionary<GameRuleEventType, int> d = new Dictionary<GameRuleEventType, int>();
 
-		d[GameRuleEventType.PlayerShootBall]							= 1;
-		d[GameRuleEventType.PlayerGrabBall]								= 1;
-		d[GameRuleEventType.PlayerTacklePlayer]							= 1;
-		d[GameRuleEventType.PlayerHitPlayer]							= 1;
-		d[GameRuleEventType.PlayerHitSportsObject]						= 1;
-		d[GameRuleEventType.PlayerHitFieldObject]						= 1;
-		d[GameRuleEventType.PlayerStealBall]							= 1;
-
-		d[GameRuleEventType.BallHitSportsObject]						= 1;
-		d[GameRuleEventType.BallHitFieldObject]							= 1;
-		d[GameRuleEventType.BallHitBall]								= 1;
+		d[GameRuleEventType.Kick]								= 1;
+		d[GameRuleEventType.Grab]								= 1;
+		d[GameRuleEventType.Bump]								= 1;
+		d[GameRuleEventType.Smack]								= 1;
 
 		return d;
 	}
@@ -91,6 +95,9 @@ class GameRuleChances {
 	//chances are relative only to each other
 	public static System.Type pickFrom(List<System.Type> typeofList) {
 		return pickFrom(typeofList, typeofChances);
+	}
+	public static System.Type pickFromPotentialEventTargets(List<System.Type> potentialEventTargetList) {
+		return pickFrom(potentialEventTargetList, potentialEventTargetChances);
 	}
 	public static GameRuleEventType pickFrom(List<GameRuleEventType> eventTypeList) {
 		return pickFrom(eventTypeList, eventTypeChances);

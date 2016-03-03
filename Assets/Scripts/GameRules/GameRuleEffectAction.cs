@@ -295,15 +295,11 @@ public class GameRuleActionFixedDuration : GameRuleActionDuration {
 }
 
 public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
-	public GameRuleEventHappenedCondition untilCondition;
 	public GameRuleSelector triggerSelector;
-	public GameRuleActionUntilConditionDuration(GameRuleEventHappenedCondition uc) {
+	public GameRuleEventHappenedCondition untilCondition;
+	public GameRuleActionUntilConditionDuration(GameRuleSelector ts, GameRuleEventHappenedCondition uc) {
+		triggerSelector = ts;
 		untilCondition = uc;
-		//steal the selector out from under the condition
-		triggerSelector = uc.selector;
-		uc.selector = (triggerSelector.targetType() == typeof(Ball)) ?
-			(GameRuleSelector)GameRuleBallSelector.instance :
-			(GameRuleSelector)GameRulePlayerSelector.instance;
 	}
 	public override float startDuration(SportsObject source, SportsObject target, GameRuleDurationEffect action) {
 		GameRules.instance.waitTimers.Add(new GameRuleActionWaitTimer(untilCondition, triggerSelector.target(source), target, action));
@@ -314,19 +310,21 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	}
 	public override string ToString() {
 		//give the condition its trigger while producing string text
-		return "until " + untilCondition.ToString(triggerSelector);
+		return "until " + untilCondition.ToString(triggerSelector.ToString());
 	}
 	public override void addIcons(List<GameObject> iconList) {
 		untilCondition.addIcons(iconList);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, GAME_RULE_ACTION_UNTIL_CONDITION_DURATION_BYTE_VAL);
+		triggerSelector.packToString(serializer);
 		//while packing, give the condition its selector to pack
-		untilCondition.packToString(serializer, triggerSelector);
+		untilCondition.packToString(serializer);
 	}
 	public static new GameRuleActionUntilConditionDuration unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleEventHappenedCondition uc = GameRuleEventHappenedCondition.unpackFromString(deserializer);
-		return new GameRuleActionUntilConditionDuration(uc);
+		GameRuleSelector ts = GameRuleSelector.unpackFromString(deserializer);
+		return new GameRuleActionUntilConditionDuration(ts, uc);
 	}
 }
 
@@ -344,7 +342,7 @@ public class GameRuleActionWaitTimer {
 		effect = e;
 	}
 	public bool eventHappened(GameRuleEvent gre) {
-		if (condition.eventHappened(gre, trigger)) {
+		if (condition.eventHappened(gre)) {
 			cancelAction();
 			return true;
 		}

@@ -29,7 +29,6 @@ public class GameRuleGenerator {
 	const int ACTION_DURATION_SECONDS_LONGEST = 10;
 
 	private static List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
-	private static GameRuleCondition ruleCondition;
 	private static GameRuleSelector ruleActionSelector;
 
 	//generate a completely new random rule
@@ -38,12 +37,8 @@ public class GameRuleGenerator {
 			populateInitialRestrictions();
 		else
 			restrictions = ruleRestrictions;
-		ruleCondition = randomCondition();
-		System.Type conditionClass = ruleCondition.GetType();
-		bool ballCondition = false;
-		if ((conditionClass == typeof(GameRuleEventHappenedCondition)) && ((GameRuleEventHappenedCondition)(ruleCondition)).eventType >= GameRuleEventType.BallEventTypeStart)
-			ballCondition = true;
-		return new GameRule(ruleCondition, randomAction(conditionClass, ballCondition));
+		GameRuleCondition ruleCondition = randomCondition();
+		return new GameRule(ruleCondition, randomAction(ruleCondition));
 	}
 	//add any restrictions that can be determined before any generation has happened
 	public static void populateInitialRestrictions() {
@@ -103,7 +98,7 @@ public class GameRuleGenerator {
 
 	////////////////GameRuleComparisonCondition generation////////////////
 	public static GameRuleComparisonCondition randomComparisonCondition() {
-		return null;/*
+		throw new System.Exception("Random comparison conditions unimplemented");/*
 		//only player-value comparison conditions for now
 		return new GameRulePlayerValueComparisonCondition(randomPlayerValue(), randomConditionOperator(), Random.Range(0, 2) == 0 ? randomValue() : randomPlayerValue());
 	}
@@ -138,65 +133,45 @@ public class GameRuleGenerator {
 			typeof(RuleStubBallEventHappenedCondition)
 		}));
 		if (chosenType == typeof(RuleStubPlayerEventHappenedCondition))
-			return randomPlayerEventHappenedCondition(GameRulePlayerSelector.instance);
+			return randomEventHappenedCondition(typeof(TeamPlayer));
 		else if (chosenType == typeof(RuleStubBallEventHappenedCondition))
-			return randomBallEventHappenedCondition(GameRuleBallSelector.instance);
+			return randomEventHappenedCondition(typeof(Ball));
 		else
 			throw new System.Exception("Bug: Invalid event-happened condition rule stub!");
 	}
-	//generate a random EventHappenedCondition for an until-condition action
-	//the given selector selects the object that triggers the end of the until-condition action
-	public static GameRuleEventHappenedCondition randomEventHappenedConditionForTarget(GameRuleSelector sourceToTrigger) {
-		if (sourceToTrigger.targetType() == typeof(Ball))
-			return randomBallEventHappenedCondition(sourceToTrigger);
-		else
-			return randomPlayerEventHappenedCondition(sourceToTrigger);
-	}
-	//generate a random EventHappenedCondition for a player event source
-	public static GameRuleEventHappenedCondition randomPlayerEventHappenedCondition(GameRuleSelector selector) {
+	//generate a random EventHappenedCondition for a given event source type
+	public static GameRuleEventHappenedCondition randomEventHappenedCondition(System.Type sourceType) {
 		//build the list of acceptable event types, taking restrictions into account
 		List<GameRuleEventType> acceptableEventTypes;
+		bool onlyFieldObjectInteractionEvents = false;
 		if (hasRestriction(GameRuleRestriction.OnlyPlayerBallInteractionEvents))
 			acceptableEventTypes = new List<GameRuleEventType>(new GameRuleEventType[] {
-				GameRuleEventType.PlayerShootBall,
-				GameRuleEventType.PlayerGrabBall
+				GameRuleEventType.Kick,
+				GameRuleEventType.Grab
 			});
-		else
-			acceptableEventTypes = new List<GameRuleEventType>(GameRuleEvent.playerEventTypesList);
-acceptableEventTypes.Remove(GameRuleEventType.PlayerHitSportsObject);
-
-		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
-		//players bumping into each other shouldn't cause them to indefinitely freeze
-		if (eventType == GameRuleEventType.PlayerHitPlayer) {
-			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
-
-			//both players get this, so for better wording use only player selectors
-			if (selector is GameRuleOpponentSelector)
-				selector = GameRulePlayerSelector.instance;
-			else if (selector is GameRuleBallShooterOpponentSelector)
-				selector = GameRuleBallShooterSelector.instance;
-		}
-		string param = null;
-		if (eventType == GameRuleEventType.PlayerHitFieldObject)
-			param = randomFieldObjectType();
-		return new GameRuleEventHappenedCondition(eventType, selector, param);
-	}
-	//generate a random EventHappenedCondition for a ball event source
-	public static GameRuleEventHappenedCondition randomBallEventHappenedCondition(GameRuleSelector selector) {
-		//build the list of acceptable event types, taking restrictions into account
-		List<GameRuleEventType> acceptableEventTypes;
-		if (hasRestriction(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents))
+		else if (hasRestriction(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents)) {
+			onlyFieldObjectInteractionEvents = true;
 			acceptableEventTypes = new List<GameRuleEventType>(new GameRuleEventType[] {
-				GameRuleEventType.BallHitFieldObject
+				GameRuleEventType.Bump
 			});
-		else
-			acceptableEventTypes = new List<GameRuleEventType>(GameRuleEvent.ballEventTypesList);
-acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
+		} else
+			//get the list of potential event types for this source
+			acceptableEventTypes = GameRuleEvent.potentialEventTypesList[sourceType];
+
 		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
-		string param = null;
-		if (eventType == GameRuleEventType.BallHitFieldObject)
-			param = randomFieldObjectType();
-		return new GameRuleEventHappenedCondition(eventType, selector, param);
+
+		//now get a target from the list of acceptable targets
+		System.Type targetType;
+		if (onlyFieldObjectInteractionEvents)
+			targetType = typeof(FieldObject);
+		else
+			//pick from the list of potential target types
+			targetType = GameRuleChances.pickFromPotentialEventTargets(GameRuleEvent.potentialTargetsList[eventType]);
+		//players bumping into each other shouldn't cause them to indefinitely freeze
+		if (eventType == GameRuleEventType.Bump && sourceType == typeof(TeamPlayer) && targetType == typeof(TeamPlayer))
+			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
+		string param = (targetType == typeof(FieldObject)) ? randomFieldObjectType() : null;
+		return new GameRuleEventHappenedCondition(eventType, sourceType, targetType, param);
 	}
 	//generate a random field object type for a field object collision event
 	public static string randomFieldObjectType() {
@@ -218,28 +193,31 @@ acceptableEventTypes.Remove(GameRuleEventType.BallHitSportsObject);
 
 	////////////////GameRuleAction generation////////////////
 	//generate a random action based on the given condition information
-	public static GameRuleAction randomAction(System.Type conditionClass, bool ballCondition) {
+	public static GameRuleAction randomAction(GameRuleCondition condition) {
 		//one-time actions for one-time conditions
-		if (conditionClass == typeof(GameRuleEventHappenedCondition)) {
-			ruleActionSelector = randomSelectorForSource(ballCondition);
-			return new GameRuleEffectAction(ruleActionSelector, randomEffectForTarget(ruleActionSelector, ballCondition));
+		if (condition is GameRuleEventHappenedCondition) {
+			GameRuleEventHappenedCondition eventHappenedCondition = (GameRuleEventHappenedCondition)condition;
+			ruleActionSelector = randomSelectorForSource(eventHappenedCondition.sourceType);
+			return new GameRuleEffectAction(ruleActionSelector, randomEffectForTarget(ruleActionSelector, eventHappenedCondition.sourceType));
 		//metarules for zone conditions
-		} else if (conditionClass == typeof(GameRuleZoneCondition)) {
+		} else if (condition is GameRuleZoneCondition) {
 			return new GameRuleMetaRuleAction(GameRulePlayerSwapMetaRule.instance);
 		} else
-			throw new System.Exception("Could not generate action for " + conditionClass);
+			throw new System.Exception("Could not generate action for " + condition);
 	}
 	//generate a random action to happen to the target of the selector
-	//pass along whether the original condition was a ball event-happened condition in case the action needs to know
-	public static GameRuleEffect randomEffectForTarget(GameRuleSelector sourceToTarget, bool ballCondition) {
-		if (sourceToTarget.targetType() == typeof(Ball))
-			return randomBallEffect(ballCondition);
+	//pass along the sorce type of the original condition in case the action needs to know
+	public static GameRuleEffect randomEffectForTarget(GameRuleSelector sourceToTarget, System.Type sourceType) {
+		System.Type targetType = sourceToTarget.targetType();
+		if (targetType == typeof(TeamPlayer))
+			return randomPlayerEffect(sourceType);
+		else if (targetType == typeof(Ball))
+			return randomBallEffect(sourceType);
 		else
-			return randomPlayerEffect(false, ballCondition);
+			throw new System.Exception("Bug: cannot get effect for target type " + targetType);
 	}
 
-	public static GameRuleEffect randomPlayerEffect(bool isComparison, bool ballCondition) {
-isComparison = false;
+	public static GameRuleEffect randomPlayerEffect(System.Type sourceType) {
 		//build the list of acceptable action types, taking restrictions into account
 		List<System.Type> acceptableActionTypes;
 		if (hasRestriction(GameRuleRestriction.OnlyPointsActions))
@@ -282,17 +260,17 @@ isComparison = false;
 			//freeze conditions are allowed, but we need to make sure not to make anything game-breaking if we pick it
 			else
 				restrictions.Add(GameRuleRestriction.CheckFreezeUntilConditionRestrictions);
-			return new GameRuleFreezeEffect(randomActionDuration(ballCondition));
+			return new GameRuleFreezeEffect(randomActionDuration(sourceType));
 		} else if (chosenType == typeof(GameRuleDuplicateEffect))
 			return new GameRuleDuplicateEffect();
 		else if (chosenType == typeof(GameRuleDizzyEffect))
-			return new GameRuleDizzyEffect(randomActionDuration(ballCondition));
+			return new GameRuleDizzyEffect(randomActionDuration(sourceType));
 		else if (chosenType == typeof(GameRuleBounceEffect))
-			return new GameRuleBounceEffect(randomActionDuration(ballCondition));
+			return new GameRuleBounceEffect(randomActionDuration(sourceType));
 		else
 			throw new System.Exception("Bug: Invalid player action type!");
 	}
-	public static GameRuleEffect randomBallEffect(bool ballCondition) {
+	public static GameRuleEffect randomBallEffect(System.Type sourceType) {
 		//build the list of acceptable action types, taking restrictions into account
 		System.Type[] acceptableActionTypes = new System.Type[] {
 			//balls getting frozen hasn't made for fun gameplay yet
@@ -304,17 +282,17 @@ isComparison = false;
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(acceptableActionTypes));
 		if (chosenType == typeof(GameRuleFreezeEffect))
-			return new GameRuleFreezeEffect(randomActionDuration(ballCondition));
+			return new GameRuleFreezeEffect(randomActionDuration(sourceType));
 		else if (chosenType == typeof(GameRuleDuplicateEffect))
 			return new GameRuleDuplicateEffect();
 		else if (chosenType == typeof(GameRuleBounceEffect))
-			return new GameRuleBounceEffect(randomActionDuration(ballCondition));
+			return new GameRuleBounceEffect(randomActionDuration(sourceType));
 		else
 			throw new System.Exception("Bug: Invalid ball action type!");
 	}
 
 	////////////////GameRuleActionDurations for actions that last for a duration////////////////
-	public static GameRuleActionDuration randomActionDuration(bool ballCondition) {
+	public static GameRuleActionDuration randomActionDuration(System.Type sourceType) {
 		//build the list of acceptable action types, taking restrictions into account
 		List<System.Type> acceptableDurationTypes;
 		acceptableDurationTypes = new List<System.Type>(new System.Type[] {
@@ -343,28 +321,34 @@ isComparison = false;
 					restrictions.Add(GameRuleRestriction.NoOpponentPlayerTargetSelectors);
 			}
 
-			GameRuleSelector sourceToTrigger = randomSelectorForSource(ballCondition);
+			GameRuleSelector sourceToTrigger = randomSelectorForSource(sourceType);
+			System.Type triggerType = sourceToTrigger.targetType();
 
 			//restrict which kinds of events can be picked
 			if (restrictFreezeUntilConditions) {
-				restrictions.Add(GameRuleRestriction.OnlyPlayerBallInteractionEvents);
-				restrictions.Add(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents);
+				if (GameRules.derivesFrom(triggerType, typeof(TeamPlayer)))
+					restrictions.Add(GameRuleRestriction.OnlyPlayerBallInteractionEvents);
+				else if (GameRules.derivesFrom(triggerType, typeof(Ball)))
+					restrictions.Add(GameRuleRestriction.OnlyBallFieldObjectInteractionEvents);
 			}
 
 			return new GameRuleActionUntilConditionDuration(
-				randomEventHappenedConditionForTarget(
-					sourceToTrigger));
+				sourceToTrigger,
+				randomEventHappenedCondition(triggerType)
+			);
 		} else
 			throw new System.Exception("Bug: Invalid duration type!");
 	}
 
 	////////////////GameRuleSelectors for actions and conditions////////////////
 	//generate a selector based on the source of the condition
-	public static GameRuleSelector randomSelectorForSource(bool ballCondition) {
-		if (ballCondition)
+	public static GameRuleSelector randomSelectorForSource(System.Type sourceType) {
+		if (GameRules.derivesFrom(sourceType, typeof(TeamPlayer)))
+			return randomPlayerSourceSelector();
+		else if (GameRules.derivesFrom(sourceType, typeof(Ball)))
 			return randomBallSourceSelector();
 		else
-			return randomPlayerSourceSelector();
+			throw new System.Exception("Bug: could not get selector for source type " + sourceType);
 	}
 	//generate a selector based on a condition for events caused by players
 	public static GameRuleSelector randomPlayerSourceSelector() {
@@ -460,6 +444,10 @@ public class GameRuleSerializer : GameRuleSerializationBase {
 			return (char)(b - O_CHARACTER_BYTE_VALUE + 'P');
 	}
 	public void packToString<T>(T valueToPack, List<T> valueList) {
+		//if there's only one value, we won't actually store it, and the deserializer won't try to extract it
+		if (valueList.Count == 1)
+			return;
+
 		//pack the value's index in the list
 		for (byte i = (byte)(valueList.Count - 1); i >= 0; i--) {
 			if (valueList[i].Equals(valueToPack)) {
@@ -501,7 +489,7 @@ public class GameRuleDeserializer : GameRuleSerializationBase {
 		for (int i = ruleString.Length - 1; i > start; i--)
 			ruleBits.Add(ruleString[i]);
 	}
-	public static GameRule unpackStringToRule(string ruleString) {
+	public static GameRule unpackRuleFromString(string ruleString) {
 		return GameRule.unpackFromString(new GameRuleDeserializer(ruleString.ToUpper()));
 	}
 	public byte unpackByte(byte bitSize) {
@@ -526,6 +514,10 @@ public class GameRuleDeserializer : GameRuleSerializationBase {
 			return (byte)(c + O_CHARACTER_BYTE_VALUE - 'P');
 	}
 	public T unpackFromString<T>(List<T> valueList) {
+		//if there's only one value, the serializer didn't store it so just return value 0
+		if (valueList.Count == 1)
+			return valueList[0];
+
 		return valueList[unpackByte(bitsForIndex(valueList))];
 	}
 }

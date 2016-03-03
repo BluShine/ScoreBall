@@ -431,7 +431,7 @@ public class TeamPlayer : SportsObject {
 	public override void handlePlayerCollision(TeamPlayer collidedPlayer) {
         if (gameRules == null)
             return;
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitPlayer, tp: this, vct: collidedPlayer));
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Bump, this, collidedPlayer));
 		if (dashTimer > 0) {
 			//steal the ball
 			if (collidedPlayer.carriedBall != null) {
@@ -444,7 +444,7 @@ public class TeamPlayer : SportsObject {
 			Vector3 tackleVector = transform.forward * tacklePower +
 			Vector3.up * tackleLaunchPower;
 			collidedPlayer.tackle(tackleVector, tackleDuration);
-			gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerTacklePlayer, tp: this, vct: collidedPlayer));
+			gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Smack, this, collidedPlayer));
 		}
 		if (dashStopByPlayer) {
 			dashTimer = 0;
@@ -452,13 +452,12 @@ public class TeamPlayer : SportsObject {
     }
 
 	public override void handleSportsCollision(SportsObject sObject) {
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitSportsObject, tp: this, so: sObject));
     }
 
 	public override void handleFieldCollision(FieldObject fObject) {
         if (gameRules == null)
             return;
-		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.PlayerHitFieldObject, tp: this, fo: fObject));
+		gameRules.SendEvent(new GameRuleEvent(GameRuleEventType.Bump, this, fObject));
     }
 
     public void removeBall(Ball rBall)
