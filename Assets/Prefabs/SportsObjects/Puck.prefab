@@ -272,10 +272,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: foot ball
+  sportName: puck
   team: 0
   body: {fileID: 0}
-  jumpSpeed: 10
+  jumpSpeed: 5
   lifeTime: 0
   expires: 0
   gameRules: {fileID: 0}
@@ -385,11 +385,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: sportName
-      value: foot ball
+      value: puck
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: jumpSpeed
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: kickSounds.Array.data[0]
