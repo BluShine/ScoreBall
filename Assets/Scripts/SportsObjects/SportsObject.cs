@@ -248,7 +248,6 @@ public class SportsObject : FieldObject {
 	public virtual void Jump() {
 		//make sure we're not already trying to jump
 		if (!preJump) {
-			Debug.Log("bounce " + bounceTime);
 			Vector3 velocity = body.velocity;
 			velocity.y = Mathf.Max(velocity.y, jumpSpeed);
 			body.velocity = velocity;
