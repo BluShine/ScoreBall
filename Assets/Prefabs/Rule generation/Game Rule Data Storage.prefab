@@ -178,10 +178,10 @@ MonoBehaviour:
   charAmpersandIcon: {fileID: 182644, guid: 35bad821830d8e64988c780cc1062489, type: 2}
   charSlashIcon: {fileID: 186970, guid: 02b3106880a77844b9d0e55bf6b42645, type: 2}
   clockIcon: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
-  gainsEffectIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+  gainsEffectIcon: {fileID: 126896, guid: 974484558b5657b48ad31e843ee3e20b, type: 2}
   resultsInIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
   genericZoneIcon: {fileID: 197860, guid: 33ca0bb0d38fb5347b673d94874c99cd, type: 2}
-  boomerangZoneIcon: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+  boomerangZoneIcon: {fileID: 115154, guid: a57a38dd5165e6c419a8787eff74d2e1, type: 2}
 --- !u!114 &11479594
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -284,7 +284,11 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: boomerangZoneIcon
       value: 
-      objectReference: {fileID: 108726, guid: c725e3957c4b1de4bad3d6a87fa8ac76, type: 2}
+      objectReference: {fileID: 115154, guid: a57a38dd5165e6c419a8787eff74d2e1, type: 2}
+    - target: {fileID: 0}
+      propertyPath: gainsEffectIcon
+      value: 
+      objectReference: {fileID: 126896, guid: 974484558b5657b48ad31e843ee3e20b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133356}
