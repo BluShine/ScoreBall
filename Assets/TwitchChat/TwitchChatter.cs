@@ -72,11 +72,16 @@ public class TwitchChatter : MonoBehaviour {
             else
             {
                 string key = message.Remove(0, 4);
+                int spawns = 1;
+                if (message.Contains("apocalypse") || message.Contains("armageddon"))
+                {
+                    spawns = 20;
+                    key = key.Replace("apocalypse", "");
+                    key = key.Replace("armageddon", "");
+                    key = key.Trim();
+                }
                 if (spawnDict.ContainsKey(key))
                 {
-                    int spawns = 1;
-                    if (message.Contains("apocalypse") || message.Contains("armageddon"))
-                        spawns = 20;
                     for (int i = 0; i < spawns; i++)
                     {
                         SpawnRef spr = spawnDict[key];
