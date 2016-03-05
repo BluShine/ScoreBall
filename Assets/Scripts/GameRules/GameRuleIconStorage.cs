@@ -44,6 +44,7 @@ public class GameRuleIconStorage : MonoBehaviour {
 	public GameObject charMinusIcon;
 	public GameObject[] charDigitIcons;
 	public GameObject charAmpersandIcon;
+	public GameObject charQmarkIcon;
 	public GameObject charSlashIcon;
 
 	//icons to join other icons

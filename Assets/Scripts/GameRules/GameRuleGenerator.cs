@@ -25,8 +25,10 @@ public enum GameRuleRestriction {
 };
 
 public class GameRuleGenerator {
-	const int ACTION_DURATION_SECONDS_SHORTEST = 4;
-	const int ACTION_DURATION_SECONDS_LONGEST = 10;
+	public const int POINTS_EFFECT_MIN_POINTS = -5;
+	public const int POINTS_EFFECT_MAX_POINTS = 10;
+	public const int ACTION_DURATION_SECONDS_SHORTEST = 4;
+	public const int ACTION_DURATION_SECONDS_LONGEST = 10;
 
 	private static List<GameRuleRestriction> restrictions = new List<GameRuleRestriction>();
 	private static GameRuleSelector ruleActionSelector;
@@ -242,14 +244,12 @@ public class GameRuleGenerator {
 
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
-		if (chosenType == typeof(GameRulePointsPlayerEffect)) { 
-			int minPoints = (hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : -5);
-			int maxPoints = (hasRestriction(GameRuleRestriction.OnlyNegativePointAmounts) ? 0 : 10);
-			//if they ask for both positive and negative point amounts, give them 0
-			if (maxPoints <= minPoints) {
-				maxPoints = 1;
-				minPoints = 0;
-			}
+		if (chosenType == typeof(GameRulePointsPlayerEffect)) {
+			int minPoints = (hasRestriction(GameRuleRestriction.OnlyPositivePointAmounts) ? 0 : POINTS_EFFECT_MIN_POINTS);
+			int maxPoints = (hasRestriction(GameRuleRestriction.OnlyNegativePointAmounts) ? 0 : POINTS_EFFECT_MAX_POINTS);
+			//if they ask for both positive and negative point amounts, they get 0
+			if (maxPoints <= minPoints)
+				return new GameRulePointsPlayerEffect(0);
 			int points = Random.Range(minPoints, maxPoints);
 			if (points >= 0)
 				points++;
