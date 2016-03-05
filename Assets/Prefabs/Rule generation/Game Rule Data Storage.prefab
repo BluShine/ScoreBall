@@ -176,6 +176,7 @@ MonoBehaviour:
   - {fileID: 139390, guid: 8949ca9fcd477f94fbf809bc0ea88954, type: 2}
   - {fileID: 120716, guid: fbae7ff948521fa428e7dc5439e6de52, type: 2}
   charAmpersandIcon: {fileID: 182644, guid: 35bad821830d8e64988c780cc1062489, type: 2}
+  charQmarkIcon: {fileID: 197158, guid: cd08d1b1bbda5f14d9161ee9711db7c4, type: 2}
   charSlashIcon: {fileID: 186970, guid: 02b3106880a77844b9d0e55bf6b42645, type: 2}
   clockIcon: {fileID: 177044, guid: deb3c35c74a07384991a61686be8054f, type: 2}
   gainsEffectIcon: {fileID: 126896, guid: 974484558b5657b48ad31e843ee3e20b, type: 2}
@@ -289,6 +290,10 @@ Prefab:
       propertyPath: gainsEffectIcon
       value: 
       objectReference: {fileID: 126896, guid: 974484558b5657b48ad31e843ee3e20b, type: 2}
+    - target: {fileID: 0}
+      propertyPath: charQmarkIcon
+      value: 
+      objectReference: {fileID: 197158, guid: cd08d1b1bbda5f14d9161ee9711db7c4, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133356}

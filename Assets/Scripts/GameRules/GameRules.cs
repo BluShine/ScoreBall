@@ -46,6 +46,7 @@ public class GameRules : MonoBehaviour {
 	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
+	const int MAX_ACTIVE_POINTS_TEXTS = 16;
 	Stack<TextMesh> pointsTextPool = new Stack<TextMesh>();
 	Queue<TextMesh> activePointsTexts = new Queue<TextMesh>();
 
@@ -314,8 +315,12 @@ public class GameRules : MonoBehaviour {
 			//}
 		}
 
-		//get one from the pool
-		pointsText = pointsTextPool.Pop();
+		//if we have too many points texts, yank the oldest one from the queue
+		if (activePointsTexts.Count > MAX_ACTIVE_POINTS_TEXTS)
+			pointsText = activePointsTexts.Dequeue();
+		//we don't have too many points texts, get one from the pool
+		else
+			pointsText = pointsTextPool.Pop();
 		pointsTextObject = pointsText.gameObject;
 		pointsTextObject.SetActive(true);
 		activePointsTexts.Enqueue(pointsText);
