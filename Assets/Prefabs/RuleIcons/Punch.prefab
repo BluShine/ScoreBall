@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 22496726}
   - 222: {fileID: 22201196}
+  - 114: {fileID: 11436300}
   m_Layer: 5
   m_Name: Punch
   m_TagString: Untagged
@@ -33,6 +34,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11436300
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38cd86b77909da548bae28a18687aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11461514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -86,7 +98,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -17.3, y: 0}
   m_SizeDelta: {x: 107, y: 81.99113}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22496726
@@ -105,7 +117,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 107, y: 81.99113}
+  m_SizeDelta: {x: 50, y: 81.99113}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1001 &100100000
 Prefab:
@@ -132,7 +144,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -17.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_SizeDelta.x
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
