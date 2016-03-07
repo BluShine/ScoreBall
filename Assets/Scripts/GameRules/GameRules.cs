@@ -509,15 +509,29 @@ public class GameRule {
 			GameObject parentObject = tImage.FindChild("Image").gameObject;
 			List<GameObject> imageObjects = new List<GameObject>();
             float x = 0;
+            //calculate our width so we can scale down icons instead of overflowing.
+            float totalWidth = 0;
+            for(int i=0; i < iconList.Count; i++)
+            {
+                totalWidth += iconList[i].GetComponent<RectTransform>().rect.width;
+            }
+            float iconScale = 1;
+            if(totalWidth > parentObject.GetComponent<RectTransform>().rect.width)
+            {
+                iconScale = parentObject.GetComponent<RectTransform>().rect.width / totalWidth;
+            }
+
 			for (int i = 0; i < iconList.Count; i++) {
 				GameObject imageObject = GameObject.Instantiate(iconList[i]);
                 //set parent to the parentObject, making sure to use the prefab's local position (not world)
 				imageObject.transform.SetParent(parentObject.transform, false);
 				imageObjects.Add(imageObject);
+                //scale it 
+                imageObject.transform.localScale = new Vector3(iconScale, iconScale, iconScale);
                 //space out the icons
                 RectTransform r = imageObject.GetComponent<RectTransform>();
                 r.localPosition = r.localPosition + new Vector3(x, 0, 0);
-                x += r.rect.width;
+                x += r.rect.width * iconScale;
 			}
 			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString());
 		} else {
