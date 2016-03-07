@@ -10,7 +10,6 @@ GameObject:
   - 224: {fileID: 22436428}
   - 222: {fileID: 22286698}
   - 114: {fileID: 11476754}
-  - 95: {fileID: 9573750}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -27,6 +26,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 22443194}
   - 222: {fileID: 22255278}
+  - 95: {fileID: 9529128}
   m_Layer: 5
   m_Name: Dizzy
   m_TagString: Untagged
@@ -34,16 +34,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &9573750
+--- !u!95 &9529128
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 147728}
-  m_Enabled: 1
+  m_GameObject: {fileID: 183782}
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fa8f2c9cc60671c4891fdb3189ba6a25, type: 2}
+  m_Controller: {fileID: 9100000, guid: 31ecccf62d2d5124489b4d10a92cc96a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -96,7 +96,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 147728}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.06627641, w: 0.9978013}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
