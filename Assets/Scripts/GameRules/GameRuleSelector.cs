@@ -3,6 +3,22 @@ using System.Collections.Generic;
 
 ////////////////Sports object selectors based on the source of an event////////////////
 public abstract class GameRuleSelector {
+	//these would be static variables but unity's initialization has a weird order
+	//these got set before GameRulePlayerSelector.instance was initialized
+	public static List<GameRuleSelector> getPlayerSourceSelectors() {
+		return new List<GameRuleSelector>(new GameRuleSelector[] {
+			GameRulePlayerSelector.instance,
+			GameRuleOpponentSelector.instance
+		});
+	}
+	public static List<GameRuleSelector> getBallSourceSelectors() {
+		return new List<GameRuleSelector>(new GameRuleSelector[] {
+			GameRuleBallShooterSelector.instance,
+			GameRuleBallShooterOpponentSelector.instance,
+			GameRuleBallSelector.instance
+		});
+	}
+
 	public abstract SportsObject target(SportsObject source);
 	public abstract System.Type targetType();
 	public abstract void addIcons(List<GameObject> iconList);
@@ -35,27 +51,20 @@ public abstract class GameRuleSourceSelector : GameRuleSelector {
 	public override SportsObject target(SportsObject source) {
 		return source;
 	}
-	public override void addIcons(List<GameObject> iconList) {
-		iconList.Add(iconIdentifier(targetType()));
+	public static GameRuleSelector selectorIdentifier(System.Type type, GameRuleSelector otherSelector) {
+		return selectorIdentifier(type,
+			!(otherSelector is GameRuleOpponentSelector || otherSelector is GameRuleBallShooterOpponentSelector));
 	}
-	public static GameObject iconIdentifier(System.Type type) {
-		if (type == typeof(TeamPlayer))
-			return GameRuleIconStorage.instance.playerIcon;
-		else if (type == typeof(Ball))
-			return GameRuleIconStorage.instance.genericBallIcon;
+	public static GameRuleSelector selectorIdentifier(System.Type type, bool useOpponent) {
+		if (type == typeof(TeamPlayer)) {
+			if (useOpponent)
+				return GameRuleOpponentSelector.instance;
+			else
+				return GameRulePlayerSelector.instance;
+		} else if (type == typeof(Ball))
+			return GameRuleBallSelector.instance;
 		else
-			throw new System.Exception("Bug: could not get identifying icon for System.Type " + type);
-	}
-	public override string ToString() {
-		return stringIdentifier(targetType());
-	}
-	public static string stringIdentifier(System.Type type) {
-		if (type == typeof(TeamPlayer))
-			return "player";
-		else if (type == typeof(Ball))
-			return "ball";
-		else
-			throw new System.Exception("Bug: could not get identifying string for System.Type " + type);
+			throw new System.Exception("Bug: could not get identifying selector for System.Type " + type);
 	}
 	//serialization
 	public const int GAME_RULE_PLAYER_SOURCE_SELECTOR_BYTE_VAL = 0;
@@ -74,10 +83,16 @@ public abstract class GameRuleSourceSelector : GameRuleSelector {
 }
 
 ////////////////The actual selectors////////////////
-public class GameRulePlayerSelector: GameRuleSourceSelector {
+public class GameRulePlayerSelector : GameRuleSourceSelector {
 	public static GameRulePlayerSelector instance = new GameRulePlayerSelector();
+	public override string ToString() {
+		return "player";
+	}
 	public override System.Type targetType() {
 		return typeof(TeamPlayer);
+	}
+	public override void addIcons(List<GameObject> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.playerIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, GAME_RULE_PLAYER_SELECTOR_BYTE_VAL);
@@ -147,8 +162,14 @@ public class GameRuleBallShooterOpponentSelector : GameRuleSelector {
 
 public class GameRuleBallSelector : GameRuleSourceSelector {
 	public static GameRuleBallSelector instance = new GameRuleBallSelector();
+	public override string ToString() {
+		return "ball";
+	}
 	public override System.Type targetType() {
 		return typeof(Ball);
+	}
+	public override void addIcons(List<GameObject> iconList) {
+		iconList.Add(GameRuleIconStorage.instance.genericBallIcon);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_SELECTOR_BIT_SIZE, GAME_RULE_BALL_SELECTOR_BYTE_VAL);

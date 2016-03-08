@@ -7,6 +7,7 @@ public class RuleNetworking : NetworkBehaviour {
 
     public GameRules gameRules;
     public NetworkManager manager;
+    public NetworkManagerHUD networkHUD;
     public bool isServer = false;
     bool isRegistered = false;
 
@@ -30,6 +31,9 @@ public class RuleNetworking : NetworkBehaviour {
         }
     }
 
+    public void toggleHUD() {
+        networkHUD.enabled = !networkHUD.enabled;
+    }
     public void sendRule(string message)
     {
         manager.client.Send(RULEMESSSAGEID, new StringMessage(message));

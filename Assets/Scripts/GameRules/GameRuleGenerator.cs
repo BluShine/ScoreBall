@@ -158,7 +158,7 @@ public class GameRuleGenerator {
 			});
 		} else
 			//get the list of potential event types for this source
-			acceptableEventTypes = GameRuleEvent.potentialEventTypesList[sourceType];
+			acceptableEventTypes = GameRuleEvent.potentialEventTypesMap[sourceType];
 
 		GameRuleEventType eventType = GameRuleChances.pickFrom(acceptableEventTypes);
 
@@ -168,7 +168,7 @@ public class GameRuleGenerator {
 			targetType = typeof(FieldObject);
 		else
 			//pick from the list of potential target types
-			targetType = GameRuleChances.pickFromPotentialEventTargets(GameRuleEvent.potentialTargetsList[eventType]);
+			targetType = GameRuleChances.pickFromPotentialEventTargets(GameRuleEvent.potentialEventsList[eventType][sourceType]);
 		//players bumping into each other shouldn't cause them to indefinitely freeze
 		if (eventType == GameRuleEventType.Bump && sourceType == typeof(TeamPlayer) && targetType == typeof(TeamPlayer))
 			restrictions.Add(GameRuleRestriction.NoPlayerFreezeUntilConditions);
@@ -234,13 +234,7 @@ public class GameRuleGenerator {
 				typeof(GameRuleBounceEffect)
 			});
 		else //all acceptable types
-			acceptableActionTypes = new List<System.Type>(new System.Type[] {
-				typeof(GameRulePointsPlayerEffect),
-				typeof(GameRuleFreezeEffect),
-				typeof(GameRuleDuplicateEffect),
-				typeof(GameRuleDizzyEffect),
-				typeof(GameRuleBounceEffect)
-			});
+			acceptableActionTypes = new List<System.Type>(GameRuleEffect.playerSourceEffects);
 
 		//pick one of the action types
 		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
@@ -268,19 +262,16 @@ public class GameRuleGenerator {
 		else if (chosenType == typeof(GameRuleBounceEffect))
 			return new GameRuleBounceEffect(randomActionDuration(sourceType));
 		else
-			throw new System.Exception("Bug: Invalid player action type!");
+			throw new System.Exception("Bug: invalid player effect type " + chosenType);
 	}
 	public static GameRuleEffect randomBallEffect(System.Type sourceType) {
 		//build the list of acceptable action types, taking restrictions into account
-		System.Type[] acceptableActionTypes = new System.Type[] {
-			//balls getting frozen hasn't made for fun gameplay yet
-			//typeof(GameRuleFreezeEffect),
-			typeof(GameRuleDuplicateEffect),
-			typeof(GameRuleBounceEffect)
-		};
+		List<System.Type> acceptableActionTypes = new List<System.Type>(GameRuleEffect.ballSourceEffects);
+		//balls getting frozen hasn't made for fun gameplay yet
+		acceptableActionTypes.Remove(typeof(GameRuleFreezeEffect));
 
 		//pick one of the action types
-		System.Type chosenType = GameRuleChances.pickFrom(new List<System.Type>(acceptableActionTypes));
+		System.Type chosenType = GameRuleChances.pickFrom(acceptableActionTypes);
 		if (chosenType == typeof(GameRuleFreezeEffect))
 			return new GameRuleFreezeEffect(randomActionDuration(sourceType));
 		else if (chosenType == typeof(GameRuleDuplicateEffect))
@@ -288,7 +279,7 @@ public class GameRuleGenerator {
 		else if (chosenType == typeof(GameRuleBounceEffect))
 			return new GameRuleBounceEffect(randomActionDuration(sourceType));
 		else
-			throw new System.Exception("Bug: Invalid ball action type!");
+			throw new System.Exception("Bug: invalid ball effect type " + chosenType);
 	}
 
 	////////////////GameRuleActionDurations for actions that last for a duration////////////////
@@ -337,7 +328,7 @@ public class GameRuleGenerator {
 				randomEventHappenedCondition(triggerType)
 			);
 		} else
-			throw new System.Exception("Bug: Invalid duration type!");
+			throw new System.Exception("Bug: invalid duration type " + chosenType);
 	}
 
 	////////////////GameRuleSelectors for actions and conditions////////////////
@@ -353,10 +344,8 @@ public class GameRuleGenerator {
 	//generate a selector based on a condition for events caused by players
 	public static GameRuleSelector randomPlayerSourceSelector() {
 		//build selectors list, taking restrictions into account
-		List<GameRuleSelector> acceptableSelectors = new List<GameRuleSelector>(new GameRuleSelector[] {
-			GameRulePlayerSelector.instance,
-			GameRuleOpponentSelector.instance
-		});
+		List<GameRuleSelector> acceptableSelectors = GameRuleSelector.getPlayerSourceSelectors();
+
 		if (hasRestriction(GameRuleRestriction.NoYouPlayerTargetSelectors))
 			acceptableSelectors.Remove(GameRulePlayerSelector.instance);
 		if (hasRestriction(GameRuleRestriction.NoOpponentPlayerTargetSelectors))
@@ -375,11 +364,7 @@ public class GameRuleGenerator {
 				GameRuleBallShooterOpponentSelector.instance
 			});
 		else
-			acceptableSelectors = new List<GameRuleSelector>(new GameRuleSelector[] {
-				GameRuleBallSelector.instance,
-				GameRuleBallShooterSelector.instance,
-				GameRuleBallShooterOpponentSelector.instance
-			});
+			acceptableSelectors = GameRuleSelector.getBallSourceSelectors();
 		if (hasRestriction(GameRuleRestriction.NoYouPlayerTargetSelectors))
 			acceptableSelectors.Remove(GameRuleBallShooterSelector.instance);
 		if (hasRestriction(GameRuleRestriction.NoOpponentPlayerTargetSelectors))
@@ -455,7 +440,7 @@ public class GameRuleSerializer : GameRuleSerializationBase {
 				return;
 			}
 		}
-		throw new System.Exception("Bug: could not find the value to serialize!");
+		throw new System.Exception("Bug: could not find the value to serialize for " + valueToPack);
 	}
 	public string getStringResult() {
 		if (bitCount > 0) {

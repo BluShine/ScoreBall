@@ -151,12 +151,12 @@ MonoBehaviour:
   bananaIcon: {fileID: 150010, guid: eb98ef51e158f1341a0579ec745c2da0, type: 2}
   catIcon: {fileID: 177638, guid: d153a5712df6f664eb1c2913f0a974d6, type: 2}
   boundaryIcon: {fileID: 134810, guid: cc24e6a5a929cae478b82b09ee349ac7, type: 2}
-  genericEventIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
+  genericEventIcon: {fileID: 156468, guid: e4203d967adc565428a46891cc60118c, type: 2}
   stealIcon: {fileID: 121068, guid: e35f31e8e7d3a6f4e84b92f71b147a1b, type: 2}
   bumpIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
   scoreGoalIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
   smackIcon: {fileID: 101090, guid: aee3396882841424aa4ecbf525baf952, type: 2}
-  grabIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
+  grabIcon: {fileID: 137308, guid: 37cb17d512468284bbc1cf901948bf9e, type: 2}
   kickIcon: {fileID: 167824, guid: 2c08b88802568994795ee8c02d54ab5b, type: 2}
   duplicatedIcon: {fileID: 180186, guid: 5c8788eb7a898e94789092f8bff4b642, type: 2}
   frozenIcon: {fileID: 177580, guid: a827ac68cf5d78745a7200bb0208027e, type: 2}
@@ -265,7 +265,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: genericEventIcon
       value: 
-      objectReference: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
+      objectReference: {fileID: 156468, guid: e4203d967adc565428a46891cc60118c, type: 2}
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -294,6 +294,10 @@ Prefab:
       propertyPath: charQmarkIcon
       value: 
       objectReference: {fileID: 197158, guid: cd08d1b1bbda5f14d9161ee9711db7c4, type: 2}
+    - target: {fileID: 0}
+      propertyPath: grabIcon
+      value: 
+      objectReference: {fileID: 137308, guid: 37cb17d512468284bbc1cf901948bf9e, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133356}

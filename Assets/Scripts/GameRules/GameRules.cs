@@ -42,7 +42,6 @@ public class GameRules : MonoBehaviour {
     public MusicPlayer musicPlayer;
 
 	//constants for positioning the points text above the player and fading out
-	//const int POINTS_TEXT_POOL_AMOUNT = 8;
 	const float POINTS_TEXT_CAMERA_UP_SPAWN_MULTIPLIER = 3.0f;
 	const float POINTS_TEXT_CAMERA_UP_DRIFT_MULTIPLIER = 0.03f;
 	const float POINTS_TEXT_FADE_SECONDS = 1.5f;
@@ -108,8 +107,10 @@ public class GameRules : MonoBehaviour {
 				GameRuleSpawnableObjectRegistry.instance == null)
 				return;
 			//actually, they're all ready, we can proceed
-			else
+			else {
 				allClassesAreReady = true;
+				//runRuleStringSanityChecks();
+			}
 		}
 		//don't generate a rule if the rules were recently changed
 		//only 3 rules for now
@@ -304,25 +305,17 @@ public class GameRules : MonoBehaviour {
 
 	public void spawnPointsText(int pointsGiven, TeamPlayer target) {
 		TextMesh pointsText;
-		GameObject pointsTextObject;
-		//add to the pool if there isn't enough
-		if (pointsTextPool.Count == 0) {
-			//for (int i = POINTS_TEXT_POOL_AMOUNT; i > 0; i--) {
-				pointsTextObject = Instantiate(GameRules.instance.pointsTextPrefab);
-				pointsTextObject.SetActive(false);
-				pointsText = pointsTextObject.GetComponent<TextMesh>();
-				pointsTextPool.Push(pointsText);
-			//}
-		}
-
 		//if we have too many points texts, yank the oldest one from the queue
-		if (activePointsTexts.Count > MAX_ACTIVE_POINTS_TEXTS)
+		if (activePointsTexts.Count >= MAX_ACTIVE_POINTS_TEXTS)
 			pointsText = activePointsTexts.Dequeue();
-		//we don't have too many points texts, get one from the pool
-		else
+		//we don't have too many points texts, get one from the pool if there's one available
+		else if (pointsTextPool.Count > 0) {
 			pointsText = pointsTextPool.Pop();
-		pointsTextObject = pointsText.gameObject;
-		pointsTextObject.SetActive(true);
+			pointsText.gameObject.SetActive(true);
+		//there are no spare points text objects, make a new one
+		} else
+			pointsText = Instantiate(GameRules.instance.pointsTextPrefab).GetComponent<TextMesh>();
+
 		activePointsTexts.Enqueue(pointsText);
 
 		//reposition
@@ -449,6 +442,28 @@ public class GameRules : MonoBehaviour {
 	public static bool derivesFrom(System.Type a, System.Type b) {
 		return a == b || a.IsSubclassOf(b);
 	}
+
+	//for ensuring rules don't save the wrong string
+	public static void runRuleStringSanityChecks() {
+		for (byte i = 0; i <= GameRuleSerializationBase.GAME_RULE_FORMAT_CHAR_BIT_MASK; i++) {
+			char c = GameRuleSerializer.byteToChar(i);
+			byte b = GameRuleDeserializer.charToByte(c);
+			if (i != b)
+				throw new System.Exception("Bad rule byte " + i + " which becomes char " + c + " which becomes byte " + i);
+		}
+
+		const int sanityCheckCount = 256;
+		List<GameRuleRestriction> noRestrictions = new List<GameRuleRestriction>();
+		for (int i = 0; i < sanityCheckCount; i++) {
+			string ruleString = GameRuleSerializer.packRuleToString(GameRuleGenerator.GenerateNewRule(noRestrictions));
+			if (!sanityCheckRuleString(ruleString))
+				throw new System.Exception("Bad rule string " + ruleString);
+		}
+		Debug.Log("Successfully ran all byte character checks and " + sanityCheckCount + " rule string sanity checks");
+	}
+	public static bool sanityCheckRuleString(string ruleString) {
+		return GameRuleSerializer.packRuleToString(GameRuleDeserializer.unpackRuleFromString(ruleString)) == ruleString;
+	}
 }
 
 ////////////////Represents a single game rule////////////////
@@ -491,10 +506,11 @@ public class GameRule {
 		t.localPosition = startPosition;
 		t.localScale = startScale;
 
-		t.FindChild("Save Name").gameObject.GetComponent<Text>().text = GameRuleSerializer.packRuleToString(this);
+		string ruleName = GameRuleSerializer.packRuleToString(this);
+		t.FindChild("Save Name").gameObject.GetComponent<Text>().text = ruleName;
 
 		Transform tText = t.FindChild("Rule Text");
-		Transform tImage = t.FindChild("Rule Icons");
+		RectTransform tImage = (RectTransform)(t.FindChild("Rule Icons"));
 
 		if (GameRules.instance.useRuleIcons) {
 			tText.gameObject.SetActive(false);
@@ -505,35 +521,28 @@ public class GameRule {
 			iconList.Add(GameRuleIconStorage.instance.resultsInIcon);
 			action.addIcons(iconList);
 
-			//clone our base image object so that we have one per icon (including the base image)
-			GameObject parentObject = tImage.FindChild("Image").gameObject;
 			List<GameObject> imageObjects = new List<GameObject>();
-            float x = 0;
-            //calculate our width so we can scale down icons instead of overflowing.
-            float totalWidth = 0;
-            for(int i=0; i < iconList.Count; i++)
-            {
-                totalWidth += iconList[i].GetComponent<RectTransform>().rect.width;
-            }
-            float iconScale = 1;
-            if(totalWidth > parentObject.GetComponent<RectTransform>().rect.width)
-            {
-                iconScale = parentObject.GetComponent<RectTransform>().rect.width / totalWidth;
-            }
+			//calculate our width so we can scale down icons instead of overflowing.
+			float totalWidth = 0;
+			for (int i = 0; i < iconList.Count; i++) {
+				totalWidth += ((RectTransform)(iconList[i].transform)).rect.width;
+			}
+			float iconScale = Mathf.Min(1.0f, tImage.rect.width / totalWidth);
 
+			float x = 0.0f;
 			for (int i = 0; i < iconList.Count; i++) {
 				GameObject imageObject = GameObject.Instantiate(iconList[i]);
-                //set parent to the parentObject, making sure to use the prefab's local position (not world)
-				imageObject.transform.SetParent(parentObject.transform, false);
+				//set parent to the icons container
+				imageObject.transform.SetParent(tImage, false);
 				imageObjects.Add(imageObject);
-                //scale it 
-                imageObject.transform.localScale = new Vector3(iconScale, iconScale, iconScale);
-                //space out the icons
-                RectTransform r = imageObject.GetComponent<RectTransform>();
-                r.localPosition = r.localPosition + new Vector3(x, 0, 0);
-                x += r.rect.width * iconScale;
+				//scale it 
+				imageObject.transform.localScale = new Vector3(iconScale, iconScale);
+				//space out the icons
+				RectTransform r = imageObject.GetComponent<RectTransform>();
+				r.localPosition = r.localPosition + new Vector3(x, 0, 0);
+				x += r.rect.width * iconScale;
 			}
-			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString());
+			Debug.Log("If " + condition.ToString() + " => Then " + action.ToString() + " - " + ruleName);
 		} else {
 			tImage.gameObject.SetActive(false);
 			tText.GetChild(0).gameObject.GetComponent<Text>().text = "If " + condition.ToString();

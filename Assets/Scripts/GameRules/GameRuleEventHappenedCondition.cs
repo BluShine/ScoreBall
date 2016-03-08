@@ -11,69 +11,51 @@ public enum GameRuleEventType : int {
 	Smack
 }
 
-//certain events are only valid if caused/received by certain kinds of objects
-//each of these represents a valid pairing of objects
-public class GameRuleEventPotentialObjects {
-	public System.Type source;
-	public System.Type target;
-	public GameRuleEventPotentialObjects(System.Type s, System.Type t) {
-		source = s;
-		target = t;
-	}
-}
 public class GameRuleEvent {
-	public static List<GameRuleEventType> eventTypesList = buildEventTypesList();
-	public static List<GameRuleEventType> buildEventTypesList() {
-		List<GameRuleEventType> values = new List<GameRuleEventType>();
-		foreach (GameRuleEventType eventType in System.Enum.GetValues(typeof(GameRuleEventType)))
-			values.Add(eventType);
-		return values;
-	}
-	public static Dictionary<GameRuleEventType, List<System.Type>> potentialSourcesList;
-	public static Dictionary<GameRuleEventType, List<System.Type>> potentialTargetsList;
-	public static Dictionary<System.Type, List<GameRuleEventType>> potentialEventTypesList;
-	public static Dictionary<GameRuleEventType, GameRuleEventPotentialObjects[]> potentialObjectsList = buildPotentialObjectsList();
-	public static Dictionary<GameRuleEventType, GameRuleEventPotentialObjects[]> buildPotentialObjectsList() {
-		Dictionary<GameRuleEventType, GameRuleEventPotentialObjects[]> values =
-			new Dictionary<GameRuleEventType, GameRuleEventPotentialObjects[]>();
-		GameRuleEventPotentialObjects[] playerBallPotentials =
-			new GameRuleEventPotentialObjects[] {new GameRuleEventPotentialObjects(typeof(TeamPlayer), typeof(Ball))};
-		GameRuleEventPotentialObjects playerPlayer = new GameRuleEventPotentialObjects(typeof(TeamPlayer), typeof(TeamPlayer));
+	//the list of all possible event types for a given event source
+	public static Dictionary<System.Type, List<GameRuleEventType>> potentialEventTypesMap;
+	//quick access to the keys lists of potentialEventsList
+	public static List<GameRuleEventType> eventTypesList;
+	public static Dictionary<GameRuleEventType, List<System.Type>> eventTypeSourcesList;
+	//events with their possible sources and the sources' lists of possible targets
+	public static Dictionary<GameRuleEventType, Dictionary<System.Type, List<System.Type>>> potentialEventsList = buildPotentialEventsList();
+	public static Dictionary<GameRuleEventType, Dictionary<System.Type, List<System.Type>>> buildPotentialEventsList() {
+		Dictionary<GameRuleEventType, Dictionary<System.Type, List<System.Type>>> values =
+			new Dictionary<GameRuleEventType, Dictionary<System.Type, List<System.Type>>>();
 
-		values[GameRuleEventType.Kick] = playerBallPotentials;
-		values[GameRuleEventType.Grab] = playerBallPotentials;
-		values[GameRuleEventType.Bump] = new GameRuleEventPotentialObjects[] {
-			playerPlayer,
-			new GameRuleEventPotentialObjects(typeof(Ball), typeof(Ball)),
-			new GameRuleEventPotentialObjects(typeof(TeamPlayer), typeof(FieldObject)),
-			new GameRuleEventPotentialObjects(typeof(Ball), typeof(FieldObject)),
-		};
-		values[GameRuleEventType.Smack] = new GameRuleEventPotentialObjects[] {playerPlayer};
+		Dictionary<System.Type, List<System.Type>> kickSourcesAndTargets =
+			(values[GameRuleEventType.Kick] = new Dictionary<System.Type, List<System.Type>>());
+		//grab has the same source and target as kick
+		values[GameRuleEventType.Grab] = kickSourcesAndTargets;
+		Dictionary<System.Type, List<System.Type>> bumpSourcesAndTargets =
+			(values[GameRuleEventType.Bump] = new Dictionary<System.Type, List<System.Type>>());
+		Dictionary<System.Type, List<System.Type>> smackSourcesAndTargets =
+			(values[GameRuleEventType.Smack] = new Dictionary<System.Type, List<System.Type>>());
 
-		//before we leave, build the source and target lists per event type
-		//also build the list of all potential event types per source
-		potentialSourcesList = new Dictionary<GameRuleEventType, List<System.Type>>();
-		potentialTargetsList = new Dictionary<GameRuleEventType, List<System.Type>>();
-		potentialEventTypesList = new Dictionary<System.Type, List<GameRuleEventType>>();
-		foreach (KeyValuePair<GameRuleEventType, GameRuleEventPotentialObjects[]> eventTypePotentialObjects in values) {
-			GameRuleEventType eventType = eventTypePotentialObjects.Key;
-			List<System.Type> potentialSources = (potentialSourcesList[eventType] = new List<System.Type>());
-			List<System.Type> potentialTargets = (potentialTargetsList[eventType] = new List<System.Type>());
-			foreach (GameRuleEventPotentialObjects potentialObject in eventTypePotentialObjects.Value) {
-				//split the potential objects lists into source and target lists
-				if (!potentialSources.Contains(potentialObject.source))
-					potentialSources.Add(potentialObject.source);
-				if (!potentialTargets.Contains(potentialObject.target))
-					potentialTargets.Add(potentialObject.target);
+		kickSourcesAndTargets[typeof(TeamPlayer)] = new List<System.Type>(new System.Type[] {typeof(Ball)});
+		bumpSourcesAndTargets[typeof(TeamPlayer)] = new List<System.Type>(new System.Type[] {typeof(TeamPlayer), typeof(FieldObject)});
+		bumpSourcesAndTargets[typeof(Ball)] = new List<System.Type>(new System.Type[] {typeof(Ball), typeof(FieldObject)});
+		smackSourcesAndTargets[typeof(TeamPlayer)] = new List<System.Type>(new System.Type[] {typeof(TeamPlayer)});
+
+		//for convenience we save the keys lists
+		//we also need to build the potential event types map
+		eventTypesList = new List<GameRuleEventType>();
+		eventTypeSourcesList = new Dictionary<GameRuleEventType, List<System.Type>>();
+		potentialEventTypesMap = new Dictionary<System.Type, List<GameRuleEventType>>();
+		foreach (KeyValuePair<GameRuleEventType, Dictionary<System.Type, List<System.Type>>> eventTypeWithSources in values) {
+			GameRuleEventType eventType = eventTypeWithSources.Key;
+			eventTypesList.Add(eventType);
+			List<System.Type> sources = (eventTypeSourcesList[eventType] = new List<System.Type>());
+			foreach (System.Type sourceType in eventTypeWithSources.Value.Keys) {
+				sources.Add(sourceType);
 
 				//add this event type to the list of potential events for the source
-				if (!potentialEventTypesList.ContainsKey(potentialObject.source))
-					(potentialEventTypesList[potentialObject.source] = new List<GameRuleEventType>()).Add(eventType);
-				else {
-					List<GameRuleEventType> potentialEventTypes = potentialEventTypesList[potentialObject.source];
+				List<GameRuleEventType> potentialEventTypes;
+				if (potentialEventTypesMap.TryGetValue(sourceType, out potentialEventTypes)) {
 					if (!potentialEventTypes.Contains(eventType))
-						potentialEventTypesList[potentialObject.source].Add(eventType);
-				}
+						potentialEventTypesMap[sourceType].Add(eventType);
+				} else
+					(potentialEventTypesMap[sourceType] = new List<GameRuleEventType>()).Add(eventType);
 			}
 		}
 
@@ -167,11 +149,11 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 
 		//make sure the types match up
 		System.Type eventTargetType = gre.target.GetType();
-		if (!GameRules.derivesFrom(gre.source.GetType(), sourceType) || !GameRules.derivesFrom(eventTargetType, targetType))
+		if (gre.source.GetType() != sourceType || eventTargetType != targetType)
 			return false;
 
 		//field objects have a few more things we need to check
-		if (eventTargetType == typeof(FieldObject)) {
+		if (targetType == typeof(FieldObject)) {
 			//make sure it's the right field object
 			if (param != gre.target.sportName)
 				return false;
@@ -190,12 +172,12 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 		return true;
 	}
 	public override string ToString() {
-		return ToString(GameRuleSourceSelector.stringIdentifier(sourceType));
+		return ToString(GameRuleSourceSelector.selectorIdentifier(sourceType, false));
 	}
-	//an until-condition will provide its own string for the source
-	public string ToString(string sourceString) {
-		return sourceString + GameRuleEvent.getEventText(eventType) +
-			(targetType == typeof(FieldObject) ? param : GameRuleSourceSelector.stringIdentifier(targetType));
+	//an until-condition will provide its own selector for the source
+	public string ToString(GameRuleSelector sourceSelector) {
+		return sourceSelector.ToString() + GameRuleEvent.getEventText(eventType) +
+			(targetType == typeof(FieldObject) ? param : GameRuleSourceSelector.selectorIdentifier(targetType, sourceSelector).ToString());
 	}
 	public override void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {
 		if (requiredObjectForSource != null)
@@ -204,12 +186,15 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 			requiredObjectsList.Add(requiredObjectForTarget);
 	}
 	public override void addIcons(List<GameObject> iconList) {
-		iconList.Add(GameRuleSourceSelector.iconIdentifier(sourceType));
+		addIcons(iconList, GameRuleSourceSelector.selectorIdentifier(sourceType, false));
+	}
+	public void addIcons(List<GameObject> iconList, GameRuleSelector sourceSelector) {
+		sourceSelector.addIcons(iconList);
 		iconList.Add(GameRuleEvent.getEventIcon(eventType));
 		if (targetType == typeof(FieldObject))
 			addFieldObjectIcon(param, iconList);
 		else
-			iconList.Add(GameRuleSourceSelector.iconIdentifier(targetType));
+			GameRuleSourceSelector.selectorIdentifier(targetType, sourceSelector).addIcons(iconList);
 	}
 	public static void addFieldObjectIcon(string p, List<GameObject> iconList) {
 		if (p == "boundary")
@@ -220,19 +205,23 @@ public class GameRuleEventHappenedCondition : GameRuleCondition {
 	public override void packToString(GameRuleSerializer serializer) {
 		//pack the condition type
 		serializer.packByte(GAME_RULE_CONDITION_BIT_SIZE, GAME_RULE_EVENT_HAPPENED_CONDITION_BYTE_VAL);
+		packToStringAsEventHappenedCondition(serializer);
+	}
+	//until-condition durations know that their condition is an event, so we don't need to save the condition type
+	public void packToStringAsEventHappenedCondition(GameRuleSerializer serializer) {
 		//pack the event type
 		serializer.packToString(eventType, GameRuleEvent.eventTypesList);
 		//pack our source and target types
-		serializer.packToString(sourceType, GameRuleEvent.potentialSourcesList[eventType]);
-		serializer.packToString(targetType, GameRuleEvent.potentialTargetsList[eventType]);
+		serializer.packToString(sourceType, GameRuleEvent.eventTypeSourcesList[eventType]);
+		serializer.packToString(targetType, GameRuleEvent.potentialEventsList[eventType][sourceType]);
 		//pack the param if applicable
 		if (targetType == typeof(FieldObject))
 			serializer.packToString(param, FieldObject.standardFieldObjects);
 	}
 	public static new GameRuleEventHappenedCondition unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleEventType et = deserializer.unpackFromString(GameRuleEvent.eventTypesList);
-		System.Type st = deserializer.unpackFromString(GameRuleEvent.potentialSourcesList[et]);
-		System.Type tt = deserializer.unpackFromString(GameRuleEvent.potentialTargetsList[et]);
+		System.Type st = deserializer.unpackFromString(GameRuleEvent.eventTypeSourcesList[et]);
+		System.Type tt = deserializer.unpackFromString(GameRuleEvent.potentialEventsList[et][st]);
 		string p = (tt == typeof(FieldObject)) ? deserializer.unpackFromString(FieldObject.standardFieldObjects) : null;
 		return new GameRuleEventHappenedCondition(et, st, tt, p);
 	}

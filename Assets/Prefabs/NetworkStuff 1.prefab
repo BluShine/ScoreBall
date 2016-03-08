@@ -115,6 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameRules: {fileID: 0}
   manager: {fileID: 11489698}
+  networkHUD: {fileID: 11403086}
   isServer: 1
 --- !u!114 &11451816
 MonoBehaviour:

@@ -52,12 +52,25 @@ public class GameRuleEffectAction : GameRuleAction {
 	}
 	public static new GameRuleEffectAction unpackFromString(GameRuleDeserializer deserializer) {
 		GameRuleSelector s = GameRuleSelector.unpackFromString(deserializer);
-		GameRuleEffect ia = GameRuleEffect.unpackFromString(deserializer);
-		return new GameRuleEffectAction(s, ia);
+		GameRuleEffect ie = GameRuleEffect.unpackFromString(deserializer);
+		return new GameRuleEffectAction(s, ie);
 	}
 }
 
 public abstract class GameRuleEffect {
+	public static List<System.Type> playerSourceEffects = new List<System.Type>(new System.Type[] {
+		typeof(GameRulePointsPlayerEffect),
+		typeof(GameRuleFreezeEffect),
+		typeof(GameRuleDuplicateEffect),
+		typeof(GameRuleDizzyEffect),
+		typeof(GameRuleBounceEffect)
+	});
+	public static List<System.Type> ballSourceEffects = new List<System.Type>(new System.Type[] {
+		typeof(GameRuleFreezeEffect),
+		typeof(GameRuleDuplicateEffect),
+		typeof(GameRuleBounceEffect)
+	});
+
 	public virtual void addRequiredObjects(List<GameRuleRequiredObject> requiredObjectsList) {}
 	public abstract void takeAction(SportsObject source, SportsObject target);
 	public abstract void addIcons(List<GameObject> iconList);
@@ -257,9 +270,9 @@ public abstract class GameRuleActionDuration {
 	public abstract void packToString(GameRuleSerializer serializer);
 	public static GameRuleActionDuration unpackFromString(GameRuleDeserializer deserializer) {
 		byte subclassByte = deserializer.unpackByte(GAME_RULE_ACTION_DURATION_BIT_SIZE);
-		if (subclassByte == 0)
+		if (subclassByte == GAME_RULE_ACTION_FIXED_DURATION_BYTE_VAL)
 			return GameRuleActionFixedDuration.unpackFromString(deserializer);
-		else if (subclassByte == 1)
+		else if (subclassByte == GAME_RULE_ACTION_UNTIL_CONDITION_DURATION_BYTE_VAL)
 			return GameRuleActionUntilConditionDuration.unpackFromString(deserializer);
 		else
 			throw new System.Exception("Invalid GameRuleActionDuration unpacked byte " + subclassByte);
@@ -310,20 +323,21 @@ public class GameRuleActionUntilConditionDuration : GameRuleActionDuration {
 	}
 	public override string ToString() {
 		//give the condition its trigger while producing string text
-		return "until " + untilCondition.ToString(triggerSelector.ToString());
+		return "until " + untilCondition.ToString(triggerSelector);
 	}
 	public override void addIcons(List<GameObject> iconList) {
-		untilCondition.addIcons(iconList);
+		untilCondition.addIcons(iconList, triggerSelector);
 	}
 	public override void packToString(GameRuleSerializer serializer) {
 		serializer.packByte(GAME_RULE_ACTION_DURATION_BIT_SIZE, GAME_RULE_ACTION_UNTIL_CONDITION_DURATION_BYTE_VAL);
 		triggerSelector.packToString(serializer);
-		//while packing, give the condition its selector to pack
-		untilCondition.packToString(serializer);
+		//this saves us a couple bits and a little time
+		untilCondition.packToStringAsEventHappenedCondition(serializer);
 	}
 	public static new GameRuleActionUntilConditionDuration unpackFromString(GameRuleDeserializer deserializer) {
-		GameRuleEventHappenedCondition uc = GameRuleEventHappenedCondition.unpackFromString(deserializer);
 		GameRuleSelector ts = GameRuleSelector.unpackFromString(deserializer);
+		//we know that it's an event-happened condition so we load it directly as that
+		GameRuleEventHappenedCondition uc = GameRuleEventHappenedCondition.unpackFromString(deserializer);
 		return new GameRuleActionUntilConditionDuration(ts, uc);
 	}
 }
@@ -342,7 +356,7 @@ public class GameRuleActionWaitTimer {
 		effect = e;
 	}
 	public bool eventHappened(GameRuleEvent gre) {
-		if (condition.eventHappened(gre)) {
+		if (gre.source == trigger && condition.eventHappened(gre)) {
 			cancelAction();
 			return true;
 		}
