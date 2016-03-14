@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using UnityEngine.Networking.Match;
 
 public class RuleNetworking : NetworkBehaviour {
 
@@ -10,6 +11,8 @@ public class RuleNetworking : NetworkBehaviour {
     public NetworkManagerHUD networkHUD;
     public bool isServer = false;
     bool isRegistered = false;
+
+    public GameObject connectedDisplay;
 
     static short RULEMESSSAGEID = 1324;
 
@@ -29,6 +32,29 @@ public class RuleNetworking : NetworkBehaviour {
                 Debug.Log("ready to recieve messages");
             }
         }
+    }
+
+    public void lanHost()
+    {
+        manager.StartServer();
+    }
+
+    public void lanClient()
+    {
+        manager.StartClient();
+    }
+
+    public void matchMakingHost()
+    {
+        manager.StartMatchMaker();
+        manager.matchMaker.CreateMatch(manager.matchName, manager.matchSize, true, "", manager.OnMatchCreate);
+    }
+
+    public void matchMakingClient()
+    {
+        manager.StartMatchMaker();
+        MatchDesc firstMatch = manager.matches[0];
+        manager.matchMaker.JoinMatch(firstMatch.networkId, "", manager.OnMatchJoined);
     }
 
     public void toggleHUD() {
