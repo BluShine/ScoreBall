@@ -151,7 +151,7 @@ MonoBehaviour:
   bananaIcon: {fileID: 150010, guid: eb98ef51e158f1341a0579ec745c2da0, type: 2}
   catIcon: {fileID: 177638, guid: d153a5712df6f664eb1c2913f0a974d6, type: 2}
   boundaryIcon: {fileID: 134810, guid: cc24e6a5a929cae478b82b09ee349ac7, type: 2}
-  genericEventIcon: {fileID: 156468, guid: e4203d967adc565428a46891cc60118c, type: 2}
+  genericEventIcon: {fileID: 158770, guid: f8bfdadb9cc08ac4789fb6174967a96c, type: 2}
   stealIcon: {fileID: 121068, guid: e35f31e8e7d3a6f4e84b92f71b147a1b, type: 2}
   bumpIcon: {fileID: 127456, guid: f3822ae0483541a4bb992591217538b8, type: 2}
   scoreGoalIcon: {fileID: 165526, guid: c3128eb39d1dd804facce5605236a8a1, type: 2}
@@ -265,7 +265,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: genericEventIcon
       value: 
-      objectReference: {fileID: 156468, guid: e4203d967adc565428a46891cc60118c, type: 2}
+      objectReference: {fileID: 158770, guid: f8bfdadb9cc08ac4789fb6174967a96c, type: 2}
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.x
       value: 0
