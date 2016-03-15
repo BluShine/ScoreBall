@@ -2515,6 +2515,68 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 808674427}
+--- !u!1 &840253858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 840253861}
+  - 33: {fileID: 840253860}
+  - 23: {fileID: 840253859}
+  m_Layer: 0
+  m_Name: Goal Area
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &840253859
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 840253858}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!33 &840253860
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 840253858}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &840253861
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 840253858}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.5, y: 1, z: 0}
+  m_LocalScale: {x: 5, y: 1, z: 30}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
 --- !u!1001 &861549247
 Prefab:
   m_ObjectHideFlags: 0
@@ -2557,7 +2619,7 @@ Prefab:
     - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
       propertyPath: uiCanvas
       value: 
-      objectReference: {fileID: 350781054}
+      objectReference: {fileID: 350781055}
     - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
       propertyPath: mainCamera
       value: 
@@ -2579,9 +2641,9 @@ Prefab:
       value: 
       objectReference: {fileID: 1716519677}
     - target: {fileID: 11470558, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
-      propertyPath: iconStoragePrefab
+      propertyPath: goalArea
       value: 
-      objectReference: {fileID: 134634, guid: 50d26ced33503c64d9d73fa8adec8965, type: 2}
+      objectReference: {fileID: 840253858}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3971ebe406d6df046a31ea09fbe68549, type: 2}
   m_IsPrefabParent: 0
