@@ -177,7 +177,7 @@ public class GameRuleGenerator {
 	}
 	//generate a random field object type for a field object collision event
 	public static string randomFieldObjectType() {
-		return GameRuleChances.pickFrom(FieldObject.standardFieldObjects);
+		return GameRuleChances.pickFrom(GameRules.instance.goalPlacer.goalsThatFit());
 	}
 
 	////////////////GameRuleZoneCondition generation////////////////

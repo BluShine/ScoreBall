@@ -34,6 +34,12 @@ public class GameRuleRequiredObject {
 	}
 }
 
+[System.Serializable]
+public class GameRuleSpawnableObject {
+	public GameObject spawnedObject;
+	public GameObject icon;
+}
+
 public class GameRuleSpawnableObjectRegistry : MonoBehaviour {
 	public static GameRuleSpawnableObjectRegistry instance;
 
@@ -80,10 +86,4 @@ public class GameRuleSpawnableObjectRegistry : MonoBehaviour {
 		}
 		throw new System.Exception("Bug: could not find spawnable goal " + sportName);
 	}
-}
-
-[System.Serializable]
-public class GameRuleSpawnableObject {
-	public GameObject spawnedObject;
-	public GameObject icon;
 }

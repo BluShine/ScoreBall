@@ -21,10 +21,12 @@ public class GameRules : MonoBehaviour {
 	public GameObject ruleDisplayPrefab;
 	public GameObject pointsTextPrefab;
 	public GameObject dataStoragePrefab; //this is shared across scenes, so keep it as just a prefab
-	public GameObject uiCanvas;
+	public RectTransform uiCanvas;
 	public GameObject mainCamera;
 	public GameObject floor;
 	public InputField ruleEntryField;
+	public GameObject goalArea;
+	public GameRuleGoalPlacer goalPlacer;
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public Text[] teamTexts;
 	public int[] teamScores;
@@ -64,6 +66,9 @@ public class GameRules : MonoBehaviour {
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
 		Instantiate(dataStoragePrefab);
+
+		//pull out the goal area information
+		goalPlacer = new GameRuleGoalPlacer(this);
 
 		instance = this;
 	}
@@ -245,28 +250,22 @@ public class GameRules : MonoBehaviour {
 				GameObject spawnedObject = Instantiate(prefab);
 				spawnedObjects.Add(spawnedObject);
 
-				//these need multiple objects that get assigned to teams
 				GameRuleRequiredObjectType requiredObjectType = requiredObject.requiredObjectType;
+				//goals spawn in random locations and need multiple objects that get assigned to teams
 				if (requiredObjectType == GameRuleRequiredObjectType.SpecificGoal) {
-					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[2]);
 					FieldObject fo = spawnedObject.GetComponent<FieldObject>();
+					fo.setColor(teamColors[2]);
 					fo.team = 2;
 
 					//make another one
 					spawnedObject = Instantiate(prefab);
 					spawnedObjects.Add(spawnedObject);
-					spawnedObject.GetComponent<FieldObject>().setColor(teamColors[1]);
-					fo = spawnedObject.GetComponent<FieldObject>();
-					fo.team = 1;
+					FieldObject fo2 = spawnedObject.GetComponent<FieldObject>();
+					fo2.setColor(teamColors[1]);
+					fo2.team = 1;
 
-					//put it on the other side of the field facing the other way
-					Transform t = spawnedObject.transform;
-					Vector3 v = t.position;
-					v.x = -v.x;
-					t.position = v;
-					Quaternion q = t.rotation;
-					q *= Quaternion.Euler(Vector3.up * 180);
-					t.rotation = q;
+					//position them in a valid space
+					goalPlacer.positionGoals(fo, fo2);
 				//zones all use the same prefab but get a different zone type
 				} else if (requiredObjectType == GameRuleRequiredObjectType.BoomerangZone) {
 					spawnedObject.GetComponent<Zone>().buildZone(requiredObjectType);
@@ -291,6 +290,10 @@ public class GameRules : MonoBehaviour {
 				Destroy(objectToRemove);
 
 			spawnedObjectsMap.Remove(requiredObjectToRemove);
+
+			//if we deleted a goal, mark that the goal spaces need to be recalculated
+			if (requiredObjectToRemove.requiredObjectType == GameRuleRequiredObjectType.SpecificGoal)
+				goalPlacer.goalSpacesAreOutdated = true;
 		}
 	}
 	public List<GameRuleRequiredObject> buildRequiredObjectsList() {
