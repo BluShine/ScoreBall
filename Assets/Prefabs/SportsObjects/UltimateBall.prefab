@@ -15,7 +15,7 @@ GameObject:
   - 114: {fileID: 11487848}
   - 82: {fileID: 8207624}
   m_Layer: 9
-  m_Name: UltimateBall
+  m_Name: ultimateball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,6 +233,7 @@ MonoBehaviour:
   expires: 0
   gameRules: {fileID: 0}
   spawned: 0
+  effectOffset: {x: 0, y: 1, z: 0}
   hitSounds:
   - {fileID: 0}
   - {fileID: 0}

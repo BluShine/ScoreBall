@@ -49,7 +49,7 @@ GameObject:
   - 82: {fileID: 8216022}
   - 64: {fileID: 6401172}
   m_Layer: 9
-  m_Name: Puck
+  m_Name: puck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

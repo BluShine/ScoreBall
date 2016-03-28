@@ -199,6 +199,12 @@ MonoBehaviour:
     icon: {fileID: 177044, guid: 69b6c5a4d1c5fd7499f1fecbfa92bd97, type: 2}
   - spawnedObject: {fileID: 164744, guid: 4a06b57296e4f2148bb67ddd93fa0b4a, type: 2}
     icon: {fileID: 105372, guid: 687db9c5b2207d843892e3e5d1daad75, type: 2}
+  - spawnedObject: {fileID: 151856, guid: bf218bb60d0ac9c4d80f6f49b46f30e0, type: 2}
+    icon: {fileID: 105372, guid: da23f58f780bafd4c8f6a9afd9e3ded2, type: 2}
+  - spawnedObject: {fileID: 113308, guid: b46c88103c77a704fb75e70d64fa9138, type: 2}
+    icon: {fileID: 158124, guid: 97b130963aad1c84c80ad894ea8113f1, type: 2}
+  - spawnedObject: {fileID: 109972, guid: c74db40ea25ac884a91b3270f7dcc15e, type: 2}
+    icon: {fileID: 117274, guid: 50b1959ef7004b74a8e3ed239b830845, type: 2}
   holdableBallSpawnableObjects: []
   goalSpawnableObjects:
   - spawnedObject: {fileID: 157804, guid: b3c365657726c674799621af6ecee79c, type: 2}
@@ -218,6 +224,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.size
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goalSpawnableObjects.Array.data[0].spawnedObject
       value: 
@@ -298,6 +308,30 @@ Prefab:
       propertyPath: grabIcon
       value: 
       objectReference: {fileID: 137308, guid: 37cb17d512468284bbc1cf901948bf9e, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[2].spawnedObject
+      value: 
+      objectReference: {fileID: 151856, guid: bf218bb60d0ac9c4d80f6f49b46f30e0, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[2].icon
+      value: 
+      objectReference: {fileID: 105372, guid: da23f58f780bafd4c8f6a9afd9e3ded2, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[3].spawnedObject
+      value: 
+      objectReference: {fileID: 113308, guid: b46c88103c77a704fb75e70d64fa9138, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[3].icon
+      value: 
+      objectReference: {fileID: 158124, guid: 97b130963aad1c84c80ad894ea8113f1, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[4].spawnedObject
+      value: 
+      objectReference: {fileID: 109972, guid: c74db40ea25ac884a91b3270f7dcc15e, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ballSpawnableObjects.Array.data[4].icon
+      value: 
+      objectReference: {fileID: 117274, guid: 50b1959ef7004b74a8e3ed239b830845, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133356}
