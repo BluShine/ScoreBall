@@ -20,7 +20,7 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
@@ -45,7 +45,7 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
@@ -63,6 +63,11 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -341.5, y: 341.5}
+        - {x: -341.5, y: -341.5}
+        - {x: 341.5, y: -341.5}
+        - {x: 341.5, y: 341.5}
     - name: soccerballoutuv-texture-animated_1
       rect:
         serializedVersion: 2
@@ -73,6 +78,11 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -341.3333, y: 341.5}
+        - {x: -341.3333, y: -341.5}
+        - {x: 342.6667, y: -341.5}
+        - {x: 342.6667, y: 341.5}
     - name: soccerballoutuv-texture-animated_2
       rect:
         serializedVersion: 2
@@ -83,6 +93,12 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -341.16663, y: 341.5}
+        - {x: -341.16663, y: -341.5}
+        - {x: 341.83337, y: -341.5}
+        - {x: 341.83337, y: 341.5}
+    outline: []
   spritePackingTag: 
   userData: 
   assetBundleName: 
