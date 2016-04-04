@@ -105,14 +105,23 @@ public class TwitchChatter : MonoBehaviour {
             } else
             {
                 string key = message.Remove(0, 7);
+                int numToDel = 1;
+                if (message.Contains("all") )
+                {
+                    key = key.Replace("all", "");
+                    key = key.Trim();
+                    numToDel = MAXOBJECTSOFTYPE;
+                }
                 if (spawnDict.ContainsKey(key))
                 {
                     SpawnRef spr = spawnDict[key];
-                    Debug.Log(spawnedObjects[spr.index].Count);
-                    if (spawnedObjects[spr.index].Count > 0)
+                    for (int i = 0; i < numToDel; i++)
                     {
-                        GameObject.Destroy(spawnedObjects[spr.index][0]);
-                        spawnedObjects[spr.index].RemoveAt(0);
+                        if (spawnedObjects[spr.index].Count > 0)
+                        {
+                            GameObject.Destroy(spawnedObjects[spr.index][0]);
+                            spawnedObjects[spr.index].RemoveAt(0);
+                        }
                     }
                 }
             }
