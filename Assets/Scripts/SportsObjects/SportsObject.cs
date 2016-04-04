@@ -28,7 +28,7 @@ public class SportsObject : FieldObject {
 
     [HideInInspector]
     public GameRules gameRules;
-    GameObject floor;
+    protected GameObject floor;
 
     [HideInInspector]
     public bool spawned = false;
@@ -272,7 +272,7 @@ public class SportsObject : FieldObject {
         handleCollision(collider.gameObject);
 	}
 
-	protected void handleCollision(GameObject gameObject) {
+	protected virtual void handleCollision(GameObject gameObject) {
 		if (floor != null && gameObject == floor) {
 			isOnGround = true;
 		} else if (checkBallCollision(gameObject)) {

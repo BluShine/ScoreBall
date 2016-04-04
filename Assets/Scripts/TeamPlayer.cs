@@ -24,6 +24,13 @@ public class TeamPlayer : SportsObject {
     public float tackleLaunchPower = 40f; //upwards velocity of people you tackle
     static float TACKLESPINNINESS = 150; //how fast you spin when you're tackled
     static float DIZZYSPINSPEED = .3262f;//rotations per sec
+    public float doubleJumpBoost = 5f;
+    public float tripleJumpBoost = 10f;
+    int jumpCounter = 0;
+    static float JUMPGRACEPERIOD = 0.3f;
+    float jumpGrace = 0;
+    float multiJumpGrace = 0;
+    float timeSinceLastJumpPress = 0;
     //ball handling
     public float ballHoldDistance = 1;
     public float ballShootPower = 1000;
@@ -125,6 +132,11 @@ public class TeamPlayer : SportsObject {
         dashPressed = dashPressed || Input.GetButtonDown(dashButton);
         hopPressed = hopPressed || Input.GetButtonDown(hopButton);
         lobPressed = lobPressed || Input.GetButtonDown(lobButton);
+        timeSinceLastJumpPress += Time.deltaTime;
+        if (hopPressed)
+        {
+            timeSinceLastJumpPress = 0;
+        }
     }
 
 	// FixedUpdate is called at a fixed rate
@@ -147,6 +159,17 @@ public class TeamPlayer : SportsObject {
         {
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
+        //jump grace period timer
+        if(isOnGround)
+        {
+            multiJumpGrace = Mathf.Max(0, multiJumpGrace - Time.fixedDeltaTime);
+            if (multiJumpGrace == 0)
+                jumpCounter = 0;
+        } else
+        {
+            jumpGrace = Mathf.Max(0, jumpGrace - Time.fixedDeltaTime);
+        }
+        //Debug.Log(jumpGrace);
 		//dash input
 		if(dashCooldownTimer == 0 && dashPressed &&
 			(dashWhileCarrying || carriedBall == null)) {
@@ -195,7 +218,7 @@ public class TeamPlayer : SportsObject {
         else if(Input.GetAxis(xAxis) == 0 && Input.GetAxis(yAxis) == 0 && dizzyTime == 0)
         {
             //jumping
-            if (isOnGround && hopPressed)
+            if (isOnGround && (hopPressed || timeSinceLastJumpPress <= JUMPGRACEPERIOD))
             {
 				Jump();
                 //play sound
@@ -382,6 +405,29 @@ public class TeamPlayer : SportsObject {
 		stunnedTimer = 0.0f;
 	}
 
+    public override void Jump()
+    {
+        //make sure we're not already trying to jump
+        if (!preJump || jumpGrace > 0)
+        {
+            jumpCounter++;
+            float jSpeed = 0;
+            switch (jumpCounter)
+            {
+                case 1: jSpeed = jumpSpeed; break;
+                case 2: jSpeed = jumpSpeed + doubleJumpBoost; break;
+                case 3: jSpeed = jumpSpeed + tripleJumpBoost; break;
+                case 4: jumpCounter = 1; jSpeed = jumpSpeed; break;
+            }
+            Vector3 velocity = body.velocity;
+            velocity.y = Mathf.Max(velocity.y, jSpeed);
+            body.velocity = velocity;
+            preJump = true;
+            jumpGrace = 0;
+            multiJumpGrace = JUMPGRACEPERIOD;
+        }
+    }
+
     void OnCollisionStay(Collision collision)
     {
 		//right now continued collisions shouln't do anything
@@ -411,7 +457,16 @@ public class TeamPlayer : SportsObject {
         soundSource.Play();
     }
 
-	public override void handleBallCollision(Ball collidedBall) {
+    protected override void handleCollision(GameObject gameObject)
+    {
+        if (floor != null && gameObject == floor)
+        {
+            jumpGrace = JUMPGRACEPERIOD;
+        }
+        base.handleCollision(gameObject);
+    }
+
+    public override void handleBallCollision(Ball collidedBall) {
 		if (collidedBall.grabBall(this)) {
 			carriedBall = collidedBall;
 			if(carriedBall.ultimate) {
