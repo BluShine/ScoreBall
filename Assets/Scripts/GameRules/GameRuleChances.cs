@@ -42,7 +42,7 @@ class GameRuleChances {
 		//which target for event-happened conditions to do
 		d[typeof(TeamPlayer)]						= 1;
 		d[typeof(Ball)]								= 1;
-		d[typeof(FieldObject)]						= 1;
+		d[typeof(FieldObject)]						= 3;
 
 		return d;
 	}
@@ -52,7 +52,7 @@ class GameRuleChances {
 
 		d[GameRuleEventType.Kick]								= 1;
 		d[GameRuleEventType.Grab]								= 1;
-		d[GameRuleEventType.Bump]								= 1;
+		d[GameRuleEventType.Bump]								= 3;
 		d[GameRuleEventType.Smack]								= 1;
 
 		return d;
@@ -61,9 +61,9 @@ class GameRuleChances {
 	public static Dictionary<string, int> createFieldObjectChances() {
 		Dictionary<string, int> d = new Dictionary<string, int>();
 
-		d["footgoal"]							= 1;
-		d["goalposts"]							= 1;
-		d["backboardhoop"]						= 1;
+		d["footgoal"]							= 3;
+		d["goalposts"]							= 2;
+		d["backboardhoop"]						= 2;
 		d["smallwall"]							= 1;
 		d["fullgoalwall"]						= 1;
 		d["boundary"]							= 1;
