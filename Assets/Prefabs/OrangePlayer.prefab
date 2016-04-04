@@ -1431,6 +1431,8 @@ MonoBehaviour:
   tackleDuration: 2.3564
   tacklePower: 9.34
   tackleLaunchPower: 13.12
+  doubleJumpBoost: 5
+  tripleJumpBoost: 7
   ballHoldDistance: 0.7
   ballShootPower: 15
   ballLobPower: 13
@@ -3859,6 +3861,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: effectOffset.y
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: tripleJumpBoost
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
