@@ -1468,8 +1468,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 120c1a3dcb17de0499d16e80c817b97d, type: 3}
   - {fileID: 8300000, guid: 8d5f07cfefdac45488727f02d87b474b, type: 3}
   - {fileID: 8300000, guid: f473cddf3d5a20c40bcd63c6831c76d7, type: 3}
-  jumpSounds:
-  - {fileID: 8300000, guid: d6db3fa86da219e489ec9a79b830c026, type: 3}
+  jump1Sounds:
+  - {fileID: 8300000, guid: cd0f82be26c2de447b7be6bec5899b32, type: 3}
+  jump2Sounds:
+  - {fileID: 8300000, guid: 2b4d63dbd1f70254bb71d758ce245067, type: 3}
+  jump3Sounds:
+  - {fileID: 8300000, guid: 87298b87f633ef24ba79efb4ab03b95d, type: 3}
   pointGainSounds:
   - {fileID: 8300000, guid: 555ba5bf23c0d2e47a2a890d6fa1b798, type: 3}
   - {fileID: 8300000, guid: 3c12e860e8304f44485428862646ac4d, type: 3}

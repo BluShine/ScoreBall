@@ -59,7 +59,9 @@ public class TeamPlayer : SportsObject {
     public List<AudioClip> dashSounds;
     public List<AudioClip> shootSounds;
     public List<AudioClip> lobSounds;
-    public List<AudioClip> jumpSounds;
+    public List<AudioClip> jump1Sounds;
+    public List<AudioClip> jump2Sounds;
+    public List<AudioClip> jump3Sounds;
     public List<AudioClip> pointGainSounds;
 
     //game state
@@ -221,9 +223,6 @@ public class TeamPlayer : SportsObject {
             if (isOnGround && (hopPressed || timeSinceLastJumpPress <= JUMPGRACEPERIOD))
             {
 				Jump();
-                //play sound
-                soundSource.clip = jumpSounds[Random.Range(0, jumpSounds.Count)];
-                soundSource.Play();
             }
             //apply force to stop when there's no input.
             Vector3 horizontalVelocity = new Vector3(body.velocity.x, 0, body.velocity.z);
@@ -317,9 +316,6 @@ public class TeamPlayer : SportsObject {
             if(isOnGround && hopPressed)
             {
 				Jump();
-                //play sound
-                soundSource.clip = jumpSounds[Random.Range(0, jumpSounds.Count)];
-                soundSource.Play();
             }
         }
 
@@ -412,11 +408,14 @@ public class TeamPlayer : SportsObject {
         {
             jumpCounter++;
             float jSpeed = 0;
+            soundSource.clip = jump1Sounds[Random.Range(0, jump1Sounds.Count)];
             switch (jumpCounter)
             {
                 case 1: jSpeed = jumpSpeed; break;
-                case 2: jSpeed = jumpSpeed + doubleJumpBoost; break;
-                case 3: jSpeed = jumpSpeed + tripleJumpBoost; break;
+                case 2: jSpeed = jumpSpeed + doubleJumpBoost;
+                    soundSource.clip = jump1Sounds[Random.Range(0, jump2Sounds.Count)]; break;
+                case 3: jSpeed = jumpSpeed + tripleJumpBoost;
+                    soundSource.clip = jump3Sounds[Random.Range(0, jump3Sounds.Count)]; break;
                 case 4: jumpCounter = 1; jSpeed = jumpSpeed; break;
             }
             Vector3 velocity = body.velocity;
@@ -425,6 +424,8 @@ public class TeamPlayer : SportsObject {
             preJump = true;
             jumpGrace = 0;
             multiJumpGrace = JUMPGRACEPERIOD;
+            //play sound
+            soundSource.Play();
         }
     }
 
