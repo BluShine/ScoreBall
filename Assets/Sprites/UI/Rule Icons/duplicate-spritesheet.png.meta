@@ -1,9 +1,18 @@
 fileFormatVersion: 2
 guid: 60bd43970a9ac1a4faafa066be5499ee
-timeCreated: 1460041124
+timeCreated: 1460045260
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: duplicate-spritesheet_0
+    21300002: duplicate-spritesheet_1
+    21300004: duplicate-spritesheet_2
+    21300006: duplicate-spritesheet_3
+    21300008: duplicate-spritesheet_4
+    21300010: duplicate-spritesheet_5
+    21300012: duplicate-spritesheet_6
+    21300014: duplicate-spritesheet_7
+    21300016: duplicate-spritesheet_8
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -30,26 +39,210 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
-    wrapMode: -1
-  nPOTScale: 1
+    wrapMode: 1
+  nPOTScale: 0
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 0
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 0
-  textureType: -1
+  alphaIsTransparency: 1
+  textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: duplicate-spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -27, y: 37}
+        - {x: -36, y: 19}
+        - {x: -36, y: -37}
+        - {x: -35, y: -38}
+        - {x: 35, y: -38}
+        - {x: 37, y: -31}
+        - {x: 37, y: 32}
+        - {x: 30, y: 37}
+    - name: duplicate-spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 41, y: 37}
+        - {x: -33, y: 37}
+        - {x: -40, y: 35}
+        - {x: -49, y: 31}
+        - {x: -49, y: -26}
+        - {x: -44, y: -37}
+        - {x: 36, y: -37}
+        - {x: 48, y: -25}
+        - {x: 50, y: -13}
+        - {x: 50, y: 18}
+    - name: duplicate-spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -25, y: 40}
+        - {x: -61, y: 31}
+        - {x: -61, y: -21}
+        - {x: -52, y: -40}
+        - {x: 45, y: -40}
+        - {x: 63, y: -29}
+        - {x: 63, y: 21}
+        - {x: 42, y: 40}
+    - name: duplicate-spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 381
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 21, y: 40}
+        - {x: 11, y: 38}
+        - {x: -55, y: 39}
+        - {x: -64, y: 36}
+        - {x: -64, y: -25}
+        - {x: -59, y: -40}
+        - {x: 33, y: -40}
+        - {x: 51, y: -37}
+        - {x: 64, y: -31}
+        - {x: 64, y: 40}
+    - name: duplicate-spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 8, y: -29}
+        - {x: 13, y: -41}
+        - {x: 30, y: -44}
+        - {x: 43, y: -44}
+        - {x: 52, y: -38}
+        - {x: 64, y: -24}
+        - {x: 64, y: 44}
+        - {x: -63, y: 44}
+        - {x: -64, y: 42}
+        - {x: -64, y: -34}
+        - {x: -43, y: -44}
+        - {x: -13, y: -44}
+        - {x: -9, y: -41}
+        - {x: 3, y: -27}
+        - {x: 8, y: -14}
+    - name: duplicate-spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -63, y: 44}
+        - {x: -64, y: 41}
+        - {x: -64, y: -43}
+        - {x: 64, y: -43}
+        - {x: 64, y: 44}
+    - name: duplicate-spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 762
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8, y: 41}
+        - {x: -50, y: 32}
+        - {x: -57, y: 15}
+        - {x: -57, y: -31}
+        - {x: -45, y: -41}
+        - {x: 60, y: -41}
+        - {x: 64, y: -38}
+        - {x: 64, y: 21}
+        - {x: 60, y: 41}
+      - - {x: -64, y: 25}
+        - {x: -64, y: -26}
+        - {x: -57, y: -26}
+        - {x: -57, y: 19}
+        - {x: -63, y: 25}
+    - name: duplicate-spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -45, y: 41}
+        - {x: -64, y: 13}
+        - {x: -64, y: -40}
+        - {x: 62, y: -40}
+        - {x: 64, y: -33}
+        - {x: 64, y: 34}
+        - {x: 58, y: 41}
+    - name: duplicate-spritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 1016
+        y: 0
+        width: 127.888885
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -26, y: 41}
+        - {x: -62, y: 34}
+        - {x: -64, y: 32}
+        - {x: -64, y: -29}
+        - {x: -60, y: -40}
+        - {x: 61, y: -40}
+        - {x: 64, y: -39}
+        - {x: 64, y: 41}
     outline: []
   spritePackingTag: 
   userData: 
