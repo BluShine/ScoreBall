@@ -15,6 +15,7 @@ GameObject:
   - 114: {fileID: 11494838}
   - 82: {fileID: 8220936}
   - 65: {fileID: 6511930}
+  - 114: {fileID: 11413168}
   m_Layer: 9
   m_Name: fish
   m_TagString: Untagged
@@ -152,6 +153,40 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11413168
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 109972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880304fee100b584682d14e06c3f1ee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sportName: fish
+  team: 0
+  body: {fileID: 0}
+  jumpSpeed: 10
+  lifeTime: 0
+  expires: 0
+  gameRules: {fileID: 0}
+  spawned: 0
+  effectOffset: {x: 0, y: 1, z: 0}
+  hitSounds: []
+  soundSource: {fileID: 0}
+  noTakebacksCooldown: 0.2
+  carryRadius: 1.2
+  tackleDuration: 0.2
+  holdable: 1
+  ultimate: 0
+  currentPlayer: {fileID: 0}
+  previousPlayer: {fileID: 0}
+  stuns: 0
+  kickSounds:
+  - {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
+  catchSounds:
+  - {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
 --- !u!114 &11476592
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -176,30 +211,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1fb1e0239122b24a9ce2b894a96fee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sportName: fish
-  team: 0
-  body: {fileID: 0}
-  jumpSpeed: 10
-  lifeTime: 0
-  expires: 0
-  gameRules: {fileID: 0}
-  spawned: 0
-  effectOffset: {x: 0, y: 1, z: 0}
-  hitSounds:
-  - {fileID: 8300000, guid: 572d2293dc3999b469e405535f0309e4, type: 3}
-  soundSource: {fileID: 0}
-  noTakebacksCooldown: 0.2
-  carryRadius: 1.2
-  tackleDuration: 0.2
-  holdable: 1
-  ultimate: 0
-  currentPlayer: {fileID: 0}
-  previousPlayer: {fileID: 0}
-  stuns: 0
-  kickSounds:
-  - {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
-  catchSounds:
-  - {fileID: 8300000, guid: 7a2c7e2e9c1ccc043aae3cea80210b39, type: 3}
 --- !u!212 &21266176
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -312,7 +323,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: carryRadius
-      value: 1.20000005
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: panLevelCustomCurve.m_RotationOrder
