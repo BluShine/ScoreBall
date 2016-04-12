@@ -12,7 +12,7 @@ public class GameRuleGoalAreaOpenSpace {
 		y = y0;
 	}
 }
-public class GameRuleGoalAreaEdge: GameRuleGoalAreaOpenSpace, System.IComparable {
+public class GameRuleGoalAreaEdge : GameRuleGoalAreaOpenSpace, System.IComparable {
 	public bool topEdge;
 	public GameRuleGoalAreaEdge(float xl, float xh, float y0, bool t) :
 		base(xl, xh, y0) {

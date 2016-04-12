@@ -1,8 +1,3 @@
-// Unlit shader. Simplest possible colored shader.
-// - no lighting
-// - no lightmap support
-// - no texture
-
 Shader "Unlit/ColorTexture" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
@@ -10,8 +5,11 @@ Properties {
 }
 
 SubShader {
-	Tags { "RenderType"="Opaque" }
+	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 	LOD 100
+	
+	Color [_Color]
+	Blend SrcAlpha OneMinusSrcAlpha 
 	
 	Pass {  
 		CGPROGRAM
@@ -47,10 +45,9 @@ SubShader {
 			
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 col = tex2D(_MainTex, i.texcoord) * _Color;
+				fixed4 col = tex2D(_MainTex, i.texcoord);
 				UNITY_APPLY_FOG(i.fogCoord, col);
-				UNITY_OPAQUE_ALPHA(col.a);
-				return col;
+				return lerp(col, _Color, _Color.a);
 			}
 		ENDCG
 	}
