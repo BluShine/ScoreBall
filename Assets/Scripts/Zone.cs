@@ -10,10 +10,13 @@ public class Zone : FieldObject {
 	const float MAIN_TEXTURE_UV_HEIGHT = 8.0f;
 	const float ZONE_LINE_HALF_WIDTH = 0.375f;
 	const float MESH_HEIGHT_EPSILON = 0.01f;
+	const float ZONE_LINE_CORNER_DEGREES = 11.25f; //8 triangles for 90 degrees
+	const float DEGREES_TO_RADIANS = Mathf.PI / 180.0f;
 
-	public static List<GameRuleRequiredObjectType> standardZoneTypes = new List<GameRuleRequiredObjectType>(new GameRuleRequiredObjectType[] {
-		GameRuleRequiredObjectType.BoomerangZone
-	});
+	public static List<GameRuleRequiredObjectType> standardZoneTypes =
+		new List<GameRuleRequiredObjectType>(new GameRuleRequiredObjectType[] {
+			GameRuleRequiredObjectType.BoomerangZone
+		});
 
 	[HideInInspector]
 	public List<SportsObject> objectsInZone = new List<SportsObject>();
@@ -89,25 +92,51 @@ public class Zone : FieldObject {
 			float extrudeMultiplier = ZONE_LINE_HALF_WIDTH / lineVectorLength;
 			float extrudeX = -lineVector.y * extrudeMultiplier;
 			float extrudeY = lineVector.x * extrudeMultiplier;
-			//add them clockwise starting with the bottom right
+			//add them bottom to top, right to left
 			lineVertices.Add(new Vector3(point1.x - extrudeX, groundY, point1.y - extrudeY));
 			lineVertices.Add(new Vector3(point1.x + extrudeX, groundY, point1.y + extrudeY));
-			lineVertices.Add(new Vector3(point2.x + extrudeX, groundY, point2.y + extrudeY));
 			lineVertices.Add(new Vector3(point2.x - extrudeX, groundY, point2.y - extrudeY));
+			lineVertices.Add(new Vector3(point2.x + extrudeX, groundY, point2.y + extrudeY));
 			//add UVS too
 			lineUVs.Add(new Vector2(zoneLineUVXPos, 0.0f));
 			lineUVs.Add(new Vector2(zoneLineUVXPos, 1.0f));
 			zoneLineUVXPos += lineVectorLength * zoneLineUVXMultiplier;
-			lineUVs.Add(new Vector2(zoneLineUVXPos, 1.0f));
 			lineUVs.Add(new Vector2(zoneLineUVXPos, 0.0f));
+			lineUVs.Add(new Vector2(zoneLineUVXPos, 1.0f));
 			//add the triangles
-			int triangleIndex = lineVertices.Count;
+			int vertexCount = lineVertices.Count;
 			lineTriangles.AddRange(new int[] {
-				triangleIndex - 4, triangleIndex - 3, triangleIndex - 2,
-				triangleIndex - 4, triangleIndex - 2, triangleIndex - 1,
+				vertexCount - 4, vertexCount - 3, vertexCount - 1,
+				vertexCount - 4, vertexCount - 1, vertexCount - 2
 			});
 
 			//then, add the vertices, UVS, and triangles for the corner
+			//we want to add a triangle every certain amount of degrees
+			Vector2 point3 = groundPolygon[((i + 2) % groundPolygon.Length)];
+			float cornerAngle = Vector2.Angle(lineVector, point3 - point2);
+			int cornerSegments = Mathf.RoundToInt(cornerAngle / ZONE_LINE_CORNER_DEGREES);
+			//go through and add stuff for the corners
+			//to draw them, we do a double rotation- one for the inside point and one for the next outside point
+			//then we just take a triangle out of the texture to fit on it
+			//each rotation is slightly more than 180 degrees
+			float rotateAngleRadians = (180.0f - cornerAngle / (cornerSegments * 2.0f)) * DEGREES_TO_RADIANS;
+			for (int j = 0; j < cornerSegments; j++) {
+				//rotate once for the inner point
+				lineVertices.Add(rotate(point2, lineVertices[lineVertices.Count - 1], rotateAngleRadians));
+				//rotate again for the outer point
+				lineVertices.Add(rotate(point2, lineVertices[lineVertices.Count - 1], rotateAngleRadians));
+				//add the UVs
+				vertexCount = lineVertices.Count;
+				float cornerEdgeUVLength =
+					(lineVertices[vertexCount - 1] - lineVertices[vertexCount - 3]).magnitude * zoneLineUVXMultiplier;
+				lineUVs.Add(new Vector2(zoneLineUVXPos + cornerEdgeUVLength * 0.5f, 0.0f));
+				zoneLineUVXPos += cornerEdgeUVLength;
+				lineUVs.Add(new Vector2(zoneLineUVXPos, 1.0f));
+				//and finally add the triangle
+				lineTriangles.AddRange(new int[] {
+					vertexCount - 3, vertexCount - 1, vertexCount - 2
+				});
+			}
 		}
 		lineMesh.vertices = lineVertices.ToArray();
 		lineMesh.uv = lineUVs.ToArray();
@@ -121,5 +150,16 @@ public class Zone : FieldObject {
 			return GameRuleIconStorage.instance.boomerangZoneIcon;
 		else
 			throw new System.Exception("Bug: could not get zone icon for " + zoneType);
+	}
+	public static Vector3 rotate(Vector2 center, Vector3 point, float angleRadians) {
+		float rotateSin = Mathf.Sin(angleRadians);
+		float rotateCos = Mathf.Cos(angleRadians);
+		float diffX = point.x - center.x;
+		float diffY = point.z - center.y;
+		return new Vector3(
+			diffX * rotateCos - diffY * rotateSin + center.x,
+			point.y,
+			diffX * rotateSin + diffY * rotateCos + center.y
+		);
 	}
 }
