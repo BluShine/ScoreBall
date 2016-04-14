@@ -38,6 +38,7 @@ public class GameRuleGoalPlacer {
 	public bool goalSpacesAreOutdated = true;
 	public GameRuleGoalPlacer(GameRules gr) {
 		gameRules = gr;
+		//pull out the goal area information
 		Transform goalAreaTransform = gr.goalArea.transform;
 		Vector3 goalAreaLocalScale = goalAreaTransform.localScale;
 		Vector3 goalAreaLocalPosition = goalAreaTransform.localPosition;

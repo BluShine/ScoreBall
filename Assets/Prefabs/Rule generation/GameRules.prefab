@@ -732,11 +732,17 @@ MonoBehaviour:
   floor: {fileID: 0}
   ruleEntryField: {fileID: 0}
   goalArea: {fileID: 0}
+  countdownClock: {fileID: 0}
+  quitButton: {fileID: 0}
   teamTexts:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   teamScores: 000000000000000000000000
+  teamStats:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   useRuleIcons: 1
   teamColors:
   - {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 1}
@@ -746,6 +752,16 @@ MonoBehaviour:
   removeRuleSound: {fileID: 8300000, guid: ef244e610525b1b4c9dd6f54b5c4c27e, type: 3}
   musicPlayer: {fileID: 11460050}
   lastRuleChange: -3
+  gameLengthSeconds: 180
+  gameStats: {fileID: 0}
+  gameStatKicks: 
+  gameStatGrabs: 
+  gameStatBumps: 
+  gameStatSmacks: 
+  gameStatTimeFrozen: []
+  gameStatTimeDizzy: []
+  gameStatTimeBouncy: []
+  gameStatDuplications: 
 --- !u!114 &11481602
 MonoBehaviour:
   m_ObjectHideFlags: 1

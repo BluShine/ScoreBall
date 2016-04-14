@@ -47,6 +47,14 @@ public class SportsObject : FieldObject {
 	protected bool isOnGround = false;
 	protected bool preJump = false; //indicates the time between starting a jump and leaving the ground
 
+    //stats for effects
+    [HideInInspector]
+    public float freezeStart { get; private set; }
+    [HideInInspector]
+    public float dizzyStart { get; private set; }
+    [HideInInspector]
+    public float bouncyStart { get; private set; }
+
     public Vector3 effectOffset = new Vector3(0, 1, 0); //vertical offset for the effect display
     GameObject effectObject; //temporary object used to display the effect.
 
@@ -80,6 +88,10 @@ public class SportsObject : FieldObject {
         soundSource = GetComponent<AudioSource>();
         startingConstraints = body.constraints;
         started = true;
+
+        freezeStart = 0.0f;
+        dizzyStart = 0.0f;
+        bouncyStart = 0.0f;
     }
 
     public void useDefaultFreezing(bool useDefFreeze)
@@ -190,6 +202,9 @@ public class SportsObject : FieldObject {
                 }
             }
             duplicates.Add(dupe);
+
+            if (this is TeamPlayer)
+                gameRules.gameStatDuplications[team] += 1;
         }
     }
 
@@ -218,31 +233,55 @@ public class SportsObject : FieldObject {
     {
 		freezeTime = Mathf.Max(duration, freezeTime);
         SetEffect(GameRuleEffectStorage.instance.freeze);
+
+        if (freezeStart == 0.0f)
+            freezeStart = Time.timeSinceLevelLoad;
     }
 
 	public virtual void Unfreeze() {
 		freezeTime = 0.0f;
         SetEffect(null);
+
+        if (freezeStart != 0.0f && this is TeamPlayer) {
+            gameRules.gameStatTimeFrozen[team] += Time.timeSinceLevelLoad - freezeStart;
+            freezeStart = 0.0f;
+        }
 	}
 
 	public virtual void BeDizzy(float duration) {
 		dizzyTime = Mathf.Max(duration, dizzyTime);
 		SetEffect(GameRuleEffectStorage.instance.dizzy);
+
+        if (dizzyStart == 0.0f)
+            dizzyStart = Time.timeSinceLevelLoad;
     }
 
 	public virtual void StopBeingDizzy() {
 		dizzyTime = 0.0f;
         SetEffect(null);
+
+        if (dizzyStart != 0.0f && this is TeamPlayer) {
+            gameRules.gameStatTimeDizzy[team] += Time.timeSinceLevelLoad - dizzyStart;
+            dizzyStart = 0.0f;
+        }
     }
 
 	public virtual void StartBouncing(float duration) {
 		bounceTime = Mathf.Max(duration, bounceTime);
 		SetEffect(GameRuleEffectStorage.instance.bouncy);
+
+        if (bouncyStart == 0.0f)
+            bouncyStart = Time.timeSinceLevelLoad;
     }
 
 	public virtual void StopBouncing() {
 		bounceTime = 0.0f;
         SetEffect(null);
+
+        if (bouncyStart != 0.0f && this is TeamPlayer) {
+            gameRules.gameStatTimeBouncy[team] += Time.timeSinceLevelLoad - bouncyStart;
+            bouncyStart = 0.0f;
+        }
     }
 
 	public virtual void Jump() {

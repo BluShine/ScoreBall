@@ -13,8 +13,8 @@ class GameRuleChances {
 
 		//which kind of condition to do
 		d[typeof(GameRuleComparisonCondition)]										= 0;
-		d[typeof(GameRuleEventHappenedCondition)]									= 1;
-		d[typeof(GameRuleZoneCondition)]											= 0;
+		d[typeof(GameRuleEventHappenedCondition)]									= 15;
+		d[typeof(GameRuleZoneCondition)]											= 1;
 
 		//there would be a big section here for comparison conditions but we're not using them right now
 

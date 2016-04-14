@@ -26,10 +26,13 @@ public class GameRules : MonoBehaviour {
 	public GameObject floor;
 	public InputField ruleEntryField;
 	public GameObject goalArea;
+	public Image countdownClock;
+	public Transform quitButton;
 	public GameRuleGoalPlacer goalPlacer;
 	public List<List<TeamPlayer>> allPlayers = new List<List<TeamPlayer>>();
 	public Text[] teamTexts;
 	public int[] teamScores;
+	public GameObject[] teamStats;
 	public bool useRuleIcons = false;
 
     //colors
@@ -61,13 +64,55 @@ public class GameRules : MonoBehaviour {
 	[HideInInspector]
 	public float lastRuleChange = -NEW_RULE_WAIT_TIME; //so that we can immediately generate a new rule
 
+	//end-of-game stuff
+	public float gameLengthSeconds;
+	public GameObject gameStats;
+	[HideInInspector]
+	public int[] gameStatKicks;
+	[HideInInspector]
+	public int[] gameStatGrabs;
+	[HideInInspector]
+	public int[] gameStatBumps;
+	[HideInInspector]
+	public int[] gameStatSmacks;
+	[HideInInspector]
+	public float[] gameStatTimeFrozen;
+	[HideInInspector]
+	public float[] gameStatTimeDizzy;
+	[HideInInspector]
+	public float[] gameStatTimeBouncy;
+	[HideInInspector]
+	public int[] gameStatDuplications;
+	//[HideInInspector]
+	//public float gameStatsFadeAlpha; //store gameStats' alpha so we can lerp to it
+	//[HideInInspector]
+	//public float gameStatsFadeIndex = 0; //which section of fade-in we're on
+	//[HideInInspector]
+	//public float gameStatsFadeTimeLastStart; //to guide the fade
+	//const float GAME_STATS_OVERLAY_FADE_IN_TIME = 1.0f; //keep this at least as big as the complete new rule animation
+	private bool gameOver = false;
+
 	public void Start() {
         soundSource = GetComponent<AudioSource>();
 		rulesDict[typeof(GameRuleEffectAction)] = effectRulesList;
 		rulesDict[typeof(GameRuleMetaRuleAction)] = metaRulesList;
 		Instantiate(dataStoragePrefab);
 
-		//pull out the goal area information
+		gameStatKicks = new int[teamScores.Length];
+		gameStatGrabs = new int[teamScores.Length];
+		gameStatBumps = new int[teamScores.Length];
+		gameStatSmacks = new int[teamScores.Length];
+		gameStatTimeFrozen = new float[teamScores.Length];
+		gameStatTimeDizzy = new float[teamScores.Length];
+		gameStatTimeBouncy = new float[teamScores.Length];
+		gameStatDuplications = new int[teamScores.Length];
+		//Image gameStatsImage = gameStats.GetComponent<Image>();
+		//Color gameStatsImageColor = gameStatsImage.color;
+		//gameStatsFadeAlpha = gameStatsImageColor.a;
+		//gameStatsImageColor.a = 0.0f;
+		//gameStatsImage.color = gameStatsImageColor;
+
+		//set up the goal placer
 		goalPlacer = new GameRuleGoalPlacer(this);
 
 		instance = this;
@@ -340,6 +385,62 @@ public class GameRules : MonoBehaviour {
 
 	// FixedUpdate is called at a fixed rate
 	public void FixedUpdate() {
+		//check if the game is over
+		if (gameOver)
+			return;
+		float gameAmountRemaining = Mathf.Max(0.0f, 1.0f - (Time.timeSinceLevelLoad / gameLengthSeconds));
+		countdownClock.GetComponent<Image>().fillAmount = gameAmountRemaining;
+		//if we get here, the game just ended
+		if (gameAmountRemaining == 0.0f) {
+			//fill out all the stats
+			teamStats[1].GetComponent<Text>().text = "Score: " + teamScores[1];
+			teamStats[2].GetComponent<Text>().text = "Score: " + teamScores[2];
+			teamStats[0].GetComponent<Image>().color = teamScores[1] > teamScores[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(0).GetComponent<Text>().text = ": " + gameStatKicks[1];
+			teamStats[2].transform.GetChild(0).GetComponent<Text>().text = ": " + gameStatKicks[2];
+			teamStats[0].transform.GetChild(0).GetComponent<Image>().color =
+				gameStatKicks[1] == gameStatKicks[2] ? teamColors[0] : gameStatKicks[1] > gameStatKicks[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(1).GetComponent<Text>().text = ": " + gameStatGrabs[1];
+			teamStats[2].transform.GetChild(1).GetComponent<Text>().text = ": " + gameStatGrabs[2];
+			teamStats[0].transform.GetChild(1).GetComponent<Image>().color =
+				gameStatGrabs[1] == gameStatGrabs[2] ? teamColors[0] : gameStatGrabs[1] > gameStatGrabs[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(2).GetComponent<Text>().text = ": " + gameStatBumps[1];
+			teamStats[2].transform.GetChild(2).GetComponent<Text>().text = ": " + gameStatBumps[2];
+			teamStats[0].transform.GetChild(2).GetComponent<Image>().color =
+				gameStatBumps[1] == gameStatBumps[2] ? teamColors[0] : gameStatBumps[1] > gameStatBumps[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(3).GetComponent<Text>().text = ": " + gameStatSmacks[1];
+			teamStats[2].transform.GetChild(3).GetComponent<Text>().text = ": " + gameStatSmacks[2];
+			teamStats[0].transform.GetChild(3).GetComponent<Image>().color =
+				gameStatSmacks[1] == gameStatSmacks[2] ? teamColors[0] : gameStatSmacks[1] > gameStatSmacks[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(4).GetComponent<Text>().text = ": " + gameStatTimeFrozen[1].ToString("F2");
+			teamStats[2].transform.GetChild(4).GetComponent<Text>().text = ": " + gameStatTimeFrozen[2].ToString("F2");
+			teamStats[0].transform.GetChild(4).GetComponent<Image>().color =
+				gameStatTimeFrozen[1] == gameStatTimeFrozen[2] ? teamColors[0] : gameStatTimeFrozen[1] > gameStatTimeFrozen[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(5).GetComponent<Text>().text = ": " + gameStatTimeDizzy[1].ToString("F2");
+			teamStats[2].transform.GetChild(5).GetComponent<Text>().text = ": " + gameStatTimeDizzy[2].ToString("F2");
+			teamStats[0].transform.GetChild(5).GetComponent<Image>().color =
+				gameStatTimeDizzy[1] == gameStatTimeDizzy[2] ? teamColors[0] : gameStatTimeDizzy[1] > gameStatTimeDizzy[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(6).GetComponent<Text>().text = ": " + gameStatTimeBouncy[1].ToString("F2");
+			teamStats[2].transform.GetChild(6).GetComponent<Text>().text = ": " + gameStatTimeBouncy[2].ToString("F2");
+			teamStats[0].transform.GetChild(6).GetComponent<Image>().color =
+				gameStatTimeBouncy[1] == gameStatTimeBouncy[2] ? teamColors[0] : gameStatTimeBouncy[1] > gameStatTimeBouncy[2] ? teamColors[1] : teamColors[2];
+			teamStats[1].transform.GetChild(7).GetComponent<Text>().text = ": " + gameStatDuplications[1];
+			teamStats[2].transform.GetChild(7).GetComponent<Text>().text = ": " + gameStatDuplications[2];
+			teamStats[0].transform.GetChild(7).GetComponent<Image>().color =
+				gameStatDuplications[1] == gameStatDuplications[2] ? teamColors[0] : gameStatDuplications[1] > gameStatDuplications[2] ? teamColors[1] : teamColors[2];
+
+			//show the stats, put it above all the other rules
+			gameStats.SetActive(true);
+			gameStats.transform.SetAsLastSibling();
+			gameStats.GetComponent<Animator>().Play("Game Over");
+
+			//send the quit button to the front so that we can quit out
+			quitButton.SetAsLastSibling();
+
+			gameOver = true;
+			return;
+		}
+
 		bool animateRules = false;
 		foreach (GameRule rule in rulesList) {
 			rule.update();
@@ -398,6 +499,24 @@ public class GameRules : MonoBehaviour {
 		}
 	}
 	public void SendEvent(GameRuleEvent gre) {
+		if (gameOver)
+			return;
+
+		//add to stats
+		if (gre.eventType == GameRuleEventType.Kick)
+			gameStatKicks[((TeamPlayer)gre.source).team] += 1;
+		else if (gre.eventType == GameRuleEventType.Grab)
+			gameStatGrabs[((TeamPlayer)gre.source).team] += 1;
+		else if (gre.eventType == GameRuleEventType.Smack)
+			gameStatSmacks[((TeamPlayer)gre.source).team] += 1;
+		else if (gre.eventType == GameRuleEventType.Bump) {
+			Debug.Log("Bump with " + gre.target);
+			if (gre.source is TeamPlayer)
+				gameStatBumps[((TeamPlayer)gre.source).team] += 1;
+			if (gre.target is TeamPlayer)
+				gameStatBumps[((TeamPlayer)gre.target).team] += 1;
+		}
+
 		foreach (GameRule rule in effectRulesList) {
 			rule.sendEvent(gre);
 		}
@@ -581,7 +700,7 @@ public class GameRule {
 						animationState = 0;
 					break;
 				default:
-					throw new System.Exception("Bug: rule should never be in state " + animationState);
+					throw new System.Exception("Bug: rule should never be in animation state " + animationState);
 			}
 		}
 	}
