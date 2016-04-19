@@ -417,7 +417,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -439,7 +439,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
 --- !u!82 &8211820
 AudioSource:
   m_ObjectHideFlags: 1
@@ -918,8 +918,6 @@ MonoBehaviour:
   - {fileID: 8284950}
   - {fileID: 8225196}
   - {fileID: 8245632}
-  - {fileID: 8216654}
-  - {fileID: 8267770}
   enabledTracks: 
   fadeSpeed: 3
 --- !u!114 &11470558
