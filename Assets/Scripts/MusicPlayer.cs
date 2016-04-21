@@ -58,6 +58,7 @@ public class MusicPlayer : MonoBehaviour {
 
     public void setTrackCount(int count)
     {
+        return;
         //min of 0, max of track count
         count = Mathf.Max(count, 0);
         count = Mathf.Min(count, tracks.Count);

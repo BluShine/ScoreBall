@@ -510,7 +510,6 @@ public class GameRules : MonoBehaviour {
 		else if (gre.eventType == GameRuleEventType.Smack)
 			gameStatSmacks[((TeamPlayer)gre.source).team] += 1;
 		else if (gre.eventType == GameRuleEventType.Bump) {
-			Debug.Log("Bump with " + gre.target);
 			if (gre.source is TeamPlayer)
 				gameStatBumps[((TeamPlayer)gre.source).team] += 1;
 			if (gre.target is TeamPlayer)

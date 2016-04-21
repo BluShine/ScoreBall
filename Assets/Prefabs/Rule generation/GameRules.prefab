@@ -392,7 +392,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24370750, guid: ee75ad9be936f1e4b84a15f89fd9d306,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 1470eb2a9527a3a4796c2be3ef5787f1, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8411a405bc447854bbc032c2319ad6f2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -434,7 +434,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -456,14 +456,14 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!82 &8225196
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 193714}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24370750, guid: ee75ad9be936f1e4b84a15f89fd9d306,
     type: 2}
@@ -538,7 +538,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 125254}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24370750, guid: ee75ad9be936f1e4b84a15f89fd9d306,
     type: 2}
@@ -613,7 +613,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 137820}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24370750, guid: ee75ad9be936f1e4b84a15f89fd9d306,
     type: 2}
@@ -659,7 +659,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -681,7 +681,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!114 &11429796
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -706,10 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseTrack: {fileID: 8211820}
-  tracks:
-  - {fileID: 8284950}
-  - {fileID: 8225196}
-  - {fileID: 8267770}
+  tracks: []
   enabledTracks: 
   fadeSpeed: 3
 --- !u!114 &11470558
