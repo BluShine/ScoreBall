@@ -5,11 +5,8 @@ Properties {
 }
 
 SubShader {
-	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+	Tags { "RenderType"="Opaque" }
 	LOD 100
-	
-	Color [_Color]
-	Blend SrcAlpha OneMinusSrcAlpha 
 	
 	Pass {  
 		CGPROGRAM
@@ -45,9 +42,10 @@ SubShader {
 			
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 col = tex2D(_MainTex, i.texcoord);
+				fixed4 col = tex2D(_MainTex, i.texcoord) * _Color;
 				UNITY_APPLY_FOG(i.fogCoord, col);
-				return lerp(col, _Color, _Color.a);
+				UNITY_OPAQUE_ALPHA(col.a);
+				return col;
 			}
 		ENDCG
 	}
