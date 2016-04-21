@@ -12,16 +12,16 @@ public class TwitchInterface : MonoBehaviour {
     /// <summary>
     /// twitch username
     /// </summary>
-    public string username = "username";
+    static string username = "";
     /// <summary>
     /// twitch oauth login token
     /// go to https://twitchapps.com/tmi/ to generate a token
     /// </summary>
-    public string oauthToken = "oauth:";
+    static string oauthToken = "";
     /// <summary>
     /// channel to connect to: #username (all lowercase)
     /// </summary>
-    public string channel = "#bobross";
+    static string channel = "";
 
     public InputField usernameField;
     public InputField oauthField; 
@@ -53,7 +53,10 @@ public class TwitchInterface : MonoBehaviour {
     // Use this for initialization
     void Start () {
         connectObject.SetActive(false);
-
+        if(oauthToken != "oauth:")
+        {
+            Connect();
+        }
     }
 
     public void Connect()
@@ -61,8 +64,10 @@ public class TwitchInterface : MonoBehaviour {
         if (connected)
             return;
 
-        username = usernameField.text.ToLower();
-        oauthToken = oauthField.text;
+        if(usernameField.text != "")
+            username = usernameField.text.ToLower();
+        if(oauthField.text != "")
+            oauthToken = oauthField.text;
         channel = "#" + username;
         if (username == "")
         {
